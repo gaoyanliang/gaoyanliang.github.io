@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>Kafka中的HW、LEO、LSO等分别代表什么？</title>
+      <link href="/2019/10/04/Kafka%E4%B8%AD%E7%9A%84HW%E3%80%81LEO%E3%80%81LSO%E7%AD%89%E5%88%86%E5%88%AB%E4%BB%A3%E8%A1%A8%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
+      <url>/2019/10/04/Kafka%E4%B8%AD%E7%9A%84HW%E3%80%81LEO%E3%80%81LSO%E7%AD%89%E5%88%86%E5%88%AB%E4%BB%A3%E8%A1%A8%E4%BB%80%E4%B9%88%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<p><code>HW</code> 、 <code>LEO</code> 等概念和上一篇文章所说的 <code>ISR</code>有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。</p><p><code>HW</code> （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。</p><p> 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。</p><a id="more"></a><p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144603190-691225277.png" alt></p><p><code>LEO</code> （Log End Offset），标识当前日志文件中下一条待写入的消息的offset。上图中offset为9的位置即为当前日志文件的 LEO，LEO 的大小相当于当前日志分区中最后一条消息的offset值加1.分区 ISR 集合中的每个副本都会维护自身的 LEO ，而 ISR 集合中最小的 LEO 即为分区的 HW，对消费者而言只能消费 HW 之前的消息。</p><hr><p>下面具体分析一下 ISR 集合和 HW、LEO的关系。</p><p>假设某分区的 ISR 集合中有 3 个副本，即一个 leader 副本和 2 个 follower 副本，此时分区的 LEO 和 HW 都分别为 3 。消息3和消息4从生产者出发之后先被存入leader副本。</p><p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144616936-817718051.png" alt></p><p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144628328-605129794.png" alt></p><p>在消息被写入leader副本之后，follower副本会发送拉取请求来拉取消息3和消息4进行消息同步。</p><p>在同步过程中不同的副本同步的效率不尽相同，在某一时刻follower1完全跟上了leader副本而follower2只同步了消息3，如此leader副本的LEO为5，follower1的LEO为5，follower2的LEO 为4，那么当前分区的HW取最小值4，此时消费者可以消费到offset0至3之间的消息。</p><p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144641107-11974415.png" alt></p><p>当所有副本都成功写入消息3和消息4之后，整个分区的HW和LEO都变为5，因此消费者可以消费到offset为4的消息了。</p><p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144655743-1749405424.png" alt></p><p>由此可见kafka的复制机制既不是完全的同步复制，也不是单纯的异步复制。事实上，同步复制要求所有能工作的follower副本都复制完，这条消息才会被确认已成功提交，这种复制方式极大的影响了性能。而在异步复制的方式下，follower副本异步的从leader副本中复制数据，数据只要被leader副本写入就会被认为已经成功提交。在这种情况下，如果follower副本都还没有复制完而落后于leader副本，然后leader副本宕机，则会造成数据丢失。kafka使用这种ISR的方式有效的权衡了数据可靠性和性能之间的关系。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> kafka </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Kafka中的HW、LEO、LSO等分别代表什么？</title>
+      <link href="/2019/10/04/kafka%E4%B8%AD%E7%9A%84ISR%E3%80%81AR%E4%BB%A3%E8%A1%A8%E4%BB%80%E4%B9%88%EF%BC%9FISR%E7%9A%84%E4%BC%B8%E7%BC%A9%E6%80%A7%E5%8F%88%E6%8C%87%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
+      <url>/2019/10/04/kafka%E4%B8%AD%E7%9A%84ISR%E3%80%81AR%E4%BB%A3%E8%A1%A8%E4%BB%80%E4%B9%88%EF%BC%9FISR%E7%9A%84%E4%BC%B8%E7%BC%A9%E6%80%A7%E5%8F%88%E6%8C%87%E4%BB%80%E4%B9%88%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<p>相信大家已经对 <code>kafka</code> 的基本概念已经有一定的了解了，下面直接来分析一下 ISR 和 AR 的概念。</p><a id="more"></a><h2 id="ISR-and-AR"><a href="#ISR-and-AR" class="headerlink" title="ISR and AR"></a>ISR and AR</h2><p>简单来说，分区中的所有副本统称为 <code>AR</code> (Assigned Replicas)。所有与leader副本保持一定程度同步的副本（包括leader副本在内）组成 <code>ISR</code> (In Sync Replicas)。 ISR 集合是 AR 集合的一个子集。消息会先发送到leader副本，然后follower副本才能从leader中拉取消息进行同步。同步期间，follow副本相对于leader副本而言会有一定程度的滞后。前面所说的 ”一定程度同步“ 是指可忍受的滞后范围，这个范围可以通过参数进行配置。于leader副本同步滞后过多的副本（不包括leader副本）将组成 <code>OSR</code> （Out-of-Sync Replied）由此可见，AR = ISR + OSR。正常情况下，所有的follower副本都应该与leader 副本保持  一定程度的同步，即AR=ISR，OSR集合为空。</p><h2 id="ISR-的伸缩性"><a href="#ISR-的伸缩性" class="headerlink" title="ISR 的伸缩性"></a>ISR 的伸缩性</h2><p><strong>leader副本负责维护和跟踪</strong> <code>ISR</code> 集合中所有follower副本的滞后状态，当follower副本落后太多或失效时，leader副本会把它从 ISR 集合中剔除。如果 <code>OSR</code> 集合中所有follower副本“追上”了leader副本，那么leader副本会把它从 OSR 集合转移至 ISR 集合。默认情况下，当leader副本发生故障时，只有在 ISR 集合中的follower副本才有资格被选举为新的leader，而在 OSR 集合中的副本则没有任何机会（不过这个可以通过配置来改变）。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> kafka </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>kafka 主题管理</title>
       <link href="/2019/10/03/kafka%20%E4%B8%BB%E9%A2%98%E7%AE%A1%E7%90%86/"/>
       <url>/2019/10/03/kafka%20%E4%B8%BB%E9%A2%98%E7%AE%A1%E7%90%86/</url>
