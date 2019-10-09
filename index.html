@@ -485,6 +485,116 @@
       
         
   <h2 class="title">
+    <a href="/2019/10/09/kafka-partition-alocation/">
+      Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理
+    </a>
+  </h2>
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://gyl-coder.github.io" rel="nofollow">
+        
+          <img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.0/img/touxiang.jpg">
+        
+        <p>yanliang</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2019-10-09</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/kafka/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>kafka</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  <div class="new-meta-item top-post">
+    <a class='notlink'>
+      <i class="fas fa-angle-double-up" aria-hidden="true"></i>
+      <p>近期更新</p>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
+      <p>在 kafka 中，分区分配是一个很重要的概念，它会影响Kafka整体的性能均衡。kafka 中一共有三处地方涉及此概念，分别是：生产者发送消息、消费者消费消息和创建主题。虽然这三处的对应操作都可以被称之为“分区分配”，但是其实质上所包含的内容却并不相同。</p>
+      
+        <div class="readmore">
+          <a href="/2019/10/09/kafka-partition-alocation/" class="flat-box">
+            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
+            阅读全文
+          </a>
+        </div>
+      
+    </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
+        
+      </div>
+    
+  </section>
+</article>
+
+              </div>
+            
+          
+        
+          
+            
+              <div class='post-wrapper'>
+                <article class="post reveal ">
+  
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  <h2 class="title">
     <a href="/2019/10/03/kafka 主题管理/">
       kafka 主题管理
     </a>
@@ -687,116 +797,6 @@
           <a href="/tags/数据可靠性/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> 数据可靠性</a>
         
           <a href="/tags/数据一致性/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> 数据一致性</a>
-        
-      </div>
-    
-  </section>
-</article>
-
-              </div>
-            
-          
-        
-          
-            
-              <div class='post-wrapper'>
-                <article class="post reveal ">
-  
-
-
-  <section class='meta'>
-    
-    
-    <div class="meta" id="header-meta">
-      
-        
-  <h2 class="title">
-    <a href="/2019/10/09/kafka-partition-alocation/">
-      Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理
-    </a>
-  </h2>
-
-
-      
-      <div class='new-meta-box'>
-        
-          
-        
-          
-            
-  <div class='new-meta-item author'>
-    
-      <a href="https://gyl-coder.github.io" rel="nofollow">
-        
-          <img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.0/img/touxiang.jpg">
-        
-        <p>yanliang</p>
-      </a>
-    
-  </div>
-
-
-          
-        
-          
-            <div class="new-meta-item date">
-  <a class='notlink'>
-    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019-10-09</p>
-  </a>
-</div>
-
-          
-        
-          
-            
-  
-  <div class='new-meta-item category'>
-    <a href='/categories/kafka/' rel="nofollow">
-      <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>kafka</p>
-    </a>
-  </div>
-
-
-          
-        
-          
-            
-  <div class="new-meta-item top-post">
-    <a class='notlink'>
-      <i class="fas fa-angle-double-up" aria-hidden="true"></i>
-      <p>近期更新</p>
-    </a>
-  </div>
-
-
-          
-        
-      </div>
-      
-        <hr>
-      
-    </div>
-  </section>
-
-
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      <p>在 kafka 中，分区分配是一个很重要的概念，它会影响Kafka整体的性能均衡。kafka 中一共有三处地方涉及此概念，分别是：生产者发送消息、消费者消费消息和创建主题。虽然这三处的对应操作都可以被称之为“分区分配”，但是其实质上所包含的内容却并不相同。</p>
-      
-        <div class="readmore">
-          <a href="/2019/10/09/kafka-partition-alocation/" class="flat-box">
-            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-    
-      <div class="full-width auto-padding tags">
-        
-          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
         
       </div>
     
