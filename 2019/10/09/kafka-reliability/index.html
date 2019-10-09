@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <title>Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog</title>
+  <title>kafka 如何保证数据的可靠性和一致性 | yanliang‘s blog</title>
   
   
 
@@ -366,8 +366,8 @@
         
   
     <h1 class="title">
-      <a href="/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/">
-        Kafka中的HW、LEO、LSO等分别代表什么？
+      <a href="/2019/10/09/kafka-reliability/">
+        kafka 如何保证数据的可靠性和一致性
       </a>
     </h1>
   
@@ -398,7 +398,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019-10-04</p>
+    <p>2019-10-09</p>
   </a>
 </div>
 
@@ -450,24 +450,44 @@
 
     <section class="article typo">
       <div class="article-entry" itemprop="articleBody">
-        <p><code>HW</code> 、 <code>LEO</code> 等概念和上一篇文章所说的 <code>ISR</code>有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。</p>
-<p><code>HW</code> （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。</p>
-<p> 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。</p>
+        <h2 id="数据可靠性"><a href="#数据可靠性" class="headerlink" title="数据可靠性"></a>数据可靠性</h2><p>Kafka 作为一个商业级消息中间件，消息可靠性的重要性可想而知。本文从 Producter 往 Broker 发送消息、Topic 分区副本以及 Leader 选举几个角度介绍数据的可靠性。</p>
 <a id="more"></a>
 
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144603190-691225277.png" alt></p>
-<p><code>LEO</code> （Log End Offset），标识当前日志文件中下一条待写入的消息的offset。上图中offset为9的位置即为当前日志文件的 LEO，LEO 的大小相当于当前日志分区中最后一条消息的offset值加1.分区 ISR 集合中的每个副本都会维护自身的 LEO ，而 ISR 集合中最小的 LEO 即为分区的 HW，对消费者而言只能消费 HW 之前的消息。</p>
-<hr>
-<p>下面具体分析一下 ISR 集合和 HW、LEO的关系。</p>
-<p>假设某分区的 ISR 集合中有 3 个副本，即一个 leader 副本和 2 个 follower 副本，此时分区的 LEO 和 HW 都分别为 3 。消息3和消息4从生产者出发之后先被存入leader副本。</p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144616936-817718051.png" alt></p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144628328-605129794.png" alt></p>
-<p>在消息被写入leader副本之后，follower副本会发送拉取请求来拉取消息3和消息4进行消息同步。</p>
-<p>在同步过程中不同的副本同步的效率不尽相同，在某一时刻follower1完全跟上了leader副本而follower2只同步了消息3，如此leader副本的LEO为5，follower1的LEO为5，follower2的LEO 为4，那么当前分区的HW取最小值4，此时消费者可以消费到offset0至3之间的消息。</p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144641107-11974415.png" alt></p>
-<p>当所有副本都成功写入消息3和消息4之后，整个分区的HW和LEO都变为5，因此消费者可以消费到offset为4的消息了。</p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144655743-1749405424.png" alt></p>
-<p>由此可见kafka的复制机制既不是完全的同步复制，也不是单纯的异步复制。事实上，同步复制要求所有能工作的follower副本都复制完，这条消息才会被确认已成功提交，这种复制方式极大的影响了性能。而在异步复制的方式下，follower副本异步的从leader副本中复制数据，数据只要被leader副本写入就会被认为已经成功提交。在这种情况下，如果follower副本都还没有复制完而落后于leader副本，然后leader副本宕机，则会造成数据丢失。kafka使用这种ISR的方式有效的权衡了数据可靠性和性能之间的关系。</p>
+<h3 id="Producer-往-Broker-发送消息"><a href="#Producer-往-Broker-发送消息" class="headerlink" title="Producer 往 Broker 发送消息"></a>Producer 往 Broker 发送消息</h3><p>如果我们要往 Kafka 对应的主题发送消息，我们需要通过 Producer 完成。前面我们讲过 Kafka 主题对应了多个分区，每个分区下面又对应了多个副本；为了让用户设置数据可靠性， Kafka 在 Producer 里面提供了消息确认机制。也就是说我们可以通过配置来决定有几个副本收到这条消息才算消息发送成功。可以在定义 Producer 时通过 <code>acks</code> 参数指定（在 0.8.2.X 版本之前是通过 <code>request.required.acks</code> 参数设置的，详见 <a href="https://www.iteblog.com/redirect.php?url=aHR0cHM6Ly9pc3N1ZXMuYXBhY2hlLm9yZy9qaXJhL2Jyb3dzZS9LQUZLQS0zMDQz&article=true" target="_blank" rel="noopener">KAFKA-3043</a>）。这个参数支持以下三种值：</p>
+<ul>
+<li><p>acks=0：生产者不会等待任何来自服务器的响应。</p>
+<p>如果当中出现问题，导致服务器没有收到消息，那么生产者无从得知，会造成消息丢失</p>
+<p>由于生产者不需要等待服务器的响应所以可以以网络能够支持的最大速度发送消息，从而达到很高的吞吐量</p>
+</li>
+<li><p>acks=1（默认值）：只要集群的Leader节点收到消息，生产者就会收到一个来自服务器的成功响应</p>
+<p>如果消息无法到达Leader节点（例如Leader节点崩溃，新的Leader节点还没有被选举出来）生产者就会收到一个错误响应，为了避免数据丢失，生产者会重发消息</p>
+<p>如果一个没有收到消息的节点成为新Leader，消息还是会丢失</p>
+<p>此时的吞吐量主要取决于使用的是同步发送还是异步发送，吞吐量还受到发送中消息数量的限制，例如生产者在收到服务器响应之前可以发送多少个消息</p>
+</li>
+<li><p>acks=-1：只有当所有参与复制的节点全部都收到消息时，生产者才会收到一个来自服务器的成功响应</p>
+<p>这种模式是最安全的，可以保证不止一个服务器收到消息，就算有服务器发生崩溃，整个集群依然可以运行</p>
+<p>延时比acks=1更高，因为要等待不止一个服务器节点接收消息</p>
+</li>
+</ul>
+<p>根据实际的应用场景，我们设置不同的 <code>acks</code>，以此保证数据的可靠性。</p>
+<p>另外，Producer 发送消息还可以选择同步（默认，通过 <code>producer.type=sync</code> 配置） 或者异步（<code>producer.type=async</code>）模式。如果设置成异步，虽然会极大的提高消息发送的性能，但是这样会增加丢失数据的风险。如果需要确保消息的可靠性，必须将 <code>producer.type</code> 设置为 sync。</p>
+<h3 id="Topic-分区副本"><a href="#Topic-分区副本" class="headerlink" title="Topic 分区副本"></a>Topic 分区副本</h3><p>在 Kafka 0.8.0 之前，Kafka 是没有副本的概念的，那时候人们只会用 Kafka 存储一些不重要的数据，因为没有副本，数据很可能会丢失。但是随着业务的发展，支持副本的功能越来越强烈，所以为了保证数据的可靠性，Kafka 从 0.8.0 版本开始引入了分区副本（详情请参见 <a href="https://www.iteblog.com/redirect.php?url=aHR0cHM6Ly9pc3N1ZXMuYXBhY2hlLm9yZy9qaXJhL2Jyb3dzZS9LQUZLQS01MA==&article=true" target="_blank" rel="noopener">KAFKA-50</a>）。也就是说每个分区可以人为的配置几个副本（比如创建主题的时候指定 <code>replication-factor</code>，也可以在 Broker 级别进行配置 <code>default.replication.factor</code>），一般会设置为3。</p>
+<p>Kafka 可以保证单个分区里的事件是有序的，分区可以在线（可用），也可以离线（不可用）。在众多的分区副本里面有一个副本是 Leader，其余的副本是 follower，所有的读写操作都是经过 Leader 进行的，同时 follower 会定期地去 leader 上复制数据。当 Leader 挂掉之后，其中一个 follower 会重新成为新的 Leader。通过分区副本，引入了数据冗余，同时也提供了 Kafka 的数据可靠性。</p>
+<p><strong>Kafka 的分区多副本架构是 Kafka 可靠性保证的核心，把消息写入多个副本可以使 Kafka 在发生崩溃时仍能保证消息的持久性。</strong></p>
+<h3 id="Leader-选举"><a href="#Leader-选举" class="headerlink" title="Leader 选举"></a>Leader 选举</h3><p>在介绍 Leader 选举之前，让我们先来了解一下 ISR（in-sync replicas）列表。每个分区的 leader 会维护一个 ISR 列表，ISR 列表里面就是 follower 副本的 Borker 编号，只有“跟得上” Leader 的 follower 副本才能加入到 ISR 里面，这个是通过 <code>replica.lag.time.max.ms</code> 参数配置的。只有 ISR 里的成员才有被选为 leader 的可能。</p>
+<p>所以当 Leader 挂掉了，而且 <code>unclean.leader.election.enable=false</code> 的情况下，Kafka 会从 ISR 列表中选择第一个 follower 作为新的 Leader，因为这个分区拥有最新的已经 committed 的消息。通过这个可以保证已经 committed 的消息的数据可靠性。</p>
+<p>综上所述，为了保证数据的可靠性，我们最少需要配置一下几个参数：</p>
+<ul>
+<li>producer 级别：acks=all（或者 request.required.acks=-1），同时发生模式为同步 producer.type=sync</li>
+<li>topic 级别：设置 replication.factor&gt;=3，并且 min.insync.replicas&gt;=2；</li>
+<li>broker 级别：关闭不完全的 Leader 选举，即 unclean.leader.election.enable=false；</li>
+</ul>
+<h2 id="数据一致性"><a href="#数据一致性" class="headerlink" title="数据一致性"></a>数据一致性</h2><p>这里介绍的数据一致性主要是说不论是老的 Leader 还是新选举的 Leader，Consumer 都能读到一样的数据。那么 Kafka 是如何实现的呢？</p>
+<p><img src="C:%5CUsers%5Cyanliang%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1567762579648.png" alt="1567762579648"></p>
+<p>假设分区的副本为3，其中副本0是 Leader，副本1和副本2是 follower，并且在 ISR 列表里面。虽然副本0已经写入了 Message3，但是 Consumer 只能读取到 Message1。因为所有的 ISR 都同步了 Message1，只有 High Water Mark 以上的消息才支持 Consumer 读取，而 High Water Mark 取决于 ISR 列表里面偏移量最小的分区，对应于上图的副本2，这个很类似于木桶原理。</p>
+<p>这样做的原因是还没有被足够多副本复制的消息被认为是“不安全”的，如果 Leader 发生崩溃，另一个副本成为新 Leader，那么这些消息很可能丢失了。如果我们允许消费者读取这些消息，可能就会破坏一致性。试想，一个消费者从当前 Leader（副本0） 读取并处理了 Message4，这个时候 Leader 挂掉了，选举了副本1为新的 Leader，这时候另一个消费者再去从新的 Leader 读取消息，发现这个消息其实并不存在，这就导致了数据不一致性问题。</p>
+<p>当然，引入了 High Water Mark 机制，会导致 Broker 间的消息复制因为某些原因变慢，那么消息到达消费者的时间也会随之变长（因为我们会先等待消息复制完毕）。延迟时间可以通过参数 <code>replica.lag.time.max.ms</code> 参数配置，它指定了副本在复制消息时可被允许的最大延迟时间。</p>
+<p>输入中。。。</p>
 
       </div>
       
@@ -479,7 +499,7 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-09T21:01:27+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-09T22:03:19+08:00">
   <a class='notlink'>
     <i class="fas fa-clock" aria-hidden="true"></i>
     <p>更新于 2019年10月9日</p>
@@ -491,7 +511,7 @@
         
           
   
-  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>kafka</p></a></div>
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>kafka</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/数据可靠性/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>数据可靠性</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/数据一致性/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>数据一致性</p></a></div>
 
 
         
@@ -504,9 +524,7 @@
       
         <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=https://gyl-coder.github.io/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=HW 、 LEO 等概念和上一篇文章所说的 ISR有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。
-HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
- 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://gyl-coder.github.io/2019/10/09/kafka-reliability/&title=kafka 如何保证数据的可靠性和一致性 | yanliang‘s blog&summary=数据可靠性Kafka 作为一个商业级消息中间件，消息可靠性的重要性可想而知。本文从 Producter 往 Broker 发送消息、Topic 分区副本以及 Leader 选举几个角度介绍数据的可靠性。"
           
           >
           
@@ -518,9 +536,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
       
         <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://gyl-coder.github.io/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=HW 、 LEO 等概念和上一篇文章所说的 ISR有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。
-HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
- 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://gyl-coder.github.io/2019/10/09/kafka-reliability/&title=kafka 如何保证数据的可靠性和一致性 | yanliang‘s blog&summary=数据可靠性Kafka 作为一个商业级消息中间件，消息可靠性的重要性可想而知。本文从 Producter 往 Broker 发送消息、Topic 分区副本以及 Leader 选举几个角度介绍数据的可靠性。"
           
           >
           
@@ -532,9 +548,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
       
         <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=https://gyl-coder.github.io/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=HW 、 LEO 等概念和上一篇文章所说的 ISR有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。
-HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
- 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。"
+          href="http://service.weibo.com/share/share.php?url=https://gyl-coder.github.io/2019/10/09/kafka-reliability/&title=kafka 如何保证数据的可靠性和一致性 | yanliang‘s blog&summary=数据可靠性Kafka 作为一个商业级消息中间件，消息可靠性的重要性可想而知。本文从 Producter 往 Broker 发送消息、Topic 分区副本以及 Leader 选举几个角度介绍数据的可靠性。"
           
           >
           
@@ -562,9 +576,9 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
                       <span class="art-item-left">
                           <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
                           <h4>
-                              <a href="/2019/10/09/kafka-todo-list/" rel="prev" title="kafka 问题总结">
+                              <a href="/2019/10/09/kafka-partition-alocation/" rel="prev" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理">
                                 
-                                    kafka 问题总结
+                                    Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理
                                 
                               </a>
                           </h4>
@@ -582,9 +596,9 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
                       <span class="art-item-right" aria-hidden="true">
                           <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
                           <h4>
-                              <a href="/2019/10/04/kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？/" rel="prev" title="Kafka中的HW、LEO、LSO等分别代表什么？">
+                              <a href="/2019/10/09/kafka-todo-list/" rel="prev" title="kafka 问题总结">
                                   
-                                      Kafka中的HW、LEO、LSO等分别代表什么？
+                                      kafka 问题总结
                                   
                               </a>
                           </h4>
@@ -635,7 +649,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
 
   <script>
     window.subData = {
-      title: 'Kafka中的HW、LEO、LSO等分别代表什么？',
+      title: 'kafka 如何保证数据的可靠性和一致性',
       tools: true
     }
   </script>
@@ -655,6 +669,20 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
           
             
               
+  <section class='widget toc-wrapper'>
+    
+<header class='pure'>
+  <div><i class="fas fa-list fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;本文目录</div>
+  
+    <!-- <div class='wrapper'><a class="s-toc rightBtn" rel="external nofollow noopener noreferrer" href="javascript:void(0)"><i class="fas fa-thumbtack fa-fw"></i></a></div> -->
+  
+</header>
+
+    <div class='content pure'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据可靠性"><span class="toc-text">数据可靠性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Producer-往-Broker-发送消息"><span class="toc-text">Producer 往 Broker 发送消息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Topic-分区副本"><span class="toc-text">Topic 分区副本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Leader-选举"><span class="toc-text">Leader 选举</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据一致性"><span class="toc-text">数据一致性</span></a></li></ol>
+    </div>
+  </section>
+
 
             
           
@@ -700,7 +728,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
 </header>
 
     <div class="content pure">
-      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-reliability\" title="kafka 如何保证数据的可靠性和一致性" rel="bookmark">kafka 如何保证数据的可靠性和一致性</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li></ul>
+      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\Kafka中的HW、LEO、LSO等分别代表什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li></ul>
     </div>
   </section>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <title>Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog</title>
+  <title>kafka 问题总结 | yanliang‘s blog</title>
   
   
 
@@ -366,8 +366,8 @@
         
   
     <h1 class="title">
-      <a href="/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/">
-        Kafka中的HW、LEO、LSO等分别代表什么？
+      <a href="/2019/10/09/kafka-todo-list/">
+        kafka 问题总结
       </a>
     </h1>
   
@@ -398,7 +398,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019-10-04</p>
+    <p>2019-10-09</p>
   </a>
 </div>
 
@@ -450,24 +450,68 @@
 
     <section class="article typo">
       <div class="article-entry" itemprop="articleBody">
-        <p><code>HW</code> 、 <code>LEO</code> 等概念和上一篇文章所说的 <code>ISR</code>有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。</p>
-<p><code>HW</code> （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。</p>
-<p> 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。</p>
+        <ol>
+<li><a href="https://www.cnblogs.com/yoke/p/11477167.html" target="_blank" rel="noopener">kafka如何保证数据可靠性和数据一致性</a></li>
+<li><a href="https://www.cnblogs.com/yoke/p/11405397.html" target="_blank" rel="noopener">Kafka Rebalance机制分析</a></li>
+<li>Kafka的用途有哪些？使用场景如何？</li>
+<li><a href="https://www.cnblogs.com/yoke/p/11486200.html" target="_blank" rel="noopener">Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么？</a></li>
+<li><a href="https://www.cnblogs.com/yoke/p/11486196.html" target="_blank" rel="noopener">Kafka中的HW、LEO、LSO等分别代表什么？</a></li>
+<li>Kafka中是怎么体现消息顺序性的？</li>
+</ol>
 <a id="more"></a>
 
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144603190-691225277.png" alt></p>
-<p><code>LEO</code> （Log End Offset），标识当前日志文件中下一条待写入的消息的offset。上图中offset为9的位置即为当前日志文件的 LEO，LEO 的大小相当于当前日志分区中最后一条消息的offset值加1.分区 ISR 集合中的每个副本都会维护自身的 LEO ，而 ISR 集合中最小的 LEO 即为分区的 HW，对消费者而言只能消费 HW 之前的消息。</p>
-<hr>
-<p>下面具体分析一下 ISR 集合和 HW、LEO的关系。</p>
-<p>假设某分区的 ISR 集合中有 3 个副本，即一个 leader 副本和 2 个 follower 副本，此时分区的 LEO 和 HW 都分别为 3 。消息3和消息4从生产者出发之后先被存入leader副本。</p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144616936-817718051.png" alt></p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144628328-605129794.png" alt></p>
-<p>在消息被写入leader副本之后，follower副本会发送拉取请求来拉取消息3和消息4进行消息同步。</p>
-<p>在同步过程中不同的副本同步的效率不尽相同，在某一时刻follower1完全跟上了leader副本而follower2只同步了消息3，如此leader副本的LEO为5，follower1的LEO为5，follower2的LEO 为4，那么当前分区的HW取最小值4，此时消费者可以消费到offset0至3之间的消息。</p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144641107-11974415.png" alt></p>
-<p>当所有副本都成功写入消息3和消息4之后，整个分区的HW和LEO都变为5，因此消费者可以消费到offset为4的消息了。</p>
-<p><img src="https://img2018.cnblogs.com/blog/1024146/201909/1024146-20190908144655743-1749405424.png" alt></p>
-<p>由此可见kafka的复制机制既不是完全的同步复制，也不是单纯的异步复制。事实上，同步复制要求所有能工作的follower副本都复制完，这条消息才会被确认已成功提交，这种复制方式极大的影响了性能。而在异步复制的方式下，follower副本异步的从leader副本中复制数据，数据只要被leader副本写入就会被认为已经成功提交。在这种情况下，如果follower副本都还没有复制完而落后于leader副本，然后leader副本宕机，则会造成数据丢失。kafka使用这种ISR的方式有效的权衡了数据可靠性和性能之间的关系。</p>
+<ol start="7">
+<li>Kafka中的分区器、序列化器、拦截器是否了解？它们之间的处理顺序是什么？</li>
+<li>Kafka生产者客户端的整体结构是什么样子的？</li>
+<li>Kafka生产者客户端中使用了几个线程来处理？分别是什么？</li>
+<li>Kafka的旧版Scala的消费者客户端的设计有什么缺陷？</li>
+<li>“消费组中的消费者个数如果超过topic的分区，那么就会有消费者消费不到数据”这句话是否正确？如果正确，那</li>
+<li>有没有什么hack的手段？</li>
+<li>消费者提交消费位移时提交的是当前消费到的最新消息的offset还是offset+1?</li>
+<li>有哪些情形会造成重复消费？</li>
+<li>那些情景下会造成消息漏消费？</li>
+<li>KafkaConsumer是非线程安全的，那么怎么样实现多线程消费？</li>
+<li>简述消费者与消费组之间的关系</li>
+<li>当你使用kafka-topics.sh创建（删除）了一个topic之后，Kafka背后会执行什么逻辑？</li>
+<li>topic的分区数可不可以增加？如果可以怎么增加？如果不可以，那又是为什么？</li>
+<li>topic的分区数可不可以减少？如果可以怎么减少？如果不可以，那又是为什么？</li>
+<li>创建topic时如何选择合适的分区数？</li>
+<li>Kafka目前有那些内部topic，它们都有什么特征？各自的作用又是什么？</li>
+<li>优先副本是什么？它有什么特殊的作用？</li>
+<li>Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</li>
+<li>简述Kafka的日志目录结构</li>
+<li>Kafka中有那些索引文件？</li>
+<li>如果我指定了一个offset，Kafka怎么查找到对应的消息？</li>
+<li>如果我指定了一个timestamp，Kafka怎么查找到对应的消息？</li>
+<li>聊一聊你对Kafka的Log Retention的理解</li>
+<li>聊一聊你对Kafka的Log Compaction的理解</li>
+<li>聊一聊你对Kafka底层存储的理解（页缓存、内核层、块层、设备层）</li>
+<li>聊一聊Kafka的延时操作的原理</li>
+<li>聊一聊Kafka控制器的作用</li>
+<li>消费再均衡的原理是什么？（提示：消费者协调器和消费组协调器）</li>
+<li>Kafka中的幂等是怎么实现的</li>
+<li>Kafka中的事务是怎么实现的（这题我去面试6加被问4次，照着答案念也要念十几分钟，面试官简直凑不要脸</li>
+<li>Kafka中有那些地方需要选举？这些地方的选举策略又有哪些？</li>
+<li>失效副本是指什么？有那些应对措施？</li>
+<li>多副本下，各个副本中的HW和LEO的演变过程</li>
+<li>为什么Kafka不支持读写分离？</li>
+<li>Kafka在可靠性方面做了哪些改进？（HW, LeaderEpoch）</li>
+<li>Kafka中怎么实现死信队列和重试队列？</li>
+<li>Kafka中的延迟队列怎么实现（这题被问的比事务那题还要多！！！听说你会Kafka，那你说说延迟队列怎么实现？）</li>
+<li>Kafka中怎么做消息审计？</li>
+<li>Kafka中怎么做消息轨迹？</li>
+<li>Kafka中有那些配置参数比较有意思？聊一聊你的看法</li>
+<li>Kafka中有那些命名比较有意思？聊一聊你的看法</li>
+<li>Kafka有哪些指标需要着重关注？</li>
+<li>怎么计算Lag？(注意read_uncommitted和read_committed状态下的不同)</li>
+<li>Kafka的那些设计让它有如此高的性能？</li>
+<li>Kafka有什么优缺点？</li>
+<li>还用过什么同质类的其它产品，与Kafka相比有什么优缺点？</li>
+<li>为什么选择Kafka?</li>
+<li>在使用Kafka的过程中遇到过什么困难？怎么解决的？</li>
+<li>怎么样才能确保Kafka极大程度上的可靠性？</li>
+<li>聊一聊你对Kafka生态的理解</li>
+</ol>
 
       </div>
       
@@ -479,7 +523,7 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-09T21:01:27+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-09T22:10:39+08:00">
   <a class='notlink'>
     <i class="fas fa-clock" aria-hidden="true"></i>
     <p>更新于 2019年10月9日</p>
@@ -504,9 +548,14 @@
       
         <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=https://gyl-coder.github.io/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=HW 、 LEO 等概念和上一篇文章所说的 ISR有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。
-HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
- 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://gyl-coder.github.io/2019/10/09/kafka-todo-list/&title=kafka 问题总结 | yanliang‘s blog&summary=
+kafka如何保证数据可靠性和数据一致性
+Kafka Rebalance机制分析
+Kafka的用途有哪些？使用场景如何？
+Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么？
+Kafka中的HW、LEO、LSO等分别代表什么？
+Kafka中是怎么体现消息顺序性的？
+"
           
           >
           
@@ -518,9 +567,14 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
       
         <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://gyl-coder.github.io/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=HW 、 LEO 等概念和上一篇文章所说的 ISR有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。
-HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
- 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://gyl-coder.github.io/2019/10/09/kafka-todo-list/&title=kafka 问题总结 | yanliang‘s blog&summary=
+kafka如何保证数据可靠性和数据一致性
+Kafka Rebalance机制分析
+Kafka的用途有哪些？使用场景如何？
+Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么？
+Kafka中的HW、LEO、LSO等分别代表什么？
+Kafka中是怎么体现消息顺序性的？
+"
           
           >
           
@@ -532,9 +586,14 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
       
         <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=https://gyl-coder.github.io/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=HW 、 LEO 等概念和上一篇文章所说的 ISR有着紧密的关系，如果不了解 ISR 可以先看下ISR相关的介绍。
-HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
- 下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。"
+          href="http://service.weibo.com/share/share.php?url=https://gyl-coder.github.io/2019/10/09/kafka-todo-list/&title=kafka 问题总结 | yanliang‘s blog&summary=
+kafka如何保证数据可靠性和数据一致性
+Kafka Rebalance机制分析
+Kafka的用途有哪些？使用场景如何？
+Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么？
+Kafka中的HW、LEO、LSO等分别代表什么？
+Kafka中是怎么体现消息顺序性的？
+"
           
           >
           
@@ -562,16 +621,16 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
                       <span class="art-item-left">
                           <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
                           <h4>
-                              <a href="/2019/10/09/kafka-todo-list/" rel="prev" title="kafka 问题总结">
+                              <a href="/2019/10/09/kafka-reliability/" rel="prev" title="kafka 如何保证数据的可靠性和一致性">
                                 
-                                    kafka 问题总结
+                                    kafka 如何保证数据的可靠性和一致性
                                 
                               </a>
                           </h4>
                           
                               
                               <h6 class="tags">
-                                  <a class="tag" href="/tags/kafka/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> kafka</a>
+                                  <a class="tag" href="/tags/kafka/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> kafka</a> <a class="tag" href="/tags/数据可靠性/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> 数据可靠性</a> <a class="tag" href="/tags/数据一致性/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> 数据一致性</a>
                               </h6>
                           
                       </span>
@@ -582,7 +641,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
                       <span class="art-item-right" aria-hidden="true">
                           <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
                           <h4>
-                              <a href="/2019/10/04/kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？/" rel="prev" title="Kafka中的HW、LEO、LSO等分别代表什么？">
+                              <a href="/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/" rel="prev" title="Kafka中的HW、LEO、LSO等分别代表什么？">
                                   
                                       Kafka中的HW、LEO、LSO等分别代表什么？
                                   
@@ -635,7 +694,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
 
   <script>
     window.subData = {
-      title: 'Kafka中的HW、LEO、LSO等分别代表什么？',
+      title: 'kafka 问题总结',
       tools: true
     }
   </script>
@@ -700,7 +759,7 @@ HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移
 </header>
 
     <div class="content pure">
-      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-reliability\" title="kafka 如何保证数据的可靠性和一致性" rel="bookmark">kafka 如何保证数据的可靠性和一致性</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li></ul>
+      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\Kafka中的HW、LEO、LSO等分别代表什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-reliability\" title="kafka 如何保证数据的可靠性和一致性" rel="bookmark">kafka 如何保证数据的可靠性和一致性</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li></ul>
     </div>
   </section>
 

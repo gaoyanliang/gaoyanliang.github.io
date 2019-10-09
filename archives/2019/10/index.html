@@ -371,6 +371,341 @@
       
         
   <h2 class="title">
+    <a href="/2019/10/09/kafka-partition-alocation/">
+      Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理
+    </a>
+  </h2>
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://gyl-coder.github.io" rel="nofollow">
+        
+          <img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.0/img/touxiang.jpg">
+        
+        <p>yanliang</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2019-10-09</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/kafka/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>kafka</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  <div class="new-meta-item top-post">
+    <a class='notlink'>
+      <i class="fas fa-angle-double-up" aria-hidden="true"></i>
+      <p>近期更新</p>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
+      <p>在 kafka 中，分区分配是一个很重要的概念，它会影响Kafka整体的性能均衡。kafka 中一共有三处地方涉及此概念，分别是：生产者发送消息、消费者消费消息和创建主题。虽然这三处的对应操作都可以被称之为“分区分配”，但是其实质上所包含的内容却并不相同。</p>
+      
+        <div class="readmore">
+          <a href="/2019/10/09/kafka-partition-alocation/" class="flat-box">
+            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
+            阅读全文
+          </a>
+        </div>
+      
+    </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
+        
+      </div>
+    
+  </section>
+</article>
+
+            </div>
+          
+        
+          
+            <div class='post-wrapper'>
+              <article class="post reveal ">
+  
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  <h2 class="title">
+    <a href="/2019/10/09/kafka-reliability/">
+      kafka 如何保证数据的可靠性和一致性
+    </a>
+  </h2>
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://gyl-coder.github.io" rel="nofollow">
+        
+          <img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.0/img/touxiang.jpg">
+        
+        <p>yanliang</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2019-10-09</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/kafka/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>kafka</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  <div class="new-meta-item top-post">
+    <a class='notlink'>
+      <i class="fas fa-angle-double-up" aria-hidden="true"></i>
+      <p>近期更新</p>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
+      <h2 id="数据可靠性"><a href="#数据可靠性" class="headerlink" title="数据可靠性"></a>数据可靠性</h2><p>Kafka 作为一个商业级消息中间件，消息可靠性的重要性可想而知。本文从 Producter 往 Broker 发送消息、Topic 分区副本以及 Leader 选举几个角度介绍数据的可靠性。</p>
+      
+        <div class="readmore">
+          <a href="/2019/10/09/kafka-reliability/" class="flat-box">
+            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
+            阅读全文
+          </a>
+        </div>
+      
+    </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
+        
+          <a href="/tags/数据可靠性/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> 数据可靠性</a>
+        
+          <a href="/tags/数据一致性/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> 数据一致性</a>
+        
+      </div>
+    
+  </section>
+</article>
+
+            </div>
+          
+        
+          
+            <div class='post-wrapper'>
+              <article class="post reveal ">
+  
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  <h2 class="title">
+    <a href="/2019/10/09/kafka-todo-list/">
+      kafka 问题总结
+    </a>
+  </h2>
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://gyl-coder.github.io" rel="nofollow">
+        
+          <img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.0/img/touxiang.jpg">
+        
+        <p>yanliang</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2019-10-09</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/categories/kafka/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>kafka</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  <div class="new-meta-item top-post">
+    <a class='notlink'>
+      <i class="fas fa-angle-double-up" aria-hidden="true"></i>
+      <p>近期更新</p>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+  <section class="article typo">
+    <div class="article-entry" itemprop="articleBody">
+      <ol>
+<li><a href="https://www.cnblogs.com/yoke/p/11477167.html" target="_blank" rel="noopener">kafka如何保证数据可靠性和数据一致性</a></li>
+<li><a href="https://www.cnblogs.com/yoke/p/11405397.html" target="_blank" rel="noopener">Kafka Rebalance机制分析</a></li>
+<li>Kafka的用途有哪些？使用场景如何？</li>
+<li><a href="https://www.cnblogs.com/yoke/p/11486200.html" target="_blank" rel="noopener">Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么？</a></li>
+<li><a href="https://www.cnblogs.com/yoke/p/11486196.html" target="_blank" rel="noopener">Kafka中的HW、LEO、LSO等分别代表什么？</a></li>
+<li>Kafka中是怎么体现消息顺序性的？</li>
+</ol>
+      
+        <div class="readmore">
+          <a href="/2019/10/09/kafka-todo-list/" class="flat-box">
+            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
+            阅读全文
+          </a>
+        </div>
+      
+    </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
+        
+      </div>
+    
+  </section>
+</article>
+
+            </div>
+          
+        
+          
+            <div class='post-wrapper'>
+              <article class="post reveal ">
+  
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  <h2 class="title">
     <a href="/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/">
       Kafka中的HW、LEO、LSO等分别代表什么？
     </a>
@@ -455,6 +790,12 @@
         </div>
       
     </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
+        
+      </div>
     
   </section>
 </article>
@@ -557,6 +898,12 @@
         </div>
       
     </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/tags/kafka/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> kafka</a>
+        
+      </div>
     
   </section>
 </article>
@@ -679,6 +1026,12 @@
       
     
     
+      
+        
+      
+        
+      
+        
       
         
       
@@ -1021,7 +1374,7 @@
     <div class='content pure'>
       <ul class="entry">
         
-          <li><a class="flat-box" title="/categories/kafka/" href="/categories/kafka/"><div class='name'>kafka</div><div class='badge'>(3)</div></a></li>
+          <li><a class="flat-box" title="/categories/kafka/" href="/categories/kafka/"><div class='name'>kafka</div><div class='badge'>(6)</div></a></li>
         
       </ul>
     </div>
@@ -1072,7 +1425,7 @@
 </header>
 
     <div class='content pure'>
-      <a href="/tags/kafka/" style="font-size: 14px; color: #999">kafka</a> <a href="/tags/topic/" style="font-size: 14px; color: #999">topic</a>
+      <a href="/tags/kafka/" style="font-size: 24px; color: #555">kafka</a> <a href="/tags/topic/" style="font-size: 14px; color: #999">topic</a> <a href="/tags/数据一致性/" style="font-size: 14px; color: #999">数据一致性</a> <a href="/tags/数据可靠性/" style="font-size: 14px; color: #999">数据可靠性</a>
     </div>
   </section>
 
@@ -1132,11 +1485,26 @@
   <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
 </div>
   <div style="color:#7FFFD4">
-    <!-- 本站使用
+    本站使用
     <a href="https://xaoxuu.com/wiki/material-x/" target="_blank" class="codename">Material X</a>
     作为主题
     
-    。 -->
+      ，
+      <!-- <i class="fa fa-user" aria-hidden="true"></i>
+      总访客量
+      <span id="busuanzi_value_site_uv">
+        <i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+      </span> -->
+    
+      <i class="fa fa-user" aria-hidden="true"></i>
+      总访问量为
+      <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+      次
+    
+    ，
+    <span class="post-count">总字数 12k</span>
+    <br>
+
     <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
     <script>
         var now = new Date(); 
@@ -1149,7 +1517,7 @@
             mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
             seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
             snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
-            document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+            document.getElementById("timeDate").innerHTML = "本站已安全存活 "+dnum+" 天 "; 
             document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
         } 
     setInterval("createtime()",250);
@@ -1215,6 +1583,8 @@
     });
   </script>
 
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
 
 
 
