@@ -483,7 +483,7 @@
 <li>broker 级别：关闭不完全的 Leader 选举，即 unclean.leader.election.enable=false；</li>
 </ul>
 <h2 id="数据一致性"><a href="#数据一致性" class="headerlink" title="数据一致性"></a>数据一致性</h2><p>这里介绍的数据一致性主要是说不论是老的 Leader 还是新选举的 Leader，Consumer 都能读到一样的数据。那么 Kafka 是如何实现的呢？</p>
-<p><img src="C:%5CUsers%5Cyanliang%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1567762579648.png" alt="1567762579648"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.2/img/kafka/1567762579648.png" alt="1567762579648"></p>
 <p>假设分区的副本为3，其中副本0是 Leader，副本1和副本2是 follower，并且在 ISR 列表里面。虽然副本0已经写入了 Message3，但是 Consumer 只能读取到 Message1。因为所有的 ISR 都同步了 Message1，只有 High Water Mark 以上的消息才支持 Consumer 读取，而 High Water Mark 取决于 ISR 列表里面偏移量最小的分区，对应于上图的副本2，这个很类似于木桶原理。</p>
 <p>这样做的原因是还没有被足够多副本复制的消息被认为是“不安全”的，如果 Leader 发生崩溃，另一个副本成为新 Leader，那么这些消息很可能丢失了。如果我们允许消费者读取这些消息，可能就会破坏一致性。试想，一个消费者从当前 Leader（副本0） 读取并处理了 Message4，这个时候 Leader 挂掉了，选举了副本1为新的 Leader，这时候另一个消费者再去从新的 Leader 读取消息，发现这个消息其实并不存在，这就导致了数据不一致性问题。</p>
 <p>当然，引入了 High Water Mark 机制，会导致 Broker 间的消息复制因为某些原因变慢，那么消息到达消费者的时间也会随之变长（因为我们会先等待消息复制完毕）。延迟时间可以通过参数 <code>replica.lag.time.max.ms</code> 参数配置，它指定了副本在复制消息时可被允许的最大延迟时间。</p>
@@ -499,10 +499,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-09T22:03:19+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-10T22:36:46+08:00">
   <a class='notlink'>
     <i class="fas fa-clock" aria-hidden="true"></i>
-    <p>更新于 2019年10月9日</p>
+    <p>更新于 2019年10月10日</p>
   </a>
 </div>
 
@@ -728,7 +728,7 @@
 </header>
 
     <div class="content pure">
-      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\Kafka中的HW、LEO、LSO等分别代表什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li></ul>
+      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\Kafka中的HW、LEO、LSO等分别代表什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka-isr-ar\" title="kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？" rel="bookmark">kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\10\kafka-rebalance\" title="Kafka Rebalance机制分析" rel="bookmark">Kafka Rebalance机制分析</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li></ul>
     </div>
   </section>
 
@@ -802,7 +802,7 @@
       次
     
     ，
-    <span class="post-count">总字数 12k</span>
+    <span class="post-count">总字数 13.6k</span>
     <br>
 
     <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>

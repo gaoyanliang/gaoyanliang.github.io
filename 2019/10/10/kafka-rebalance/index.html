@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <title>Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog</title>
+  <title>Kafka Rebalance机制分析 | yanliang‘s blog</title>
   
   
 
@@ -366,8 +366,8 @@
         
   
     <h1 class="title">
-      <a href="/2019/10/04/kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？/">
-        Kafka中的HW、LEO、LSO等分别代表什么？
+      <a href="/2019/10/10/kafka-rebalance/">
+        Kafka Rebalance机制分析
       </a>
     </h1>
   
@@ -398,7 +398,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019-10-04</p>
+    <p>2019-10-10</p>
   </a>
 </div>
 
@@ -450,11 +450,60 @@
 
     <section class="article typo">
       <div class="article-entry" itemprop="articleBody">
-        <p>相信大家已经对 <code>kafka</code> 的基本概念已经有一定的了解了，下面直接来分析一下 ISR 和 AR 的概念。</p>
-<a id="more"></a>
+        <h2 id="什么是-Rebalance"><a href="#什么是-Rebalance" class="headerlink" title="什么是 Rebalance"></a>什么是 Rebalance</h2><p>Rebalance 本质上是一种协议，规定了一个 Consumer Group 下的所有 consumer 如何达成一致，来分配订阅 Topic 的每个分区。</p>
+<p>例如：某 Group 下有 20 个 consumer 实例，它订阅了一个具有 100 个 partition 的 Topic 。正常情况下，kafka 会为每个 Consumer 平均的分配 5 个分区。这个分配的过程就是 Rebalance。</p>
+<h2 id="触发-Rebalance-的时机"><a href="#触发-Rebalance-的时机" class="headerlink" title="触发 Rebalance 的时机"></a>触发 Rebalance 的时机</h2><p>Rebalance 的触发条件有3个。</p>
+<ul>
+<li>组成员个数发生变化。例如有新的 consumer 实例加入该消费组或者离开组。</li>
+<li>订阅的 Topic 个数发生变化。</li>
+<li>订阅 Topic 的分区数发生变化。 </li>
+</ul>
+<p>Rebalance 发生时，Group 下所有 consumer 实例都会协调在一起共同参与，kafka 能够保证尽量达到最公平的分配。但是 Rebalance 过程对 consumer group 会造成比较严重的影响。在 Rebalance 的过程中 consumer group 下的所有消费者实例都会停止工作，等待 Rebalance 过程完成。</p>
+<h2 id="Rebalance-过程分析"><a href="#Rebalance-过程分析" class="headerlink" title="Rebalance 过程分析"></a>Rebalance 过程分析</h2><p>Rebalance 过程分为两步：Join 和 Sync。</p>
+<ol>
+<li>Join 顾名思义就是加入组。这一步中，所有成员都向coordinator发送JoinGroup请求，请求加入消费组。一旦所有成员都发送了JoinGroup请求，coordinator会从中选择一个consumer担任leader的角色，并把组成员信息以及订阅信息发给leader——注意leader和coordinator不是一个概念。leader负责消费分配方案的制定。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.3/img/kafka/3951011.png" alt="img"></p>
+<ol start="2">
+<li>Sync，这一步leader开始分配消费方案，即哪个consumer负责消费哪些topic的哪些partition。一旦完成分配，leader会将这个方案封装进SyncGroup请求中发给coordinator，非leader也会发SyncGroup请求，只是内容为空。coordinator接收到分配方案之后会把方案塞进SyncGroup的response中发给各个consumer。这样组内的所有成员就都知道自己应该消费哪些分区了。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.3/img/kafka/3951012.png" alt="img"></p>
+<h2 id="Rebalance-场景分析"><a href="#Rebalance-场景分析" class="headerlink" title="Rebalance 场景分析"></a>Rebalance 场景分析</h2><h3 id="新成员加入组"><a href="#新成员加入组" class="headerlink" title="新成员加入组"></a>新成员加入组</h3><p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.3/img/kafka/3951013.png" alt="img"></p>
+<h3 id="组成员“崩溃”"><a href="#组成员“崩溃”" class="headerlink" title="组成员“崩溃”"></a>组成员“崩溃”</h3><p><strong>组成员崩溃和组成员主动离开是两个不同的场景。</strong>因为在崩溃时成员并不会主动地告知coordinator此事，coordinator有可能需要一个完整的session.timeout周期(心跳周期)才能检测到这种崩溃，这必然会造成consumer的滞后。可以说离开组是主动地发起rebalance；而崩溃则是被动地发起rebalance。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.3/img/kafka/3951014.png" alt="img"></p>
+<h3 id="组成员主动离开组"><a href="#组成员主动离开组" class="headerlink" title="组成员主动离开组"></a>组成员主动离开组</h3><p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.3/img/kafka/3951015.png" alt="img"></p>
+<h3 id="提交位移"><a href="#提交位移" class="headerlink" title="提交位移"></a>提交位移</h3><p><img src="https://cdn.jsdelivr.net/gh/gyl-coder/gyl-coder.github.com@v1.0.3/img/kafka/3951016.png" alt="img"></p>
+<h2 id="如何避免不必要的rebalance"><a href="#如何避免不必要的rebalance" class="headerlink" title="如何避免不必要的rebalance"></a>如何避免不必要的rebalance</h2><p>要避免 Rebalance，还是要从 Rebalance 发生的时机入手。我们在前面说过，Rebalance 发生的时机有三个：</p>
+<ul>
+<li>组成员数量发生变化</li>
+<li>订阅主题数量发生变化</li>
+<li>订阅主题的分区数发生变化</li>
+</ul>
+<p>后两个我们大可以人为的避免，发生rebalance最常见的原因是消费组成员的变化。</p>
+<p>消费者成员正常的添加和停掉导致rebalance，这种情况无法避免，但是时在某些情况下，Consumer 实例会被 Coordinator 错误地认为 “已停止” 从而被“踢出”Group。从而导致rebalance。</p>
+<p>当 Consumer Group 完成 Rebalance 之后，每个 Consumer 实例都会定期地向 Coordinator 发送心跳请求，表明它还存活着。如果某个 Consumer 实例不能及时地发送这些心跳请求，Coordinator 就会认为该 Consumer 已经 “死” 了，从而将其从 Group 中移除，然后开启新一轮 Rebalance。这个时间可以通过Consumer 端的参数 session.timeout.ms进行配置。默认值是 10 秒。</p>
+<p>除了这个参数，Consumer 还提供了一个控制发送心跳请求频率的参数，就是 heartbeat.interval.ms。这个值设置得越小，Consumer 实例发送心跳请求的频率就越高。频繁地发送心跳请求会额外消耗带宽资源，但好处是能够更加快速地知晓当前是否开启 Rebalance，因为，目前 Coordinator 通知各个 Consumer 实例开启 Rebalance 的方法，就是将 REBALANCE_NEEDED 标志封装进心跳请求的响应体中。</p>
+<p>除了以上两个参数，Consumer 端还有一个参数，用于控制 Consumer 实际消费能力对 Rebalance 的影响，即 max.poll.interval.ms 参数。它限定了 Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示你的 Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起 “离开组” 的请求，Coordinator 也会开启新一轮 Rebalance。</p>
+<p>通过上面的分析，我们可以看一下那些rebalance是可以避免的：</p>
+<p><strong>第一类非必要 Rebalance 是因为未能及时发送心跳，导致 Consumer 被 “踢出”Group 而引发的</strong>。这种情况下我们可以设置 <strong>session.timeout.ms 和 heartbeat.interval.ms</strong> 的值，来尽量避免rebalance的出现。（<strong>以下的配置是在网上找到的最佳实践，暂时还没测试过</strong>）</p>
+<ul>
+<li>设置 session.timeout.ms = 6s。</li>
+<li>设置 heartbeat.interval.ms = 2s。</li>
+<li>要保证 Consumer 实例在被判定为 “dead” 之前，能够发送至少 3 轮的心跳请求，即 session.timeout.ms &gt;= 3 * heartbeat.interval.ms。</li>
+</ul>
+<p>将 session.timeout.ms 设置成 6s 主要是为了让 Coordinator 能够更快地定位已经挂掉的 Consumer，早日把它们踢出 Group。</p>
+<p><strong>第二类非必要 Rebalance 是 Consumer 消费时间过长导致的</strong>。此时，<strong>max.poll.interval.ms</strong> 参数值的设置显得尤为关键。如果要避免非预期的 Rebalance，你最好将该参数值设置得大一点，比你的下游最大处理时间稍长一点。</p>
+<p>总之，要为业务处理逻辑留下充足的时间。这样，Consumer 就不会因为处理这些消息的时间太长而引发 Rebalance 。</p>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><h3 id="coordinator"><a href="#coordinator" class="headerlink" title="coordinator"></a>coordinator</h3><p>Group Coordinator是一个服务，每个Broker在启动的时候都会启动一个该服务。Group Coordinator的作用是用来存储Group的相关Meta信息，并将对应Partition的Offset信息记录到Kafka内置Topic(__consumer_offsets)中。Kafka在0.9之前是基于Zookeeper来存储Partition的Offset信息(consumers/{group}/offsets/{topic}/{partition})，因为ZK并不适用于频繁的写操作，所以在0.9之后通过内置Topic的方式来记录对应Partition的Offset。</p>
+<p>每个Group都会选择一个Coordinator来完成自己组内各Partition的Offset信息，选择的规则如下：</p>
+<ul>
+<li>1，计算Group对应在__consumer_offsets上的Partition</li>
+<li>2，根据对应的Partition寻找该Partition的leader所对应的Broker，该Broker上的Group Coordinator即就是该Group的Coordinator</li>
+</ul>
+<p>Partition计算规则：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">partition-Id(__consumer_offsets) = Math.abs(groupId.hashCode() % groupMetadataTopicPartitionCount)</span><br></pre></td></tr></table></figure>
 
-<h2 id="ISR-and-AR"><a href="#ISR-and-AR" class="headerlink" title="ISR and AR"></a>ISR and AR</h2><p>简单来说，分区中的所有副本统称为 <code>AR</code> (Assigned Replicas)。所有与leader副本保持一定程度同步的副本（包括leader副本在内）组成 <code>ISR</code> (In Sync Replicas)。 ISR 集合是 AR 集合的一个子集。消息会先发送到leader副本，然后follower副本才能从leader中拉取消息进行同步。同步期间，follow副本相对于leader副本而言会有一定程度的滞后。前面所说的 ”一定程度同步“ 是指可忍受的滞后范围，这个范围可以通过参数进行配置。于leader副本同步滞后过多的副本（不包括leader副本）将组成 <code>OSR</code> （Out-of-Sync Replied）由此可见，AR = ISR + OSR。正常情况下，所有的follower副本都应该与leader 副本保持  一定程度的同步，即AR=ISR，OSR集合为空。</p>
-<h2 id="ISR-的伸缩性"><a href="#ISR-的伸缩性" class="headerlink" title="ISR 的伸缩性"></a>ISR 的伸缩性</h2><p><strong>leader副本负责维护和跟踪</strong> <code>ISR</code> 集合中所有follower副本的滞后状态，当follower副本落后太多或失效时，leader副本会把它从 ISR 集合中剔除。如果 <code>OSR</code> 集合中所有follower副本“追上”了leader副本，那么leader副本会把它从 OSR 集合转移至 ISR 集合。默认情况下，当leader副本发生故障时，只有在 ISR 集合中的follower副本才有资格被选举为新的leader，而在 OSR 集合中的副本则没有任何机会（不过这个可以通过配置来改变）。</p>
+<p>其中groupMetadataTopicPartitionCount对应offsets.topic.num.partitions参数值，默认值是50个分区。</p>
 
       </div>
       
@@ -466,10 +515,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-09T21:02:39+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-10-10T22:52:51+08:00">
   <a class='notlink'>
     <i class="fas fa-clock" aria-hidden="true"></i>
-    <p>更新于 2019年10月9日</p>
+    <p>更新于 2019年10月10日</p>
   </a>
 </div>
 
@@ -491,7 +540,7 @@
       
         <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
           
-          href="http://connect.qq.com/widget/shareqq/index.html?url=https://gyl-coder.github.io/2019/10/04/kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=相信大家已经对 kafka 的基本概念已经有一定的了解了，下面直接来分析一下 ISR 和 AR 的概念。"
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://gyl-coder.github.io/2019/10/10/kafka-rebalance/&title=Kafka Rebalance机制分析 | yanliang‘s blog&summary="
           
           >
           
@@ -503,7 +552,7 @@
       
         <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
           
-          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://gyl-coder.github.io/2019/10/04/kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=相信大家已经对 kafka 的基本概念已经有一定的了解了，下面直接来分析一下 ISR 和 AR 的概念。"
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://gyl-coder.github.io/2019/10/10/kafka-rebalance/&title=Kafka Rebalance机制分析 | yanliang‘s blog&summary="
           
           >
           
@@ -515,7 +564,7 @@
       
         <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
           
-          href="http://service.weibo.com/share/share.php?url=https://gyl-coder.github.io/2019/10/04/kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？/&title=Kafka中的HW、LEO、LSO等分别代表什么？ | yanliang‘s blog&summary=相信大家已经对 kafka 的基本概念已经有一定的了解了，下面直接来分析一下 ISR 和 AR 的概念。"
+          href="http://service.weibo.com/share/share.php?url=https://gyl-coder.github.io/2019/10/10/kafka-rebalance/&title=Kafka Rebalance机制分析 | yanliang‘s blog&summary="
           
           >
           
@@ -539,40 +588,21 @@
       
           <div class="prev-next">
               
-                  <section class="prev">
-                      <span class="art-item-left">
-                          <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
+              
+                  <section class="next">
+                      <span class="art-item-right" aria-hidden="true">
+                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
                           <h4>
-                              <a href="/2019/10/04/Kafka中的HW、LEO、LSO等分别代表什么？/" rel="prev" title="Kafka中的HW、LEO、LSO等分别代表什么？">
-                                
-                                    Kafka中的HW、LEO、LSO等分别代表什么？
-                                
+                              <a href="/2019/10/09/kafka-partition-alocation/" rel="prev" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理">
+                                  
+                                      Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理
+                                  
                               </a>
                           </h4>
                           
                               
                               <h6 class="tags">
                                   <a class="tag" href="/tags/kafka/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> kafka</a>
-                              </h6>
-                          
-                      </span>
-                  </section>
-              
-              
-                  <section class="next">
-                      <span class="art-item-right" aria-hidden="true">
-                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
-                          <h4>
-                              <a href="/2019/10/03/kafka 主题管理/" rel="prev" title="kafka 主题管理">
-                                  
-                                      kafka 主题管理
-                                  
-                              </a>
-                          </h4>
-                          
-                              
-                              <h6 class="tags">
-                                  <a class="tag" href="/tags/kafka/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> kafka</a> <a class="tag" href="/tags/topic/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> topic</a>
                               </h6>
                           
                       </span>
@@ -616,7 +646,7 @@
 
   <script>
     window.subData = {
-      title: 'Kafka中的HW、LEO、LSO等分别代表什么？',
+      title: 'Kafka Rebalance机制分析',
       tools: true
     }
   </script>
@@ -646,7 +676,7 @@
 </header>
 
     <div class='content pure'>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ISR-and-AR"><span class="toc-text">ISR and AR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ISR-的伸缩性"><span class="toc-text">ISR 的伸缩性</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-Rebalance"><span class="toc-text">什么是 Rebalance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#触发-Rebalance-的时机"><span class="toc-text">触发 Rebalance 的时机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Rebalance-过程分析"><span class="toc-text">Rebalance 过程分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Rebalance-场景分析"><span class="toc-text">Rebalance 场景分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新成员加入组"><span class="toc-text">新成员加入组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组成员“崩溃”"><span class="toc-text">组成员“崩溃”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组成员主动离开组"><span class="toc-text">组成员主动离开组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提交位移"><span class="toc-text">提交位移</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何避免不必要的rebalance"><span class="toc-text">如何避免不必要的rebalance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关概念"><span class="toc-text">相关概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#coordinator"><span class="toc-text">coordinator</span></a></li></ol></li></ol>
     </div>
   </section>
 
@@ -695,7 +725,7 @@
 </header>
 
     <div class="content pure">
-      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\Kafka中的HW、LEO、LSO等分别代表什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-reliability\" title="kafka 如何保证数据的可靠性和一致性" rel="bookmark">kafka 如何保证数据的可靠性和一致性</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li></ul>
+      <ul class="popular-posts"><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\Kafka中的HW、LEO、LSO等分别代表什么？\" title="Kafka中的HW、LEO、LSO等分别代表什么？" rel="bookmark">Kafka中的HW、LEO、LSO等分别代表什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\04\kafka-isr-ar\" title="kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？" rel="bookmark">kafka中的ISR、AR代表什么？ISR的伸缩性又指什么？</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\03\kafka 主题管理\" title="kafka 主题管理" rel="bookmark">kafka 主题管理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-reliability\" title="kafka 如何保证数据的可靠性和一致性" rel="bookmark">kafka 如何保证数据的可靠性和一致性</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-partition-alocation\" title="Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理" rel="bookmark">Kafka有哪几处地方有分区分配的概念？简述大致的过程及原理</a></h3></div></li><li class="popular-posts-item"><div class="popular-posts-title"><h3><a href="\2019\10\09\kafka-todo-list\" title="kafka 问题总结" rel="bookmark">kafka 问题总结</a></h3></div></li></ul>
     </div>
   </section>
 
@@ -769,7 +799,7 @@
       次
     
     ，
-    <span class="post-count">总字数 12k</span>
+    <span class="post-count">总字数 13.6k</span>
     <br>
 
     <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
