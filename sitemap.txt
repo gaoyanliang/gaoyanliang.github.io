@@ -1,3 +1,4 @@
+https://yanliang.cool/tags/
 https://yanliang.cool/wiki/design/
 https://yanliang.cool/wiki/git/
 https://yanliang.cool/wiki/network/
@@ -10,11 +11,11 @@ https://yanliang.cool/wiki/git/github/
 https://yanliang.cool/wiki/git/install-and-config/
 https://yanliang.cool/wiki/git/usage/
 https://yanliang.cool/wiki/network/application/
-https://yanliang.cool/tags/
 https://yanliang.cool/about/
 https://yanliang.cool/categories/
 https://yanliang.cool/friends/
 https://yanliang.cool/pic/
+https://yanliang.cool/redis/redis_persistence/
 https://yanliang.cool/design/rtorpo/
 https://yanliang.cool/design/idempotent/
 https://yanliang.cool/design/limiting/
@@ -76,6 +77,8 @@ https://yanliang.cool/tags/mysql/
 https://yanliang.cool/tags/%E7%B4%A2%E5%BC%95/
 https://yanliang.cool/tags/%E6%85%A2%E6%9F%A5%E8%AF%A2/
 https://yanliang.cool/tags/%E7%BD%91%E7%BB%9C/
+https://yanliang.cool/tags/redis/
+https://yanliang.cool/tags/%E6%8C%81%E4%B9%85%E5%8C%96/
 https://yanliang.cool/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/
 https://yanliang.cool/tags/github/
 https://yanliang.cool/tags/jvm/
@@ -96,6 +99,7 @@ https://yanliang.cool/categories/kafka/
 https://yanliang.cool/categories/mysql/
 https://yanliang.cool/categories/rpc/rest/
 https://yanliang.cool/categories/%E7%BD%91%E7%BB%9C/
+https://yanliang.cool/categories/redis/
 https://yanliang.cool/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/
 https://yanliang.cool/categories/java/jvm/
 https://yanliang.cool/categories/java/jvm/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/

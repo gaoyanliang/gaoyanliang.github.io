@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yanliang.cool/tags/</loc>
+    
+    <lastmod>2022-10-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/wiki/design/</loc>
     
     <lastmod>2022-10-05</lastmod>
@@ -110,15 +119,6 @@
   </url>
   
   <url>
-    <loc>https://yanliang.cool/tags/</loc>
-    
-    <lastmod>2022-10-05</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://yanliang.cool/about/</loc>
     
     <lastmod>2022-10-05</lastmod>
@@ -149,6 +149,15 @@
     <loc>https://yanliang.cool/pic/</loc>
     
     <lastmod>2022-04-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/redis/redis_persistence/</loc>
+    
+    <lastmod>2022-01-01</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -640,6 +649,20 @@
   </url>
   
   <url>
+    <loc>https://yanliang.cool/tags/redis/</loc>
+    <lastmod>2022-10-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/tags/%E6%8C%81%E4%B9%85%E5%8C%96/</loc>
+    <lastmod>2022-10-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2022-10-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -776,6 +799,13 @@
   
   <url>
     <loc>https://yanliang.cool/categories/%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2022-10-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/categories/redis/</loc>
     <lastmod>2022-10-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
