@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Git: 基本操作入门 - yanliang</title>
+
+  
+
+  
+    <meta name="description" content="基本操作流程 在对代码进行了一些修改之后，使用：git add --all 将本地所有新增文件和修改内容添加到暂存区。 使用：git commit -m 备注 将代码提交到本地版本库。（备注内容没有空格的话不需要加引号） 使用：git pull origin 从服务器拉取代码，更新本地版本库。 使用：git push origin 将本地版本库推送到服务器。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="基本操作入门">
+<meta property="og:url" content="https://yanliang.cool/wiki/git/usage/">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="基本操作流程 在对代码进行了一些修改之后，使用：git add --all 将本地所有新增文件和修改内容添加到暂存区。 使用：git commit -m 备注 将代码提交到本地版本库。（备注内容没有空格的话不需要加引号） 使用：git pull origin 从服务器拉取代码，更新本地版本库。 使用：git push origin 将本地版本库推送到服务器。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-10-05T03:31:44.660Z">
+<meta property="article:modified_time" content="2022-10-05T03:31:44.660Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="blog, Java, IT">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+</head>
+
+<body>
+  
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/git/"><div class="main">Git 工具</div></a></div>
+</header>
+
+<div class="widgets">
+
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">TOC</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/"><span class="toc-text">认识 Git</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/install-and-config/"><span class="toc-text">安装与配置</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/git/usage/"><span class="toc-text">基本操作入门</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">基本操作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%8B%E9%9A%86%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-text">克隆与配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8B%E9%9A%86%E7%89%88%E6%9C%AC%E5%BA%93"><span class="toc-text">克隆版本库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%89%88%E6%9C%AC%E5%BA%93"><span class="toc-text">配置版本库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="toc-text">基本操作指令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%8E%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF"><span class="toc-text">创建与切换分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E5%92%8C%E6%A0%87%E7%AD%BE"><span class="toc-text">查看分支和标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E6%94%AF%E5%92%8C%E6%A0%87%E7%AD%BE"><span class="toc-text">删除分支和标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E9%80%81%E5%88%86%E6%94%AF%E5%92%8C%E6%A0%87%E7%AD%BE"><span class="toc-text">推送分支和标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D%E5%88%86%E6%94%AF"><span class="toc-text">重命名分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%89%E5%8F%96%E3%80%81%E5%90%88%E5%B9%B6%E5%88%86%E6%94%AF"><span class="toc-text">拉取、合并分支</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%89%E5%8F%96%E6%9F%90%E4%B8%AA%E8%BF%9C%E7%A8%8B%E6%A0%87%E7%AD%BE"><span class="toc-text">拉取某个远程标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E5%B9%B6%E6%9F%90%E6%9C%AC%E5%9C%B0%E5%88%86%E6%94%AF%E5%88%B0%E5%BD%93%E5%89%8D%E5%88%86%E6%94%AF"><span class="toc-text">合并某本地分支到当前分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E5%B9%B6%E6%9F%90%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E5%88%B0%E5%BD%93%E5%89%8D%E5%88%86%E6%94%AF"><span class="toc-text">合并某远程分支到当前分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%86%B2%E7%AA%81"><span class="toc-text">代码冲突</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9B%9E%E9%80%80"><span class="toc-text">代码回退</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#soft"><span class="toc-text">soft</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hard"><span class="toc-text">hard</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-stash"><span class="toc-text">git stash</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#stash-%E5%BD%93%E5%89%8D%E4%BF%AE%E6%94%B9"><span class="toc-text">stash 当前修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E5%BA%94%E7%94%A8%E7%BC%93%E5%AD%98%E7%9A%84-stash"><span class="toc-text">重新应用缓存的 stash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%8E%B0%E6%9C%89-stash"><span class="toc-text">查看现有 stash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E9%99%A4stash"><span class="toc-text">移除stash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%8C%87%E5%AE%9Astash%E7%9A%84diff"><span class="toc-text">查看指定stash的diff</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8Estash%E5%88%9B%E5%BB%BA%E5%88%86%E6%94%AF"><span class="toc-text">从stash创建分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E8%BF%AD%E4%BB%A3"><span class="toc-text">版本迭代</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cherry-pick"><span class="toc-text">cherry-pick</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%B3%95"><span class="toc-text">用法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%93%8D%E4%BD%9C"><span class="toc-text">客户端操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Stash"><span class="toc-text">Stash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Git-Flow"><span class="toc-text">Git-Flow</span></a></li></ol></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/github/"><span class="toc-text">使用 GitHub</span></a></div></div></div>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/git/">Git 工具</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2022-10-05T03:31:44.660Z">Oct 5, 2022</time></div></div>
+
+  <article class='content md wiki'>
+  <h1 class="article-title"><span>基本操作入门</span></h1>
+  <h2 id="基本操作流程"><a href="#基本操作流程" class="headerlink" title="基本操作流程"></a>基本操作流程</h2><ol>
+<li>在对代码进行了一些修改之后，使用：<code>git add --all</code> 将本地所有新增文件和修改内容添加到暂存区。</li>
+<li>使用：<code>git commit -m 备注</code> 将代码提交到本地版本库。（备注内容没有空格的话不需要加引号）</li>
+<li>使用：<code>git pull origin</code> 从服务器拉取代码，更新本地版本库。</li>
+<li>使用：<code>git push origin</code> 将本地版本库推送到服务器。</li>
+</ol>
+<span id="more"></span>
+
+
+<h2 id="克隆与配置"><a href="#克隆与配置" class="headerlink" title="克隆与配置"></a>克隆与配置</h2><h3 id="克隆版本库"><a href="#克隆版本库" class="headerlink" title="克隆版本库"></a>克隆版本库</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xaoxuu/AXKit.git</span><br><span class="line"># 或者</span><br><span class="line">git clone https://github.com/xaoxuu/AXKit.git AXKit</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置版本库"><a href="#配置版本库" class="headerlink" title="配置版本库"></a>配置版本库</h3><p>要忽略某些文件的改动需要配置 <code>.gitignore</code> 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 这是macOS文件夹属性的隐藏文件，不需要同步到git</span><br><span class="line">.DS_Store</span><br><span class="line"></span><br><span class="line"># 某个文件夹不想要同步到git</span><br><span class="line">/public</span><br><span class="line">/node_modules</span><br><span class="line"></span><br><span class="line"># 某个文件不想要同步到git</span><br><span class="line">test.txt</span><br><span class="line"></span><br><span class="line"># 通配符</span><br><span class="line">._*</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="基本操作指令"><a href="#基本操作指令" class="headerlink" title="基本操作指令"></a>基本操作指令</h2><h3 id="创建与切换分支"><a href="#创建与切换分支" class="headerlink" title="创建与切换分支"></a>创建与切换分支</h3><figure class="highlight sh"><figcaption><span>创建并切换 branch</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b 分支名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>仅仅切换 branch</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout 分支名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>创建 tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag 标签名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>创建 tag 并备注</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag -a 标签名 -m 备注信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>创建 PGP tag 并备注</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag -s 标签名 -m 备注信息</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="查看分支和标签"><a href="#查看分支和标签" class="headerlink" title="查看分支和标签"></a>查看分支和标签</h3><figure class="highlight sh"><figcaption><span>查看本地 tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>查看某个本地 tag 详情</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git show 标签名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>查看本地 branch list</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch 分支名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>查看远程 branch list</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -r 分支名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>查看所有 branch list</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -a 分支名</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="删除分支和标签"><a href="#删除分支和标签" class="headerlink" title="删除分支和标签"></a>删除分支和标签</h3><figure class="highlight sh"><figcaption><span>删除本地 branch / tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -d 分支名或标签名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>删除所有未推送的本地 branch</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch -p</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>仅仅删除某个远程 branch / tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git push origin :分支名或标签名</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">git push origin --delete 分支名或标签名</span><br></pre></td></tr></table></figure>
+
+<h3 id="推送分支和标签"><a href="#推送分支和标签" class="headerlink" title="推送分支和标签"></a>推送分支和标签</h3><figure class="highlight sh"><figcaption><span>推送某个 branch / tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin 分支名或标签名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>推送所有 branch</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --all origin</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>推送所有 tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+
+<h3 id="重命名分支"><a href="#重命名分支" class="headerlink" title="重命名分支"></a>重命名分支</h3><p>重命名本地分支：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m 旧分支名 新分支名</span><br></pre></td></tr></table></figure>
+
+<p>重命名远程分支：</p>
+<ol>
+<li>删除远程分支</li>
+<li>重命名本地分支</li>
+<li>推送本地分支</li>
+</ol>
+<h2 id="拉取、合并分支"><a href="#拉取、合并分支" class="headerlink" title="拉取、合并分支"></a>拉取、合并分支</h2><h3 id="拉取某个远程标签"><a href="#拉取某个远程标签" class="headerlink" title="拉取某个远程标签"></a>拉取某个远程标签</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin tag 远程标签名</span><br></pre></td></tr></table></figure>
+
+<h3 id="合并某本地分支到当前分支"><a href="#合并某本地分支到当前分支" class="headerlink" title="合并某本地分支到当前分支"></a>合并某本地分支到当前分支</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge 分支名</span><br></pre></td></tr></table></figure>
+
+<h3 id="合并某远程分支到当前分支"><a href="#合并某远程分支到当前分支" class="headerlink" title="合并某远程分支到当前分支"></a>合并某远程分支到当前分支</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin 远程分支名</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码冲突"><a href="#代码冲突" class="headerlink" title="代码冲突"></a>代码冲突</h2><p>我一般使用 Tower 客户端操作，pull 之后有冲突的文件会列出来。建议使用一个比较好的编辑器如 <a target="_blank" rel="noopener" href="https://atom.io/">Atom</a> ，有冲突的部分会用两种颜色高亮。</p>
+<div class="tag-plugin note" ><div class="body"><p>未完待续</p></div></div>
+
+
+<h2 id="代码回退"><a href="#代码回退" class="headerlink" title="代码回退"></a>代码回退</h2><p>如果冲突文件没有妥善解决就提交到版本库导致严重后果，这是需要查看某个历史时刻的代码，使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br><span class="line"># 查看提交记录</span><br></pre></td></tr></table></figure>
+
+<p>然后 copy 某个 commit id 进行回退，回退的类型有两种：</p>
+<h3 id="soft"><a href="#soft" class="headerlink" title="soft"></a>soft</h3><p>这是默认的回退方式，版本库的 HEAD 回滚到某个 commit 但本地代码不变，处于未 commit 的状态。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git reset [commit id]</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">git reset --soft [commit id]</span><br></pre></td></tr></table></figure>
+
+<h3 id="hard"><a href="#hard" class="headerlink" title="hard"></a>hard</h3><p>HEAD 和本地代码都回到某个 commit，后面的更改将会被丢弃。（如同时光穿梭）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard [commit id]</span><br></pre></td></tr></table></figure>
+
+<h2 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a>git stash</h2><p>git stash（git储藏）可用于以下情形：</p>
+<ul>
+<li>发现有一个类是多余的，想删掉它又担心以后需要查看它的代码，想保存它但又不想增加一个脏的提交。这时就可以考虑git stash。</li>
+<li>使用git的时候，我们往往使用分支（branch）解决任务切换问题，例如，我们往往会建一个自己的分支去修改和调试代码, 如果别人或者自己发现原有的分支上有个不得不修改的bug，我们往往会把完成一半的代码commit提交到本地仓库，然后切换分支去修改bug，改好之后再切换回来。这样的话往往log上会有大量不必要的记录。其实如果我们不想提交完成一半或者不完善的代码，但是却不得不去修改一个紧急Bug，那么使用git stash就可以将你当前未提交到本地（和服务器）的代码推入到Git的栈中，这时候你的工作区间和上一次提交的内容是完全一样的，所以你可以放心的修Bug，等到修完Bug，提交到服务器上后，再使用git stash apply将以前一半的工作应用回来。</li>
+<li>经常有这样的事情发生，当你正在进行项目中某一部分的工作，里面的东西处于一个比较杂乱的状态，而你想转到其他分支上进行一些工作。问题是，你不想提交进行了一半的工作，否则以后你无法回到这个工作点。解决这个问题的办法就是git stash命令。储藏(stash)可以获取你工作目录的中间状态——也就是你修改过的被追踪的文件和暂存的变更——并将它保存到一个未完结变更的堆栈中，随时可以重新应用。</li>
+</ul>
+<h3 id="stash-当前修改"><a href="#stash-当前修改" class="headerlink" title="stash 当前修改"></a>stash 当前修改</h3><p>git stash会把所有未提交的修改（包括暂存的和非暂存的）都保存起来，用于后续恢复当前工作目录。</p>
+<p>比如下面的中间状态，通过git stash命令推送一个新的储藏，当前的工作目录就干净了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line"></span><br><span class="line">new file:   style.css</span><br><span class="line"></span><br><span class="line">Changes not staged for commit:</span><br><span class="line"></span><br><span class="line">modified:   index.html</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git stash</span></span><br><span class="line">Saved working directory and index state WIP on master: 5002d47 our new homepage</span><br><span class="line">HEAD is now at 5002d47 our new homepage</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">nothing to commit, working tree clean</span><br></pre></td></tr></table></figure>
+
+<p>需要说明一点，stash是本地的，不会通过git push命令上传到git server上。</p>
+<p>实际应用中推荐给每个stash加一个message，用于记录版本，使用git stash save取代git stash命令。示例如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash save <span class="string">&quot;test-cmd-stash&quot;</span></span></span><br><span class="line">Saved working directory and index state On autoswitch: test-cmd-stash</span><br><span class="line">HEAD 现在位于 296e8d4 remove unnecessary postion reset in onResume function</span><br><span class="line"><span class="meta">$</span><span class="bash"> git stash list</span></span><br><span class="line">stash@&#123;0&#125;: On autoswitch: test-cmd-stash</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新应用缓存的-stash"><a href="#重新应用缓存的-stash" class="headerlink" title="重新应用缓存的 stash"></a>重新应用缓存的 stash</h3><p>可以通过git stash pop命令恢复之前缓存的工作目录，输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">nothing to commit, working tree clean</span><br><span class="line"><span class="meta">$</span><span class="bash"> git stash pop</span></span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line"></span><br><span class="line">    new file:   style.css</span><br><span class="line"></span><br><span class="line">Changes not staged for commit:</span><br><span class="line"></span><br><span class="line">    modified:   index.html</span><br><span class="line"></span><br><span class="line">Dropped refs/stash@&#123;0&#125; (32b3aa1d185dfe6d57b3c3cc3b32cbf3e380cc6a)</span><br></pre></td></tr></table></figure>
+
+<p>这个指令将缓存堆栈中的第一个stash删除，并将对应修改应用到当前的工作目录下。</p>
+<p>你也可以使用git stash apply命令，将缓存堆栈中的stash多次应用到工作目录中，但并不删除stash拷贝。命令输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash apply</span></span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line"></span><br><span class="line">    new file:   style.css</span><br><span class="line"></span><br><span class="line">Changes not staged for commit:</span><br><span class="line"></span><br><span class="line">    modified:   index.html</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看现有-stash"><a href="#查看现有-stash" class="headerlink" title="查看现有 stash"></a>查看现有 stash</h3><p>可以使用git stash list命令，一个典型的输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash list</span></span><br><span class="line">stash@&#123;0&#125;: WIP on master: 049d078 added the index file</span><br><span class="line">stash@&#123;1&#125;: WIP on master: c264051 Revert &quot;added file_size&quot;</span><br><span class="line">stash@&#123;2&#125;: WIP on master: 21d80a5 added number to log</span><br></pre></td></tr></table></figure>
+
+<p>在使用git stash apply命令时可以通过名字指定使用哪个stash，默认使用最近的stash（即stash@{0}）。</p>
+<h3 id="移除stash"><a href="#移除stash" class="headerlink" title="移除stash"></a>移除stash</h3><p>可以使用git stash drop命令，后面可以跟着stash名字。下面是一个示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash list</span></span><br><span class="line">stash@&#123;0&#125;: WIP on master: 049d078 added the index file</span><br><span class="line">stash@&#123;1&#125;: WIP on master: c264051 Revert &quot;added file_size&quot;</span><br><span class="line">stash@&#123;2&#125;: WIP on master: 21d80a5 added number to log</span><br><span class="line"><span class="meta">$</span><span class="bash"> git stash drop stash@&#123;0&#125;</span></span><br><span class="line">Dropped stash@&#123;0&#125; (364e91f3f268f0900bc3ee613f9f733e82aaed43)</span><br></pre></td></tr></table></figure>
+
+<p>或者使用git stash clear命令，删除所有缓存的stash。</p>
+<h3 id="查看指定stash的diff"><a href="#查看指定stash的diff" class="headerlink" title="查看指定stash的diff"></a>查看指定stash的diff</h3><p>可以使用git stash show命令，后面可以跟着stash名字。示例如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash show</span></span><br><span class="line"> index.html | 1 +</span><br><span class="line"> style.css | 3 +++</span><br><span class="line"> 2 files changed, 4 insertions(+)</span><br></pre></td></tr></table></figure>
+
+<p>在该命令后面添加-p或–patch可以查看特定stash的全部diff，如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash show -p</span></span><br><span class="line">diff --git a/style.css b/style.css</span><br><span class="line">new file mode 100644</span><br><span class="line">index 0000000..d92368b</span><br><span class="line">--- /dev/null</span><br><span class="line">+++ b/style.css</span><br><span class="line">@@ -0,0 +1,3 @@</span><br><span class="line">+* &#123;</span><br><span class="line">+  text-decoration: blink;</span><br><span class="line">+&#125;</span><br><span class="line">diff --git a/index.html b/index.html</span><br><span class="line">index 9daeafb..ebdcbd2 100644</span><br><span class="line">--- a/index.html</span><br><span class="line">+++ b/index.html</span><br><span class="line">@@ -1 +1,2 @@</span><br><span class="line">+&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;/&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="从stash创建分支"><a href="#从stash创建分支" class="headerlink" title="从stash创建分支"></a>从stash创建分支</h3><p>如果你储藏了一些工作，暂时不去理会，然后继续在你储藏工作的分支上工作，你在重新应用工作时可能会碰到一些问题。如果尝试应用的变更是针对一个你那之后修改过的文件，你会碰到一个归并冲突并且必须去化解它。如果你想用更方便的方法来重新检验你储藏的变更，你可以运行 git stash branch，这会创建一个新的分支，检出你储藏工作时的所处的提交，重新应用你的工作，如果成功，将会丢弃储藏。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git stash branch testchanges</span></span><br><span class="line">Switched to a new branch &quot;testchanges&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> On branch testchanges</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Changes to be committed:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">&quot;git reset HEAD &lt;file&gt;...&quot;</span> to unstage)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="bash"><span class="comment">#      modified:   index.html</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="bash"><span class="comment"># Changes not staged for commit:</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">&quot;git add &lt;file&gt;...&quot;</span> to update what will be committed)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="bash"><span class="comment">#      modified:   lib/simplegit.rb</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="bash">Dropped refs/stash@&#123;0&#125; (f0dfc4d5dc332d1cee34a634182e168c4efc3359)</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="版本迭代"><a href="#版本迭代" class="headerlink" title="版本迭代"></a>版本迭代</h2><p>查看本地所有标签</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
+
+<p>把当前 HEAD 打个标签（名为：1.0）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git tag 1.0</span><br><span class="line"># 也可以添加备注信息，如同commit</span><br><span class="line">git tag 1.0 -m &#x27;message&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>切换到某个标签（1.0）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout 1.0</span><br></pre></td></tr></table></figure>
+
+<p>把标签 push 到远程</p>
+<figure class="highlight bash"><figcaption><span>push指定的tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin 1.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>push所有未push的tag</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+
+<p>删除标签（1.0）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 删除本地tag</span><br><span class="line">git tag -d 1.0</span><br><span class="line"></span><br><span class="line"># 删除远程tag</span><br><span class="line"># 方法一：将空白tag覆盖到远程tag</span><br><span class="line">git push origin :1.0</span><br><span class="line"># 方法二：执行删除命令</span><br><span class="line">git push origin --delete 1.0</span><br></pre></td></tr></table></figure>
+
+<h2 id="cherry-pick"><a href="#cherry-pick" class="headerlink" title="cherry-pick"></a>cherry-pick</h2><p>在日常开发过程中，有时会遇到以下场景：</p>
+<blockquote>
+<p>在branch1开发，进行多个提交，这是切换到branch2，想把之前branch1分支提交的commit都【复制】过来，怎么办？</p>
+</blockquote>
+<p>首先切换到branch1分支，然后查看提交历史记录，也可以用sourceTree查看，也可以用命令git log</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">commit 023sb6f299849a1fec3bbe72baaf315482522cb6</span><br><span class="line">Author: yanliang &lt;yanliang@xx.com&gt;</span><br><span class="line">Date:   Thu Nov 9 11:01:13 2017 +0800</span><br><span class="line"></span><br><span class="line">    修复bug 3</span><br><span class="line"></span><br><span class="line">commit 5d2c18fsf4b85b4564991963d7c3c3917e951364</span><br><span class="line">Author: yanliang &lt;yanliang@xx.com&gt;</span><br><span class="line">Date:   Wed Nov 8 16:33:58 2017 +0800</span><br><span class="line"></span><br><span class="line">   修复bug 2</span><br><span class="line"></span><br><span class="line">commit ba51861402b0a18663f2c9ee28ed054b0879b225</span><br><span class="line">Author: yanliang &lt;yanliang@xx.com&gt;</span><br><span class="line">Date:   Sun Nov 5 18:50:28 2017 +0800</span><br><span class="line"></span><br><span class="line">修复bug 1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果想把 bug 2 和 bug 3 的修改复制到 branch2 分支里，只需要这样</p>
+<ol>
+<li>切换到branch2分支，然后执行</li>
+<li>git cherry-pick ba51861402b0a18663f2c9ee28ed054b0879b225..023sb6f299849a1fec3bbe72baaf315482522cb6</li>
+</ol>
+<blockquote>
+<p>注意中间的 <strong>两个点</strong>，表示把两个commit区间的所有commit多复制过去</p>
+</blockquote>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>单个commit只需要 git cherry-pick commitid</p>
+<p>多个commit 只需要 git cherry-pick commitid1..commitid100</p>
+<blockquote>
+<p>注意，不包含第一个 commitid ， 即  git cherry-pick (commitid1..commitid100]</p>
+</blockquote>
+<h2 id="客户端操作"><a href="#客户端操作" class="headerlink" title="客户端操作"></a>客户端操作</h2><h3 id="Stash"><a href="#Stash" class="headerlink" title="Stash"></a>Stash</h3><ul>
+<li>save：将当前未 commit 的代码保存到 stash，并且回到上次 commit 的状态。</li>
+<li>apply：应用某个 stash 的代码。</li>
+</ul>
+<h3 id="Git-Flow"><a href="#Git-Flow" class="headerlink" title="Git-Flow"></a>Git-Flow</h3><p>自动化管理功能，例如：</p>
+<ul>
+<li>准备开发新版本的时候：点击 Start Release，客户端会自动新建一个 release 分支。</li>
+<li>准备增加一个新特性的时候：点击 Start Feature，客户端会新建一个 feature 分支。</li>
+<li>需要修复 bug 的时候：点击 Start Hotfix，客户端会新建一个 fix 分支。</li>
+<li>当修复完 bug，点击 Finish Hotfix 的时候，客户端会自动把 fix 分支合并到创建它的分支，并且创建一个 tag。</li>
+<li>当一个新特性开发完成，点击 Finish Feature 的时候，客户端会自动把 feature 分支合并到创建它的分支，并且创建一个 tag。</li>
+<li>当一个新版本开发完成，点击 Finish Release 的时候，客户端会自动把 release 分支合并到创建它的分支，并且创建一个 tag。</li>
+</ul>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>READ NEXT</span></section><section class="body fs14"><a id="next" href="/wiki/git/github/">使用 GitHub<span class="note">Next</span></a><div class="line"></div><a id="prev" href="/wiki/git/install-and-config/">安装与配置<span class="note">Prev</span></a></section></div>
+
+  
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      Join the discussion
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="gaoyanliang/beaudar" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><object data="https://img.shields.io/static/v1?label=强力驱动&message=Hexo&style=social&logo=Hexo&logoColor=0E83CD&link=https://hexo.io/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=GitHub&style=social&logo=GitHub&logoColor=181717&link=https://github.com/gyl-coder"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=Vercel&style=social&logo=Vercel&logoColor=000000&link=https://vercel.com"></object> &nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=图片分发&message=jsDelivr&style=social&logo=jsDelivr&logoColor=E84D3D&link=https://www.jsdelivr.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=域名解析&message=Aliyun&style=social&logo=Alibaba Cloud&logoColor=FF6A00&link=https://www.aliyun.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=许可协议&message=CC BY-NC-SA 4.0&style=social&logo=Creative Commons&logoColor=EF9421&link=https://creativecommons.org/licenses/by-nc-sa/4.0/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=博客作者&message=Yanliang&style=social&logo=Blogger&logoColor=FF5722&link=https://yanliang.cool/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=原创主题&message=Stellar&style=social&logo=Badoo&logoColor=783BF9&link=https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0"></object>&nbsp;&nbsp;</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.7.0';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

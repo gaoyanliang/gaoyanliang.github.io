@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Network: 应用层 - yanliang</title>
+
+  
+
+  
+    <meta name="description" content="认识 HTTPHTTP是一种超文本传输协议(HypertextTransferProtocoL)。在计算机世界里专门在两点之间传输文字、图片、音频、视频等超文本数据的约定和规范 HTTP 报文HTTP报文是面向文本的，报文中的每一个字段都是一些ASCII码串，各个字段的长度是不确定的。HTTP有两类报文：请求报文和响应报文。 HTTP的请求报文由四部分组成：请求行(request line)、请求">
+<meta property="og:type" content="website">
+<meta property="og:title" content="应用层">
+<meta property="og:url" content="https://yanliang.cool/wiki/network/application/">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="认识 HTTPHTTP是一种超文本传输协议(HypertextTransferProtocoL)。在计算机世界里专门在两点之间传输文字、图片、音频、视频等超文本数据的约定和规范 HTTP 报文HTTP报文是面向文本的，报文中的每一个字段都是一些ASCII码串，各个字段的长度是不确定的。HTTP有两类报文：请求报文和响应报文。 HTTP的请求报文由四部分组成：请求行(request line)、请求">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/network/n2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/network/n1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/16.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/17.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/18.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/19.png">
+<meta property="article:published_time" content="2022-10-05T03:31:44.660Z">
+<meta property="article:modified_time" content="2022-10-05T03:31:44.660Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="blog, Java, IT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/network/n2.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+</head>
+
+<body>
+  
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/network/"><div class="main">计算机网络</div></a></div>
+</header>
+
+<div class="widgets">
+
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">TOC</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/network/"><span class="toc-text">计算机网络</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/network/application/"><span class="toc-text">应用层</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A4%E8%AF%86-HTTP"><span class="toc-text">认识 HTTP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-%E6%8A%A5%E6%96%87"><span class="toc-text">HTTP 报文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-%E7%9A%84%E6%96%B9%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="toc-text">HTTP 的方法有哪些？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-%E5%92%8C-post-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">get 和 post 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-text">HTTP 状态码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-%E5%90%84%E7%89%88%E6%9C%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">HTTP 各版本之间的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-CROS-%E8%B7%A8%E5%9F%9F"><span class="toc-text">HTTP CROS 跨域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS-SSL-TLS"><span class="toc-text">HTTPS SSL TLS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0-HTTPS-%E7%9A%84%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B"><span class="toc-text">简述 HTTPS 的加密与认证过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E4%BF%A1%E5%8A%A0%E5%AF%86"><span class="toc-text">通信加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="toc-text">数字证书</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%91%98%E8%A6%81%E7%AE%97%E6%B3%95"><span class="toc-text">摘要算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTPS-%E9%80%9A%E4%BF%A1%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="toc-text">HTTPS 通信建立过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B2%E4%B8%80%E4%B8%8B%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%EF%BC%9F"><span class="toc-text">讲一下对称加密算法和非对称加密算法？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie-%E5%92%8C-Session-%E7%9A%84%E5%85%B3%E7%B3%BB%E5%92%8C%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">Cookie 和 Session 的关系和区别是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E6%98%AF%E4%B8%8D%E4%BF%9D%E5%AD%98%E7%8A%B6%E6%80%81%E7%9A%84%E5%8D%8F%E8%AE%AE-%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98%E7%94%A8%E6%88%B7%E7%8A%B6%E6%80%81"><span class="toc-text">HTTP是不保存状态的协议,如何保存用户状态?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DDos%E6%94%BB%E5%87%BB%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F"><span class="toc-text">DDos攻击了解吗？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%EF%BC%9F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%94%BB%E5%87%BB%EF%BC%9F"><span class="toc-text">什么是中间人攻击？如何防止攻击？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0-WebSocket-%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E4%BC%A0%E8%BE%93%E7%9A%84"><span class="toc-text">简述 WebSocket 是如何进行传输的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%A8%E5%9F%9F%EF%BC%8C%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BC%9A%E5%8F%91%E7%94%9F%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82%EF%BC%9F"><span class="toc-text">什么是跨域，什么情况下会发生跨域请求？</span></a></li></ol></li></ol></div></div></div>
+
+
+
+<div class="widget-wrap" id="related"><div class="widget-header cap dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body fs14"><a class="more-item wiki" href="/wiki/design/">Design Pattern<div class="excerpt">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</div></a></div></div>
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/network/">计算机网络</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2022-10-05T03:31:44.660Z">Oct 5, 2022</time></div></div>
+
+  <article class='content md wiki'>
+  <h1 class="article-title"><span>应用层</span></h1>
+  <h2 id="认识-HTTP"><a href="#认识-HTTP" class="headerlink" title="认识 HTTP"></a>认识 HTTP</h2><p>HTTP是一种超文本传输协议(HypertextTransferProtocoL)。在计算机世界里专门在两点之间传输文字、图片、音频、视频等超文本数据的约定和规范</p>
+<h2 id="HTTP-报文"><a href="#HTTP-报文" class="headerlink" title="HTTP 报文"></a>HTTP 报文</h2><p>HTTP报文是面向文本的，报文中的每一个字段都是一些ASCII码串，各个字段的长度是不确定的。HTTP有两类报文：请求报文和响应报文。</p>
+<p>HTTP的请求报文由四部分组成：请求行(request line)、请求头部(header)、空行和请求数据(request data)</p>
+<ul>
+<li>请求行：由请求方法、URL(包含参数)和协议版本组成</li>
+<li>请求头：由多个key-value值组成</li>
+<li>空行：请求报文使用空行将请求头部和请求数据分隔, 最后一个请求头之后是一个空行，发送回车符和换行符，通知服务器以下不再有请求头。</li>
+<li>请求数据：GET方法没有携带数据，POST方法会携带一个body</li>
+</ul>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/network/n2.png" fancybox="true"/></div></div>
+
+<p>其中请求行和请求头部并称为请求头或者响应头,统称为 Header，请求数据也叫做实体,称为body。</p>
+<p>HTTP 协议规定每次发送的报文必须要有 Header,但是可以没有body,也就是说头信息是必须的,实体信息可以没有。而且在 header 和 body 之间必须要有一个空行(CRLF)</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/network/n1.png" fancybox="true"/></div></div>
+
+<p>HTTP的响应报文由四部分组成：状态行、响应头、空行、响应体(数据)</p>
+<ul>
+<li>状态行：由协议版本、状态码和状态值组成</li>
+<li>响应头：由多个key-value值组成</li>
+<li>空行：响应报文使用空行将响应头和响应体分隔</li>
+<li>响应体：响应数据，在上面是一段HTML</li>
+</ul>
+<h2 id="HTTP-的方法有哪些？"><a href="#HTTP-的方法有哪些？" class="headerlink" title="HTTP 的方法有哪些？"></a>HTTP 的方法有哪些？</h2><p>HTTP/1.0 定义了三种请求方法：GET, POST 和 HEAD 方法。</p>
+<p>HTTP/1.1 增加了六种请求方法：OPTIONS, PUT, PATCH, DELETE, TRACE 和 CONNECT 方法。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>请求指定的页面信息，并返回具体内容，通常只用于读取数据。</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>类似于 GET 请求，只不过返回的响应中没有具体的内容，用于获取报头。</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST 请求可能会导致新的资源的建立或已有资源的更改。</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>替换指定的资源，没有的话就新增。</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>请求服务器删除 URL 标识的资源数据。</td>
+</tr>
+<tr>
+<td>CONNECT</td>
+<td>将服务器作为代理，让服务器代替用户进行访问。</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>向服务器发送该方法，会返回对指定资源所支持的 HTTP 请求方法。</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>回显服务器收到的请求数据，即服务器返回自己收到的数据，主要用于测试和诊断。</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>是对 PUT 方法的补充，用来对已知资源进行局部更新。</td>
+</tr>
+</tbody></table>
+<h2 id="get-和-post-的区别"><a href="#get-和-post-的区别" class="headerlink" title="get 和 post 的区别"></a>get 和 post 的区别</h2><ul>
+<li>get 提交的数据会放在 URL 之后，并且请求参数会被完整的保留在浏览器的记录里，由于参数直接暴露在 URL 中，可能会存在安全问题，因此往往用于获取资源信息。而 post 参数放在请求主体中，并且参数不会被保留，相比 get 方法，post 方法更安全，主要用于修改服务器上的资源。</li>
+<li>get 请求只支持 URL 编码，post 请求支持多种编码格式。</li>
+<li>get 只支持 ASCII 字符格式的参数，而 post 方法没有限制。</li>
+<li>get 提交的数据大小有限制（这里所说的限制是针对浏览器而言的），而 post 方法提交的数据没限制</li>
+<li>get 方法产生一个 TCP 数据包，post 方法产生两个（并不是所有的浏览器中都产生两个,Firefox就只发送一次）。</li>
+<li>GET和POST最大的区别主要是GET请求是幂等性的，POST请求不是。</li>
+</ul>
+<blockquote>
+<p>对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；<br>而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</p>
+</blockquote>
+<h2 id="HTTP-状态码"><a href="#HTTP-状态码" class="headerlink" title="HTTP 状态码"></a>HTTP 状态码</h2><p>常见的状态码： 200、301、302、403、404、500、503</p>
+<table>
+<thead>
+<tr>
+<th>COde</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>200</td>
+<td>请求被成功处理</td>
+</tr>
+<tr>
+<td>301 永久性重定向</td>
+<td>比如建设一个网站后，将网站的url变换了，重新申请一个域名，但是希望之前的用户访问之前url仍然可以访问到，就可以做一个重定向新的url下面。比如京东最早域名<a target="_blank" rel="noopener" href="http://www.360buy.com名重定向到现在www.jd.com/">www.360buy.com名重定向到现在www.jd.com</a></td>
+</tr>
+<tr>
+<td>302 临时性重定向</td>
+<td>比如用户在未登录时访问个人中心页面，这时可以临时重定向到登录的 url。</td>
+</tr>
+<tr>
+<td>304 Not Modified</td>
+<td>当客户端拥有可能过期的缓存时， 会携带缓存的标识 etag、时间等信息询问服务器缓存是否仍可复用， 而 304 是告诉客户端可以 复用缓存。</td>
+</tr>
+<tr>
+<td>400 请求出错</td>
+<td>由于语法格式有误，服务器无法理解此请求。不作修改，客户程序就无法重复此请求。</td>
+</tr>
+<tr>
+<td>401 未授权</td>
+<td>（未授权） 请求要求身份验证。 对于需要登录的网页，服务器可能返回此响应。</td>
+</tr>
+<tr>
+<td>403 没有访问权限</td>
+<td>系统中某些页面只有在某些权限下才能访问， 当用户去访问了一个本身没有访问权限的 url，回报 403 错误。</td>
+</tr>
+<tr>
+<td>404 没有对应资源</td>
+<td>一般是自己输入了一个 url，这个 url 并不合法。 404 找不到，Web 服务器找不到您所请求的文件或脚本。 请检查 URL 以确保路径正确。</td>
+</tr>
+<tr>
+<td>405 不允许此方法</td>
+<td>405 不允许此方法，对于请求所标识的资源， 不允许使用请求行中所指定的方法。 (get/post/put/delete / 请求用混淆了，更正即可) 请确保为所请求的资源设置了正确的 MIME 类型</td>
+</tr>
+<tr>
+<td>406 不可接受</td>
+<td>根据此请求中所发送的 “接受” 标题， 此请求所标识的资源只能生成内容特征为 “不可接受” 的响应实体</td>
+</tr>
+<tr>
+<td>500 服务器错误</td>
+<td>比如服务器某一个函数代码出错了，有没有捕获异常，这时候会报 500 错误。 500 服务器的内部错误，Web 服务器不能执行此请求。请稍后重试此请求。</td>
+</tr>
+<tr>
+<td>501 未实现</td>
+<td>501 未实现，Web 服务器不支持实现此请求所需的功能。请检查 URL 中的错误</td>
+</tr>
+<tr>
+<td>502 网关出错</td>
+<td>Bad Gateway 网关出错，当用作网关或代理时， 服务器将从试图实现此请求时所访问的 upstream 服务器中接收无效的响应</td>
+</tr>
+<tr>
+<td>503 服务器停机</td>
+<td>系统正在维护或者服务器暂停的时候，回报 500 错误。</td>
+</tr>
+<tr>
+<td>504 Gateway Timeout</td>
+<td>代理服务器无法及时的从上游获得响应</td>
+</tr>
+</tbody></table>
+<h2 id="HTTP-各版本之间的区别"><a href="#HTTP-各版本之间的区别" class="headerlink" title="HTTP 各版本之间的区别"></a>HTTP 各版本之间的区别</h2><p><strong>HTTP 1.0</strong></p>
+<p>HTTP1.0 是在1996年引入的,从那时开始,它的普及率就达到了惊人的效果。</p>
+<ul>
+<li>HTTP1.0 仅仅提供了最基本的认证,这时候用户名和密码还未经加密,因此很容易收到窥探。</li>
+<li>HTTP1.0 被设计用来使用短链接,即每次发送数据都会经过TCP的三次握手和四次挥手,效率比较低</li>
+<li>HTTP1.0 只使用 header中的 If - Modified - Since和 Expires 作为缓存失效的标准</li>
+<li>HTTP1.0 不支持断点续传,也就是说,每次都会传送全部的页面和数据</li>
+<li>HTTP1.0 认为每台计算机只能绑定一个IP,所以请求消息中的URL并没有传递主机名</li>
+</ul>
+<p><strong>HTTP 1.1</strong></p>
+<p>HTTP 1.1 是 HTTP1.0 开发三年后出现的,也就是1999年,它做出了以下方面的变化</p>
+<ul>
+<li>HTTP1.1 使用了摘要算法来进行身份验证</li>
+<li>HTTP1.1 默认使用长连接,长连接就是只需一次建立就可以传输多次数据,传输完成后,只需要一次切断连接即可。长连接的连接时长可以通过请求头中的 keep - alive 来设置</li>
+<li>HTTP 1.1 中新增加了E-tag, If-Unmodified- Since, If- Match,If- None-Match 等缓存控制标头来控制缓存失效</li>
+<li>HTTP1.1 支持断点续传,通过使用请求头中的 Range 来实现。</li>
+<li>HTTP1.1 使用了虚拟网络,在一台物理服务器上可以存在多个虚拟主机( Multi-homed WebServers),并且它们共享一个 IP地址</li>
+</ul>
+<p><strong>HTTP 2.0</strong></p>
+<p>HTTP 2.0 是2015年开发出来的标准,它主要做的改变如下</p>
+<ul>
+<li>头部压缩：由于HTTP1.1经常会出现User-Agent、Cookie、Accept、Server、Range等字段可能会占用几百甚至几千字节,而Body却经常只有几十字节,所以导致头部偏重。HTTP 2.0使用 HPACK 算法进行压缩。</li>
+<li>二进制格式：HTTP2.0 使用了更加靠近TCP/IP的二进制格式,而抛弃了ASCII 码,提升了解析效率</li>
+<li>强化安全：由于安全已经成为重中之重,所以HTTP 2.0 一般都跑在HTTPS上</li>
+<li>多路复用：即每一个请求都是用作连接共享。一个请求对应一个id,这样一个连接上可以有多个请求</li>
+</ul>
+<h2 id="HTTP-CROS-跨域"><a href="#HTTP-CROS-跨域" class="headerlink" title="HTTP CROS 跨域"></a>HTTP CROS 跨域</h2><h3 id="HTTPS-SSL-TLS"><a href="#HTTPS-SSL-TLS" class="headerlink" title="HTTPS SSL TLS"></a>HTTPS SSL TLS</h3><p>SSL(Secure Socket Layer 安全套接层)，它是一项标准技术，可确保互联网连接安全，保护两个系统之间发送的任何敏感数据，防止网络犯罪分子读取和修改任何传输信息，包括个人资料。</p>
+<blockquote>
+<p>SSL协议位于TCP/IP协议与各种应用层协议之间，为数据通讯提供安全支持。SSL通过互相认证、使用数字签名确保完整性、使用加密确保私密性，以实现客户端和服务器之间的安全通讯。该协议由两层组成：SSL记录协议和SSL握手协议。</p>
+</blockquote>
+<p>IETF以SSL3.0为基准，后又制定了TLS1.0、TLS1.1和TLS1.2。TSL是以SSL为原型开发的协议，有时会统一称该协议为SSL。当前主流的版本是SSL3.0和TLS1.0。</p>
+<p>HTTPS ≈ HTTP + SSL/TLS</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/enweitech/article/details/81781405">https://blog.csdn.net/enweitech/article/details/81781405</a></p>
+<h3 id="简述-HTTPS-的加密与认证过程"><a href="#简述-HTTPS-的加密与认证过程" class="headerlink" title="简述 HTTPS 的加密与认证过程"></a>简述 HTTPS 的加密与认证过程</h3><p><strong>HTTP协议存在的问题</strong></p>
+<ul>
+<li>通信使用明文（不加密），内容可能会被窃听</li>
+<li>不验证通信方的身份，因此有可能遭遇伪装</li>
+<li>无法证明报文的完整性，所以有可能已遭篡改</li>
+</ul>
+<p>HTTPS 在 HTTP 与 TCP 层之间加入了 SSL/TLS 协议，可以很好的解决了上述的风险：</p>
+<ul>
+<li>通信加密：通过 SSL/TLS 加密HTTP的通信内容。以防通信内容被窃听</li>
+<li>数字证书：SSL不仅提供加密处理，而且还使用了一种被称为证书的手段，可用于确定方。</li>
+<li>摘要算法：SSL提供认证和加密处理及摘要功能。摘要算法的方式来实现完整性，它能够为数据生成独一无二的「指纹」，指纹用于校验数据的完整性，解决了篡改的风险。</li>
+</ul>
+<h4 id="通信加密"><a href="#通信加密" class="headerlink" title="通信加密"></a>通信加密</h4><p>HTTPS 采用的是对称加密和非对称加密结合的「混合加密」方式：</p>
+<p>在通信建立前采用非对称加密的方式交换「会话秘钥」，后续就不再使用非对称加密。在通信过程中全部使用对称加密的「会话秘钥」的方式加密明文数据。</p>
+<p>采用「混合加密」的方式的原因：</p>
+<ul>
+<li>对称加密只使用一个密钥，运算速度快，密钥必须保密，无法做到安全的密钥交换。</li>
+<li>非对称加密使用两个密钥：公钥和私钥，公钥可以任意分发而私钥保密，解决了密钥交换问题但速度慢。</li>
+</ul>
+<h4 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h4><p>客户端先向服务器端索要公钥，然后用公钥加密信息，服务器收到密文后，用自己的私钥解密。</p>
+<p>这就存在些问题，如何保证公钥不被篡改和信任度？</p>
+<p>所以这里就需要借助第三方权威机构 CA （数字证书认证机构），将服务器公钥放在数字证书（由数字证书认证机构颁发）中，只要证书是可信的，公钥就是可信的。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/16.png"></p>
+<h4 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h4><p>摘要算法用来实现完整性，能够为数据生成独一无二的「指纹」，用于校验数据的完整性，解决了篡改的风险。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/17.png"></p>
+<p>客户端在发送明文之前会通过摘要算法算出明文的「指纹」，发送的时候把「指纹 + 明文」一同加密成密文后，发送给服务器，服务器解密后，用相同的摘要算法算出发送过来的明文，通过比较客户端携带的「指纹」和当前算出的「指纹」做比较，若「指纹」相同，说明数据是完整的。</p>
+<h4 id="HTTPS-通信建立过程"><a href="#HTTPS-通信建立过程" class="headerlink" title="HTTPS 通信建立过程"></a>HTTPS 通信建立过程</h4><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/18.png"><br><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gyl-coder/bookImgs/network/19.png"></p>
+<p><strong>步骤一</strong></p>
+<p>首先，由客户端向服务器发起加密通信请求，也就是 ClientHello 请求。</p>
+<p>在这一步，客户端主要向服务器发送以下信息：</p>
+<ul>
+<li>客户端支持的 SSL/TLS 协议版本，如 TLS 1.2 版本。</li>
+<li>客户端生产的随机数（ Client Random ），后面用于生产「会话秘钥」。</li>
+<li>客户端支持的密码套件列表，如 RSA 加密算法。</li>
+</ul>
+<p><strong>步骤二</strong></p>
+<p>服务器收到客户端请求后，如果可以惊醒SSL通信时向客户端发出响应，也就是 SeverHello 。服务器回应的内容有如下内容：</p>
+<ul>
+<li>确认 SSL/ TLS 协议版本，如果浏览器不支持，则关闭加密通信。</li>
+<li>服务器生产的随机数（ Server Random ），后面用于生产「会话秘钥」。</li>
+<li>确认的密码套件列表，如 RSA 加密算法。</li>
+<li>服务器的数字证书。</li>
+</ul>
+<p><strong>步骤三</strong></p>
+<p>客户端收到服务器的回应之后，首先通过浏览器或者操作系统中的 CA 公钥，确认服务器的数字证书的真实性。</p>
+<blockquote>
+<p>数字证书认证机构处于客户端与服务器双方都可信赖的第三方机构的立场上。服务器的运营人员向数字证书认证机构提出公开密钥的申请。数字证书认证机构在判明提出申请者的身份之后，会对已申请的公开密钥做数字签名，然后分配这个已签名的公开密钥，并将该公开密钥放入公钥证书后绑定在一起。<br>服务器会将这份由数字证书认证机构颁发的公钥证书发送给客户端，以进行公开密钥加密方式通信。公钥证书也可叫做数字证书或直接称为证书。<br>接到证书的客户端可使用数字证书认证机构的公开密钥，对那张证书上的数字签名进行验证，一旦验证通过，客户端便可明确两件事：一，认证服务器的公开密钥的是真实有效的数字证书认证机构。二，服务器的公开密钥是值得信赖的。<br>多数浏览器开发商发布版本时，会事先在内部植入常用认证机关的公开密钥。</p>
+</blockquote>
+<p>如果证书没有问题，客户端会从数字证书中取出服务器的公钥，然后使用它加密报文，向服务器发送如下信息：</p>
+<ul>
+<li>一个随机数（ pre-master key ）。该随机数会被服务器公钥加密。</li>
+<li>加密通信算法改变通知，表示随后的信息都将用「会话秘钥」加密通信。</li>
+<li>客户端握手结束通知，表示客户端的握手阶段已经结束。这一项同时把之前所有内容的发生的数据做个摘要，用来供服务端校验。</li>
+</ul>
+<p>上面第一项的随机数是整个握手阶段的第三个随机数，这样服务器和客户端就同时有三个随机数，接着就用双方协商的加密算法，<strong>各自生成</strong>本次通信的「会话秘钥」。</p>
+<p><strong>步骤四</strong></p>
+<p>服务器收到客户端的第三个随机数（ pre-master key ）之后，通过协商的加密算法，计算出本次通信的「会话秘钥」。然后，向客户端发生最后的信息：</p>
+<ul>
+<li>加密通信算法改变通知，表示随后的信息都将用「会话秘钥」加密通信。</li>
+<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时把之前所有内容的发生的数据做个摘要，用来供客户端校验。</li>
+</ul>
+<p>至此，整个 SSL/TLS 的握手阶段全部结束。接下来，客户端与服务器进入加密通信，就完全是使用普通的 HTTP 协议，只不过用「会话秘钥」加密内容。</p>
+<p>在以上流程中，应用层发送数据时会附加一种叫做MAC（MessageAuthentication Code）的报文摘要。MAC能够查知报文是否遭到篡改，从而保护报文的完整性。</p>
+<h3 id="讲一下对称加密算法和非对称加密算法？"><a href="#讲一下对称加密算法和非对称加密算法？" class="headerlink" title="讲一下对称加密算法和非对称加密算法？"></a>讲一下对称加密算法和非对称加密算法？</h3><p><strong>对称加密：</strong>密钥只有一个，加密解密为同一个密码，且加解密速度快，典型的对称 加密算法有DES、AES等；对称加密相比非对称加密算法来说，加解密的效率要高得多、加密速度快。但是缺陷在于对于密钥的管理和分发上比较困难，不是非常安全，密钥管理负担很重。</p>
+<p><strong>非对称密钥加密：</strong>指的是加、解密使用不同的密钥，一把作为公开的公钥，另一把作为私钥。公钥加密的信息，只有私钥才能解密。典型的非对称加密算法有RSA、DSA等。安全性更高，公钥是公开的，密钥是自己保存的，不需要将私钥给别人。缺点：加密和解密花费时间长、速度慢，只适合对少量数据进行加密。</p>
+<p>HTTPS 采用的加密方式: HTTPS 采用混合的加密机制。所有传输的内容都经过加密，加密采用对称加密，但对称加密的密钥用服务器方的证书进行了非对称加密。</p>
+<h3 id="Cookie-和-Session-的关系和区别是什么？"><a href="#Cookie-和-Session-的关系和区别是什么？" class="headerlink" title="Cookie 和 Session 的关系和区别是什么？"></a>Cookie 和 Session 的关系和区别是什么？</h3><p>Cookie 和 Session 都是用来跟踪浏览器用户身份的会话方式</p>
+<p>Cookie 一般用来保存用户信息，数据保存在客户端(浏览器端)，Session 的主要作用就是通过服务端记录用户的状态，数据保存在服务器端。相对来说 Session 安全性更高。如果要在 Cookie 中存储一些敏感信息，不要直接写入 Cookie 中，最好能将Cookie 信息加密然后使用到的时候再去服务器端解密。</p>
+<h3 id="HTTP是不保存状态的协议-如何保存用户状态"><a href="#HTTP是不保存状态的协议-如何保存用户状态" class="headerlink" title="HTTP是不保存状态的协议,如何保存用户状态?"></a>HTTP是不保存状态的协议,如何保存用户状态?</h3><p>HTTP 是一种无状态协议。HTTP 协议自身不对请求和响应之间的通信状态进行保存。主要通过session机制来进行解决，Session 的主要作用就是通过服务端记录用户的状态。</p>
+<p>在服务端保存 Session 的方法很多，最常用的就是内存和数据库(比如是使用内存数据库redis 保存)。既然 Session 存放在服务器端，那么我们如何实现 Session 跟踪呢？大部分情况下， 我们都是通过在 Cookie 中附加一个 Session ID 来方式来跟踪。</p>
+<p>Cookie 被禁用怎么办**?** 最常用的就是利用 URL 把 Session ID 直接附加在URL路径的后面。</p>
+<h3 id="DDos攻击了解吗？"><a href="#DDos攻击了解吗？" class="headerlink" title="DDos攻击了解吗？"></a>DDos攻击了解吗？</h3><p>分布式拒绝服务，一般来说是指攻击者利用一些被控制的设备对目标网站在较短的时间内发 起大量请求，大规模消耗目标网站的主机资源，让它无法正常服务。</p>
+<h3 id="什么是中间人攻击？如何防止攻击？"><a href="#什么是中间人攻击？如何防止攻击？" class="headerlink" title="什么是中间人攻击？如何防止攻击？"></a>什么是中间人攻击？如何防止攻击？</h3><p>中间人攻击是指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。</p>
+<p>简单来说，攻击者在请求和响应传输途中，拦截并篡改内容。对于 HTTP 来说，由于设计的简单，不需要太多步骤就可以进行监听和修改报文；在这里主要是针对 HTTPS，HTTPS 使用了 SSL 加密协议，是一种非常安全的机制，目前并没有方法直接对这个协议进行攻击，一般都是在建立 SSL 连接时，利用中间人获取到 CA证书、非对称加密的公钥、对称加密的密钥；有了这些条件，就可以对请求和响应进行拦截和篡改。</p>
+<h3 id="简述-WebSocket-是如何进行传输的"><a href="#简述-WebSocket-是如何进行传输的" class="headerlink" title="简述 WebSocket 是如何进行传输的"></a>简述 WebSocket 是如何进行传输的</h3><p>WebSocket是一种在单个TCP连接上进行全双工通信的协议。WebSocket使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在WebSocket API中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。</p>
+<p><strong>Http协议与WebSocket协议的区别</strong></p>
+<p>服务器向客户端发送数据：</p>
+<p>Http协议：每次都需要客户端定时轮询向服务器请求 ，然后服务器再向客户端发送数据</p>
+<p>WebSocket协议：允许服务端主动向客户端推送数据，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。</p>
+<p> 保持连接状态：</p>
+<p>与HTTP不同的是，Websocket需要先创建连接，这就使得其成为一种有状态的协议，之后通信时可以省略部分状态信息。而HTTP请求可能需要在每个请求都携带状态信息（如身份认证等）。</p>
+<h3 id="什么是跨域，什么情况下会发生跨域请求？"><a href="#什么是跨域，什么情况下会发生跨域请求？" class="headerlink" title="什么是跨域，什么情况下会发生跨域请求？"></a>什么是跨域，什么情况下会发生跨域请求？</h3><p>在浏览器同源策略限制下，向不同源（不同协议、不同域名或者不同端口）发送XHR请求，浏览器认为该请求不受信任，禁止请求，具体表现为请求后不正常响应</p>
+<p>跨域请求就是指：当前发起请求的域与该请求指向的资源所在的域不一样。这里的域指的是这样的一个概念：我们认为若协议 + 域名 + 端口号均相同，那么就是同域。</p>
+<p><strong>解决方案：</strong></p>
+<ol>
+<li>既然域名等信息不一致导致跨域产生，那么干脆就把两个项目合并成一个项目，使用相同的协议、域名和端口。</li>
+<li>禁用浏览器的同源策略</li>
+</ol>
+
+  
+
+
+  </article>
+  
+<br>
+
+  
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      Join the discussion
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="gaoyanliang/beaudar" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><object data="https://img.shields.io/static/v1?label=强力驱动&message=Hexo&style=social&logo=Hexo&logoColor=0E83CD&link=https://hexo.io/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=GitHub&style=social&logo=GitHub&logoColor=181717&link=https://github.com/gyl-coder"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=Vercel&style=social&logo=Vercel&logoColor=000000&link=https://vercel.com"></object> &nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=图片分发&message=jsDelivr&style=social&logo=jsDelivr&logoColor=E84D3D&link=https://www.jsdelivr.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=域名解析&message=Aliyun&style=social&logo=Alibaba Cloud&logoColor=FF6A00&link=https://www.aliyun.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=许可协议&message=CC BY-NC-SA 4.0&style=social&logo=Creative Commons&logoColor=EF9421&link=https://creativecommons.org/licenses/by-nc-sa/4.0/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=博客作者&message=Yanliang&style=social&logo=Blogger&logoColor=FF5722&link=https://yanliang.cool/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=原创主题&message=Stellar&style=social&logo=Badoo&logoColor=783BF9&link=https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0"></object>&nbsp;&nbsp;</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.7.0';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

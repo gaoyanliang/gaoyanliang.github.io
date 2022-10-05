@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>mysql - yanliang</title>
+
+  
+
+  
+    <meta name="description" content="数据库优化维度有四个：  硬件升级 系统配置 表结构设计 SQL语句及索引    优化选择：  优化成本：硬件升级 &gt; 系统配置 &gt; 表结构设计 &gt; SQL语句及索引。 优化效果：硬件升级 &lt; 系统配置 &lt; 表结构设计 &lt; SQL语句及索引。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql 性能优化">
+<meta property="og:url" content="https://yanliang.cool/mysql/performance_optimization/">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="数据库优化维度有四个：  硬件升级 系统配置 表结构设计 SQL语句及索引    优化选择：  优化成本：硬件升级 &gt; 系统配置 &gt; 表结构设计 &gt; SQL语句及索引。 优化效果：硬件升级 &lt; 系统配置 &lt; 表结构设计 &lt; SQL语句及索引。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/mysql/m1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/mysql/m2.png">
+<meta property="article:published_time" content="2021-10-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-22T16:00:00.000Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="Mysql">
+<meta property="article:tag" content="性能优化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/mysql/m1.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/index-head.png" onerror="javascript:this.classList.add('error');this.src='https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main"><div style="line-height: 1.5; letter-spacing: 3px; position: relative;">Yanliang</div> <div style="font-size: .85rem; letter-spacing: 1px; font-weight: 500;">Believe in yourself.</div></div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">Blog</a><a class="nav-item" href="/wiki/">Wiki</a><a class="nav-item" href="/friends/">Friends</a><a class="nav-item" href="/about/">More</a></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">TOC</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="toc-text">系统配置优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%86%85%E5%AD%98%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-text">从内存中读取数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E7%83%AD%E6%95%B0%E6%8D%AE"><span class="toc-text">预热数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%8F%E5%B0%91%E7%A3%81%E7%9B%98%E5%86%99%E5%85%A5%E6%AC%A1%E6%95%B0"><span class="toc-text">减少磁盘写入次数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98%E7%A3%81%E7%9B%98%E8%AF%BB%E5%86%99%E6%80%A7%E8%83%BD"><span class="toc-text">提高磁盘读写性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E7%BB%93%E6%9E%84%E4%BC%98%E5%8C%96"><span class="toc-text">表结构优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E8%AF%AD%E5%8F%A5%E5%8F%8A%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96"><span class="toc-text">SQL语句及索引优化</span></a></li></ol></div></div></div>
+
+
+</div>
+<footer class="footer dis-select"><div class="social-wrap"><a class="social" title="Back to Top" href="#start" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/top.svg"/></a><a class="social" title="GitHub" href="https://github.com/gyl-coder/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/github.svg"/></a><a class="social" title="Spotify" href="https://open.spotify.com/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/music.svg"/></a><a class="social" title="Unsplash" href="https://unsplash.com/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/music.svg"/></a><a class="social" title="Comments" href="/about/#comments" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/message.svg"/></a></div></footer>
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/mysql/">Mysql</a></div><div id="post-meta">💧 Posted on&nbsp;<time datetime="2021-10-22T16:00:00.000Z">Oct 23, 2021</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>Mysql 性能优化</span></h1>
+<p>数据库优化维度有四个：</p>
+<ul>
+<li>硬件升级</li>
+<li>系统配置</li>
+<li>表结构设计</li>
+<li>SQL语句及索引</li>
+</ul>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/mysql/m1.png" fancybox="true"/></div></div>
+
+<p>优化选择：</p>
+<ul>
+<li>优化成本：硬件升级 &gt; 系统配置 &gt; 表结构设计 &gt; SQL语句及索引。</li>
+<li>优化效果：硬件升级 &lt; 系统配置 &lt; 表结构设计 &lt; SQL语句及索引。</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="系统配置优化"><a href="#系统配置优化" class="headerlink" title="系统配置优化"></a>系统配置优化</h2><h3 id="从内存中读取数据"><a href="#从内存中读取数据" class="headerlink" title="从内存中读取数据"></a>从内存中读取数据</h3><p>MySQL 会在内存中保存一定的数据，通过LRU算法将不常访问的数据保存在硬盘文件中。尽可能的扩大内存中的数据量，将数据保存在内存中，从内存中读取数据，可以提升MySQL性能。</p>
+<p>扩大innodb_buffer_pool_size，能够全然从内存中读取数据。最大限度降低磁盘操作。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> <span class="string">&#x27;innodb_buffer_pool_pages_%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_data <span class="operator">|</span> <span class="number">8190</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_dirty <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_flushed <span class="operator">|</span> <span class="number">12646</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_free <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="number">0</span> 表示已经被用光</span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_misc <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_total <span class="operator">|</span> <span class="number">8191</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------------------+-------+</span></span><br></pre></td></tr></table></figure>
+
+<p>innodb_buffer_pool_size默认为128M，理论上可以扩大到内存的3/4或4/5。</p>
+<h3 id="预热数据"><a href="#预热数据" class="headerlink" title="预热数据"></a>预热数据</h3><p>默认情况，仅在某条数据被读取一次之后，才会缓存在 innodb_buffer_pool。所以，数据库刚刚启动，须要进行数据预热，将磁盘上的数据尽可能缓存到内存中。</p>
+<p>数据预热能够提高读取速度。</p>
+<p>对于InnoDB数据库，进行数据预热的脚本是:</p>
+<figure class="highlight sql"><figcaption><span>loadtomem.sql</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span></span><br><span class="line">    CONCAT(<span class="string">&#x27;SELECT &#x27;</span>,ndxcollist,<span class="string">&#x27; FROM &#x27;</span>,db,<span class="string">&#x27;.&#x27;</span>,tb,<span class="string">&#x27; ORDER BY &#x27;</span>,ndxcollist,<span class="string">&#x27;;&#x27;</span>) SelectQueryToLoadCache</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    (</span><br><span class="line">        <span class="keyword">SELECT</span></span><br><span class="line">            engine,table_schema db,table_name tb,</span><br><span class="line">            index_name,GROUP_CONCAT(column_name <span class="keyword">ORDER</span> <span class="keyword">BY</span> seq_in_index)</span><br><span class="line">            ndxcollist</span><br><span class="line">        <span class="keyword">FROM</span></span><br><span class="line">            (</span><br><span class="line">                <span class="keyword">SELECT</span></span><br><span class="line">                    B.engine,A.table_schema,A.table_name,</span><br><span class="line">                    A.index_name,A.column_name,A.seq_in_index</span><br><span class="line">                <span class="keyword">FROM</span></span><br><span class="line">                    information_schema.statistics A <span class="keyword">INNER</span> <span class="keyword">JOIN</span></span><br><span class="line">                (</span><br><span class="line">                    <span class="keyword">SELECT</span> engine,table_schema,table_name</span><br><span class="line">                    <span class="keyword">FROM</span> information_schema.tables <span class="keyword">WHERE</span></span><br><span class="line">                    engine<span class="operator">=</span><span class="string">&#x27;InnoDB&#x27;</span></span><br><span class="line">                ) B <span class="keyword">USING</span> (table_schema,table_name)</span><br><span class="line">                <span class="keyword">WHERE</span> B.table_schema <span class="keyword">NOT</span> <span class="keyword">IN</span> (<span class="string">&#x27;information_schema&#x27;</span>,<span class="string">&#x27;mysql&#x27;</span>)</span><br><span class="line">                <span class="keyword">ORDER</span> <span class="keyword">BY</span> table_schema,table_name,index_name,seq_in_index</span><br><span class="line">            ) A</span><br><span class="line">        <span class="keyword">GROUP</span> <span class="keyword">BY</span> table_schema,table_name,index_name</span><br><span class="line">    ) AA</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> db,tb;</span><br></pre></td></tr></table></figure>
+
+<p>在需要数据预热时（比如重启数据库）执行命令：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql <span class="operator">-</span>uroot <span class="operator">&lt;</span> <span class="operator">/</span>root<span class="operator">/</span>loadtomem.sql <span class="operator">&gt;</span> <span class="operator">/</span>dev<span class="operator">/</span><span class="keyword">null</span> <span class="number">2</span><span class="operator">&gt;</span><span class="operator">&amp;</span><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="减少磁盘写入次数"><a href="#减少磁盘写入次数" class="headerlink" title="减少磁盘写入次数"></a>减少磁盘写入次数</h3><p><strong>1. 增大redolog，减少落盘次数</strong></p>
+<p>innodb_log_file_size 设置为 0.25 * innodb_buffer_pool_size</p>
+<p><strong>2. 关闭通用查询日志、慢查询日志 ，开启binlog</strong></p>
+<p>生产中不开通用查询日志，遇到性能问题开慢查询日志</p>
+<p><strong>3. 写redolog策略 innodb_flush_log_at_trx_commit设置为0或2</strong></p>
+<p>如果不涉及非常高的安全性 (金融系统)，或者基础架构足够安全，或者事务都非常小，都能够用 0或者 2 来减少磁盘操作。</p>
+<h3 id="提高磁盘读写性能"><a href="#提高磁盘读写性能" class="headerlink" title="提高磁盘读写性能"></a>提高磁盘读写性能</h3><p>使用SSD或者内存磁盘</p>
+<h2 id="表结构优化"><a href="#表结构优化" class="headerlink" title="表结构优化"></a>表结构优化</h2><p><strong>1. 设计中间表</strong></p>
+<p>设计中间表，一般针对于统计分析功能，或者实时性不高的需求（OLTP、OLAP）</p>
+<p><strong>2. 设计冗余字段</strong></p>
+<p>为减少关联查询，创建合理的冗余字段（创建冗余字段还需要注意数据一致性问题）</p>
+<p><strong>3. 拆表</strong></p>
+<p>对于字段太多的大表，考虑拆表（比如一个表有100多个字段）</p>
+<p>对于表中经常不被使用的字段或者存储数据比较多的字段，考虑拆表</p>
+<p><strong>4. 主键优化</strong></p>
+<p>每张表建议都要有一个主键（主键索引），而且主键类型最好是int类型，建议自增主键。</p>
+<p><strong>5. 字段的设计</strong></p>
+<p>数据库中的表越小，在它上面执行的查询也就会越快。因此，在创建表的时候，为了获得更好的性能，我们可以将表中字段的宽度设得尽可能小。</p>
+<p>尽量把字段设置为NOTNULL，这样在将来执行查询的时候，数据库不用去比较NULL值。</p>
+<p>对于某些文本字段，例如“省份”或者“性别”，我们可以将它们定义为ENUM类型。因为在MySQL中，ENUM类型被当作数值型数据来处理，而数值型数据被处理起来的速度要比文本类型快得多。</p>
+<h2 id="SQL语句及索引优化"><a href="#SQL语句及索引优化" class="headerlink" title="SQL语句及索引优化"></a>SQL语句及索引优化</h2><p><strong>1. SQL语句中IN包含的值不应过多</strong></p>
+<p>MySQL对于IN做了相应的优化，即将IN中的常量全部存储在一个数组里面，而且这个数组是排好序的。但是如果数值较多，产生的消耗也是比较大的。</p>
+<p><strong>2. SELECT语句务必指明字段名称</strong></p>
+<p>SELECT * 增加很多不必要的消耗（CPU、IO、内存、网络带宽）；减少了使用覆盖索引的可能性；当表结构发生改变时，前端也需要更新。所以要求直接在select后面接上字段名。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser ;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span> <span class="operator">|</span> type <span class="operator">|</span> possible_keys <span class="operator">|</span> key <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span> <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> SIMPLE <span class="operator">|</span> tbiguser <span class="operator">|</span> <span class="keyword">ALL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">9754360</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> id,nickname <span class="keyword">from</span> tbiguser ;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+-------+---------------+--------------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span> <span class="operator">|</span> type <span class="operator">|</span> possible_keys <span class="operator">|</span> key <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span> <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+-------+---------------+--------------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> SIMPLE <span class="operator">|</span> tbiguser <span class="operator">|</span> index <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> idx_nickname <span class="operator">|</span> <span class="number">768</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">9754360</span> <span class="operator">|</span> <span class="keyword">Using</span> index <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+-------+---------------+--------------+---------+------+---------+-------------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 当只需要一条数据的时候，使用limit 1</strong></p>
+<p>limit 是可以停止全表扫描</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser limit <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+-----------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> nickname <span class="operator">|</span> loginname <span class="operator">|</span> age <span class="operator">|</span> sex <span class="operator">|</span> status <span class="operator">|</span> address <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+-----------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> zy1 <span class="operator">|</span> zhaoyun1 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+-----------+------+------+--------+---------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser limit <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span> <span class="operator">|</span> type <span class="operator">|</span> possible_keys <span class="operator">|</span> key <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span> <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> SIMPLE <span class="operator">|</span> tbiguser <span class="operator">|</span> <span class="keyword">ALL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">9754360</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. 排序字段加索引</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser <span class="keyword">where</span> loginname <span class="operator">=</span> <span class="string">&#x27;zhaoyun9999999&#x27;</span> <span class="keyword">order</span> <span class="keyword">by</span> id ;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+-------+---------------+---------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span> <span class="operator">|</span> type <span class="operator">|</span> possible_keys <span class="operator">|</span> key <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span> <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+-------+---------------+---------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> SIMPLE <span class="operator">|</span> tbiguser <span class="operator">|</span> index <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">PRIMARY</span> <span class="operator">|</span> <span class="number">4</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">9754360</span> <span class="operator">|</span> <span class="keyword">Using</span> <span class="keyword">where</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+-------+---------------+---------+---------+------+---------+-------------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser <span class="keyword">where</span> loginname <span class="operator">=</span> <span class="string">&#x27;zhaoyun9999999&#x27;</span> <span class="keyword">order</span> <span class="keyword">by</span> loginname ;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span> <span class="operator">|</span> type <span class="operator">|</span> possible_keys <span class="operator">|</span> key <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span> <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> SIMPLE <span class="operator">|</span> tbiguser <span class="operator">|</span> <span class="keyword">ALL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">9754360</span> <span class="operator">|</span> <span class="keyword">Using</span> <span class="keyword">where</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>5. 如果限制条件中其他字段没有索引，尽量少用or</strong></p>
+<p>or两边的字段中，如果有一个不是索引字段，会造成该查询不走索引的情况。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser <span class="keyword">where</span> nickname<span class="operator">=</span><span class="string">&#x27;zy1&#x27;</span> <span class="keyword">or</span> loginname<span class="operator">=</span><span class="string">&#x27;zhaoyun3&#x27;</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> select_type <span class="operator">|</span> <span class="keyword">table</span> <span class="operator">|</span> type <span class="operator">|</span> possible_keys <span class="operator">|</span> key <span class="operator">|</span> key_len <span class="operator">|</span> <span class="keyword">ref</span> <span class="operator">|</span> <span class="keyword">rows</span> <span class="operator">|</span> Extra <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> SIMPLE <span class="operator">|</span> tbiguser <span class="operator">|</span> <span class="keyword">ALL</span> <span class="operator">|</span> idx_nickname <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="keyword">NULL</span> <span class="operator">|</span> <span class="number">9754360</span> <span class="operator">|</span> <span class="keyword">Using</span> <span class="keyword">where</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+-------------+----------+------+---------------+------+---------+------+---------+-------------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>6. 尽量用union all代替union</strong></p>
+<p>union和union all的差异主要是前者需要将结果集合并后再进行唯一性过滤操作，这就会涉及到排序，增加大量的CPU运算，加大资源消耗及延迟。当然，union all的前提条件是两个结果集没有重复数据。</p>
+<p><strong>7. 不使用ORDER BY RAND()</strong></p>
+<p>ORDER BY RAND() 不走索引</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser <span class="keyword">order</span> <span class="keyword">by</span> rand() limit <span class="number">10</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">---------+-----------+----------------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> nickname <span class="operator">|</span> loginname <span class="operator">|</span> age <span class="operator">|</span> sex <span class="operator">|</span> status <span class="operator">|</span> address <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------+-----------+----------------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">416412</span> <span class="operator">|</span> zy416412 <span class="operator">|</span> zhaoyun416412 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">4338012</span> <span class="operator">|</span> zy4338012 <span class="operator">|</span> zhaoyun4338012 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">4275017</span> <span class="operator">|</span> zy4275017 <span class="operator">|</span> zhaoyun4275017 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">8572779</span> <span class="operator">|</span> zy8572779 <span class="operator">|</span> zhaoyun8572779 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">2500546</span> <span class="operator">|</span> zy2500546 <span class="operator">|</span> zhaoyun2500546 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------+-----------+----------------+------+------+--------+---------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">10</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">10.86</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser t1 <span class="keyword">join</span> (<span class="keyword">select</span> rand()<span class="operator">*</span>(<span class="keyword">select</span> <span class="built_in">max</span>(id) <span class="keyword">from</span> tbiguser) nid ) t2 <span class="keyword">on</span> t1.id<span class="operator">&gt;</span>t2.nid limit <span class="number">10</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">---------+-----------+----------------+------+------+--------+---------+-------------------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> nickname <span class="operator">|</span> loginname <span class="operator">|</span> age <span class="operator">|</span> sex <span class="operator">|</span> status <span class="operator">|</span> address <span class="operator">|</span> nid <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------+-----------+----------------+------+------+--------+---------+-------------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">6580156</span> <span class="operator">|</span> zy6580156 <span class="operator">|</span> zhaoyun6580156 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span> <span class="number">6580155.591089424</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">6580157</span> <span class="operator">|</span> zy6580157 <span class="operator">|</span> zhaoyun6580157 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span> <span class="number">6580155.591089424</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">6580158</span> <span class="operator">|</span> zy6580158 <span class="operator">|</span> zhaoyun6580158 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span> <span class="number">6580155.591089424</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">6580159</span> <span class="operator">|</span> zy6580159 <span class="operator">|</span> zhaoyun6580159 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span> <span class="number">6580155.591089424</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">6580160</span> <span class="operator">|</span> zy6580160 <span class="operator">|</span> zhaoyun6580160 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span> <span class="number">6580155.591089424</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------+-----------+----------------+------+------+--------+---------+-------------------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">10</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>8. 区分in和exists、not in和not exists</strong></p>
+<p>区分in和exists主要是造成了驱动顺序的改变（这是性能变化的关键），如果是exists，那么以外层表为驱动表，先被访问，如果是IN，那么先执行子查询。所以IN适合于外表大而内表小的情况；EXISTS适合于外表小而内表大的情况。</p>
+<p>关于not in和not exists，推荐使用not exists，不仅仅是效率问题，not in可能存在逻辑问题。如何高效的写出一个替代not exists的SQL语句？</p>
+<p>原SQL语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> colname … <span class="keyword">from</span> A表 <span class="keyword">where</span> a.id <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> b.id <span class="keyword">from</span> B表)</span><br></pre></td></tr></table></figure>
+
+<p>高效的SQL语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> colname … <span class="keyword">from</span> A表 <span class="keyword">Left</span> <span class="keyword">join</span> B表 <span class="keyword">on</span> <span class="keyword">where</span> a.id <span class="operator">=</span> b.id <span class="keyword">where</span> b.id <span class="keyword">is</span> <span class="keyword">null</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>9. 使用合理的分页方式以提高分页的效率</strong></p>
+<p>分页使用 limit m,n 尽量让m 小。利用主键的定位，可以减小m的值</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser limit <span class="number">9999998</span>, <span class="number">2</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+------------+-----------------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> nickname <span class="operator">|</span> loginname <span class="operator">|</span> age <span class="operator">|</span> sex <span class="operator">|</span> status <span class="operator">|</span> address <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+------------+-----------------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">9999999</span> <span class="operator">|</span> zy9999999 <span class="operator">|</span> zhaoyun9999999 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10000000</span> <span class="operator">|</span> zy10000000 <span class="operator">|</span> zhaoyun10000000 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+------------+-----------------+------+------+--------+---------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">4.72</span> sec)</span><br><span class="line"></span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tbiguser <span class="keyword">where</span> id<span class="operator">&gt;</span><span class="number">9999998</span> limit <span class="number">2</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------+------------+-----------------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> nickname <span class="operator">|</span> loginname <span class="operator">|</span> age <span class="operator">|</span> sex <span class="operator">|</span> status <span class="operator">|</span> address <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+------------+-----------------+------+------+--------+---------+</span></span><br><span class="line"><span class="operator">|</span> <span class="number">9999999</span> <span class="operator">|</span> zy9999999 <span class="operator">|</span> zhaoyun9999999 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="number">10000000</span> <span class="operator">|</span> zy10000000 <span class="operator">|</span> zhaoyun10000000 <span class="operator">|</span> <span class="number">23</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span> beijing <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------+------------+-----------------+------+------+--------+---------+</span></span><br><span class="line"></span><br><span class="line"><span class="number">2</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p><strong>10. 分段查询</strong></p>
+<p>一些用户选择页面中，可能一些用户选择的范围过大，造成查询缓慢。主要的原因是扫描行数过多。这个时候可以通过程序，分段进行查询，循环遍历，将结果合并处理进行展示。</p>
+<p><strong>11. 不建议使用%前缀模糊查询</strong></p>
+<p>例如LIKE“%name”或者LIKE“%name%”，这种查询会导致索引失效而进行全表扫描。但是可以使用LIKE“name%”。</p>
+<p>那么如何解决这个问题呢，答案：使用全文索引或ES全文检索</p>
+<p><strong>12. 避免在where子句中对字段进行表达式操作</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> user_base <span class="keyword">where</span> age<span class="operator">*</span><span class="number">2</span><span class="operator">=</span><span class="number">36</span>;</span><br></pre></td></tr></table></figure>
+<p>中对字段就行了算术运算，这会造成引擎放弃使用索引，建议改成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> user_base <span class="keyword">where</span> age<span class="operator">=</span><span class="number">36</span><span class="operator">/</span><span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>13. 避免隐式类型转换</strong></p>
+<p>where子句中出现column字段的类型和传入的参数类型不一致的时候发生的类型转换，建议先确定where中的参数类型。 where age=’18’</p>
+<p><strong>14. 对于联合索引来说，要遵守最左前缀法则</strong></p>
+<p>举列来说索引含有字段id、name、school，可以直接用id字段，也可以id、name这样的顺序，但是name;school都无法使用这个索引。所以在创建联合索引的时候一定要注意索引字段顺序，常用的查询字段放在最前面。</p>
+<p><strong>15. 必要时可以使用force index来强制查询走某个索引</strong></p>
+<p>有的时候MySQL优化器采取它认为合适的索引来检索SQL语句，但是可能它所采用的索引并不是我们想要的。这时就可以采用forceindex来强制优化器使用我们制定的索引。</p>
+<p><strong>16. 注意范围查询语句</strong></p>
+<p>对于联合索引来说，如果存在范围查询，比如between、&gt;、&lt;等条件时，会造成后面的索引字段失效。</p>
+<p><strong>17. 使用JOIN优化</strong></p>
+<p>LEFT JOIN A表为驱动表，INNER JOIN MySQL会自动找出那个数据少的表作用驱动表，RIGHT JOIN B表为驱动表。</p>
+<p>注意：</p>
+<ul>
+<li>MySQL中没有full join，可以用以下方式来解决：</li>
+<li>尽量使用inner join，避免left join：</li>
+</ul>
+<p>参与联合查询的表至少为2张表，一般都存在大小之分。如果连接方式是inner join，在没有其他过滤条件的情况下MySQL会自动选择小表作为驱动表，但是left join在驱动表的选择上遵循的是左边驱动右边的原则，即left join左边的表名为驱动表。</p>
+<ul>
+<li>合理利用索引：</li>
+</ul>
+<p>被驱动表的索引字段作为on的限制字段。</p>
+<ul>
+<li>利用小表去驱动大表：</li>
+</ul>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/mysql/m2.png" fancybox="true"/></div></div>
+
+<p>从原理图能够直观的看出如果能够减少驱动表的话，减少嵌套循环中的循环次数，以减少 IO总量及CPU运算的次数。</p>
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>READ NEXT</span></section><section class="body fs14"><a id="next" href="/java/jvm/jvm-class-loader2/">类加载器<span class="note">Older</span></a><div class="line"></div><a id="prev" href="/JSONParser/">撸一个JSON解析器<span class="note">Newer</span></a></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      Join the discussion
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="gaoyanliang/beaudar" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><object data="https://img.shields.io/static/v1?label=强力驱动&message=Hexo&style=social&logo=Hexo&logoColor=0E83CD&link=https://hexo.io/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=GitHub&style=social&logo=GitHub&logoColor=181717&link=https://github.com/gyl-coder"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=Vercel&style=social&logo=Vercel&logoColor=000000&link=https://vercel.com"></object> &nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=图片分发&message=jsDelivr&style=social&logo=jsDelivr&logoColor=E84D3D&link=https://www.jsdelivr.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=域名解析&message=Aliyun&style=social&logo=Alibaba Cloud&logoColor=FF6A00&link=https://www.aliyun.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=许可协议&message=CC BY-NC-SA 4.0&style=social&logo=Creative Commons&logoColor=EF9421&link=https://creativecommons.org/licenses/by-nc-sa/4.0/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=博客作者&message=Yanliang&style=social&logo=Blogger&logoColor=FF5722&link=https://yanliang.cool/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=原创主题&message=Stellar&style=social&logo=Badoo&logoColor=783BF9&link=https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0"></object>&nbsp;&nbsp;</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.7.0';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
