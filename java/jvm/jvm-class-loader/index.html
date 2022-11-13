@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   
 
@@ -18,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>JVM - yanliang</title>
+  <title>JVM</title>
 
   
     <meta name="description" content="类加载子系统主要包含如下几项功能：  负责从文件系统或是网络中加载.class文件，class文件在文件开头有特定的文件标识。  把加载后的class类信息存放于方法区，除了类信息之外，方法区还会存放运行时常量池信息，可能还包括字符串字面量和数字常量（这部分常量信息是Class文件中常量池部分的内存映射）。 ClassLoader只负责class文件的加载，至于它是否可以运行，则由Executio">
@@ -417,7 +418,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -434,7 +436,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

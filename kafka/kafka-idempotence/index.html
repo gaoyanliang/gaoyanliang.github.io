@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   
 
@@ -18,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>kafka - yanliang</title>
+  <title>kafka</title>
 
   
     <meta name="description" content="什么是幂等幂等 这个词原是数学领域中的概念，指的是某些操作或函数能够被执行多次，但每次得到的结果都是不变的。 下面通过几个简单的例子说明一下。 比如在乘法运算中，让数字乘以 1 就是一个幂等操作，因为不管你执行多少次这样的运算，结果都是相同的。再比如，取整函数（floor 和 ceiling）是幂等函数，那么运行 1 次 floor(3.4) 和 100 次 floor(3.4)，结果是一样的，都">
@@ -376,7 +377,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -393,7 +395,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

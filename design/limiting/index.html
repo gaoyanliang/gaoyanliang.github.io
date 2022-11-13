@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   
 
@@ -18,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>algorithm - yanliang</title>
+  <title>algorithm</title>
 
   
     <meta name="description" content="限流工程上的限流是什么呢？ 限制的是 「流」，在不同场景下「流」的定义不同，可以是每秒请求数、每秒事务处理数、网络流量等等。 通常我们说的限流指代的是 限制到达系统的并发请求数，使得系统能够正常的处理 部分 用户的请求，来保证系统的稳定性。 限流不可避免的会造成用户的请求变慢或者被拒的情况，从而会影响用户体验。因此限流是需要在用户体验和系统稳定性之间做平衡的，即我们常说的 trade off。 限">
@@ -291,7 +292,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -308,7 +310,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

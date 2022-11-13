@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   <meta name="robots" content="noindex,follow">
 
@@ -94,29 +95,9 @@
   
 
 
-  <div class='nav-wrap'>
-  <nav class='sub post cap'>
-    
-      <a href='/'>Recent</a>
-    
-    
-      
-        <a class='active' href='/categories'>Category: 网络</a>
-      
-    
-    
-      
-        <a href='/tags'>Tags</a>
-      
-    
-    
-      
-        <a href='/archives'>Archives</a>
-      
-    
-  </nav>
-</div>
+  
 
+<div class="nav-wrap"><nav class="sub post cap"><a href="/">Recent</a><a class="active" href="/categories">Category: 网络</a><a href="/tags">Tags</a><a href="/archives">Archives</a></nav></div>
   <div class="post-list post"><a class="post-card post " href="/network/token_cookie_session/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/network/n.png"/></div><h2 class="post-title">Token、Cookie、Session傻傻分不清楚？</h2><div class="excerpt"><p>Cookiecookie 是一个非常具体的东西，指的就是浏览器里面能永久存储的一种数据，仅仅是浏览器实现的一种数据存储功能。
 cookie由服务器生成，发送给浏览器，浏览器把cookie以 kv 形式保存到某个目录下的文本文件内，下一次请求同一网站时会把该cookie发送给服务器。
@@ -236,7 +217,8 @@ cookie由服务器生成，发送给浏览器，浏览器把cookie以 kv 形式�
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -253,7 +235,7 @@ cookie由服务器生成，发送给浏览器，浏览器把cookie以 kv 形式�
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

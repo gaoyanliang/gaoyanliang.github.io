@@ -1,4 +1,4 @@
-console.log('hexo-theme-stellar:\n' + stellar.github);
+console.log('\n' + '%c Stellar v' + stellar.version + ' %c\n' + stellar.github + '\n', 'color:#e8fafe;background:#03c7fa;padding:8px;border-radius:4px', 'margin-top:8px');
 // utils
 const util = {
 
@@ -219,7 +219,7 @@ if (stellar.plugins.stellar) {
     let js = stellar.plugins.stellar[key];
     if (key == 'linkcard') {
       stellar.loadScript(js, { defer: true }).then(function () {
-        setCardLink(document.querySelectorAll('a.link-card'));
+        setCardLink(document.querySelectorAll('a.link-card[cardlink]'));
       });
     } else {
       const els = document.getElementsByClassName('stellar-' + key + '-api');

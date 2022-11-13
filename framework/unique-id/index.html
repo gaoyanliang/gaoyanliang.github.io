@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   
 
@@ -18,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>分布式ID - yanliang</title>
+  <title>分布式ID</title>
 
   
     <meta name="description" content="概述唯一id是我们在设计阶段常常遇到的问题。 在复杂的分布式系统中，几乎都需要对大量的数据和消息进行唯一标识。在设计初期，我们需要考虑日后数据量的级别，如果可能会对数据进行分库分表，那么就需要有一个全局唯一id来标识一条数据或记录。 生成唯一id的策略有多种，但是每种策略都有它的适用场景、优点以及局限性。">
@@ -236,9 +237,9 @@
 <li>序列号部分（12bit），自增值支持同一毫秒内同一个节点可以生成4096个ID</li>
 </ul>
 <p>具体实现的代码可以参看如下：</p>
-<div class="tag-plugin link dis-select"><a class="link-card plain" title="twitter-archive/snowflake Twitter的雪花算法SnowFlake" href="https://github.com/twitter-archive/snowflake" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">twitter-archive/snowflake Twitter的雪花算法SnowFlake</span><span class="cap link fs12">https://github.com/twitter-archive/snowflake</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<div class="tag-plugin link dis-select"><a class="link-card plain" title="twitter-archive/snowflake Twitter的雪花算法SnowFlake" href="https://github.com/twitter-archive/snowflake" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">twitter-archive/snowflake Twitter的雪花算法SnowFlake</span><span class="cap link fs12">https://github.com/twitter-archive/snowflake</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
-<div class="tag-plugin link dis-select"><a class="link-card plain" title="beyondfengyu/SnowFlake Twitter的雪花算法SnowFlake，使用Java语言实现。" href="https://github.com/beyondfengyu/SnowFlake" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">beyondfengyu/SnowFlake Twitter的雪花算法SnowFlake，使用Java语言实现。</span><span class="cap link fs12">https://github.com/beyondfengyu/SnowFlake</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<div class="tag-plugin link dis-select"><a class="link-card plain" title="beyondfengyu/SnowFlake Twitter的雪花算法SnowFlake，使用Java语言实现。" href="https://github.com/beyondfengyu/SnowFlake" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">beyondfengyu/SnowFlake Twitter的雪花算法SnowFlake，使用Java语言实现。</span><span class="cap link fs12">https://github.com/beyondfengyu/SnowFlake</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>snowflake算法可以根据自身项目的需要进行一定的修改。比如估算未来的数据中心个数，每个数据中心的机器数以及统一毫秒可以能的并发数来调整在算法中所需要的bit数。</p>
 <p><strong>优点</strong></p>
@@ -256,7 +257,7 @@
 <p>uid-generator需要与数据库配合使用，需要新增一个WORKER_NODE表。当应用启动时会向数据库表中去插入一条数据，插入成功后返回的自增ID就是该机器的workId数据由host，port组成。</p>
 <p><strong>对于uid-generator ID组成结构：</strong></p>
 <p>workId，占用了22个bit位，时间占用了28个bit位，序列化占用了13个bit位，需要注意的是，和原始的snowflake不太一样，时间的单位是秒，而不是毫秒，workId也不一样，而且同一应用每次重启就会消费一个workId。</p>
-<div class="tag-plugin link dis-select"><a class="link-card plain" title="uid-generator 百度 uid-generator" href="https://github.com/baidu/uid-generator" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">uid-generator 百度 uid-generator</span><span class="cap link fs12">https://github.com/baidu/uid-generator</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<div class="tag-plugin link dis-select"><a class="link-card plain" title="uid-generator 百度 uid-generator" href="https://github.com/baidu/uid-generator" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">uid-generator 百度 uid-generator</span><span class="cap link fs12">https://github.com/baidu/uid-generator</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <h3 id="美团-Leaf"><a href="#美团-Leaf" class="headerlink" title="美团 Leaf"></a>美团 Leaf</h3><p>Leaf由美团开发，Leaf同时支持号段模式和snowflake算法模式，可以切换使用。</p>
 <h4 id="号段模式"><a href="#号段模式" class="headerlink" title="号段模式"></a>号段模式</h4><p>先导入源码 <u>https://github.com/Meituan-Dianping/Leaf</u>，再建一张表 <emp>leaf_alloc</emp> </p>
@@ -428,7 +429,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -445,7 +447,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

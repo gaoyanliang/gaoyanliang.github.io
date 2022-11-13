@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   
 
@@ -32,8 +33,8 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys2.jpg">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys3.jpg">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys4.jpg">
-<meta property="article:published_time" content="2022-11-13T08:38:28.437Z">
-<meta property="article:modified_time" content="2022-11-13T08:38:28.437Z">
+<meta property="article:published_time" content="2022-11-13T09:45:00.132Z">
+<meta property="article:modified_time" content="2022-11-13T09:45:00.132Z">
 <meta property="article:author" content="yanliang">
 <meta property="article:tag" content="blog, Java, IT">
 <meta name="twitter:card" content="summary">
@@ -97,11 +98,11 @@
 
   
   
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/git/">Git</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2022-11-13T08:38:28.437Z">Nov 13, 2022</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/git/">Git</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2022-11-13T09:45:00.132Z">Nov 13, 2022</time></div></div>
 
   <article class='content md wiki'>
   <h1 class="article-title"><span>安装与配置</span></h1>
-  <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><div class="tag-plugin tabs"id="tab_3""><ul class="nav-tabs"><li class="tab active"><a href="#tab_3-1">Linux</a></li><li class="tab"><a href="#tab_3-2">Windows</a></li><li class="tab"><a href="#tab_3-3">Mac</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tab_3-1"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/linux" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://git-scm.com/download/linux</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+  <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><div class="tag-plugin tabs"id="tab_3""><ul class="nav-tabs"><li class="tab active"><a href="#tab_3-1">Linux</a></li><li class="tab"><a href="#tab_3-2">Windows</a></li><li class="tab"><a href="#tab_3-3">Mac</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tab_3-1"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/linux" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://git-scm.com/download/linux</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>安装指定系统的依赖包：</p>
 <figure class="highlight plaintext"><figcaption><span>Centos/RedHat</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ yum install curl-devel expat-devel gettext-devel \</span><br><span class="line">  openssl-devel zlib-devel</span><br></pre></td></tr></table></figure>
@@ -110,10 +111,10 @@
 <p>解压安装下载的源码包：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ tar -zxf git-1.7.2.2.tar.gz</span><br><span class="line">$ cd git-1.7.2.2</span><br><span class="line">$ make prefix=/usr/local all</span><br><span class="line">$ sudo make prefix=/usr/local install</span><br></pre></td></tr></table></figure>
 
-<details class="tag-plugin folding" ><summary><span>使用终端指令安装</span></summary><div class="body"><p><strong>Debian/Ubuntu</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install libcurl4-gnutls-dev libexpat1-dev gettext \</span><br><span class="line">  libz-dev libssl-dev</span><br><span class="line"></span><br><span class="line">$ apt-get install git</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.8.1.2</span><br></pre></td></tr></table></figure><p><strong>CentOS/RedHat</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ yum install curl-devel expat-devel gettext-devel \</span><br><span class="line">  openssl-devel zlib-devel</span><br><span class="line"></span><br><span class="line">$ yum -y install git-core</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.7.1</span><br></pre></td></tr></table></figure></div></details></div><div class="tab-pane" id="tab_3-2"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://gitforwindows.org/" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://gitforwindows.org/</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<details class="tag-plugin folding" ><summary><span>使用终端指令安装</span></summary><div class="body"><p><strong>Debian/Ubuntu</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install libcurl4-gnutls-dev libexpat1-dev gettext \</span><br><span class="line">  libz-dev libssl-dev</span><br><span class="line"></span><br><span class="line">$ apt-get install git</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.8.1.2</span><br></pre></td></tr></table></figure><p><strong>CentOS/RedHat</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ yum install curl-devel expat-devel gettext-devel \</span><br><span class="line">  openssl-devel zlib-devel</span><br><span class="line"></span><br><span class="line">$ yum -y install git-core</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.7.1</span><br></pre></td></tr></table></figure></div></details></div><div class="tab-pane" id="tab_3-2"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://gitforwindows.org/" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://gitforwindows.org/</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>完成安装之后，就可以使用命令行的 git 工具（已经自带了 ssh 客户端）了，另外还有一个图形界面的 Git 项目管理工具。</p>
-<p>在开始菜单里找到 <kbd>Git</kbd> -&gt; <kbd>Git Bash</kbd>，会弹出 Git 命令窗口，你可以在该窗口进行 Git 操作。</p></div><div class="tab-pane" id="tab_3-3"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/mac" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://git-scm.com/download/mac</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<p>在开始菜单里找到 <kbd>Git</kbd> -&gt; <kbd>Git Bash</kbd>，会弹出 Git 命令窗口，你可以在该窗口进行 Git 操作。</p></div><div class="tab-pane" id="tab_3-3"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/mac" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://git-scm.com/download/mac</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>Mac 自带 git 并且随着系统版本的更新，自带的 git 也会升级到最新，一般无需手动安装。</p></div></div></div>
 
@@ -284,7 +285,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -301,7 +303,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

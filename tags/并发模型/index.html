@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   <meta name="robots" content="noindex,follow">
 
@@ -94,29 +95,9 @@
   
 
 
-  <div class='nav-wrap'>
-  <nav class='sub post cap'>
-    
-      <a href='/'>Recent</a>
-    
-    
-      
-        <a href='/categories'>Categories</a>
-      
-    
-    
-      
-        <a class='active' href='/tags'>Tag: 并发模型</a>
-      
-    
-    
-      
-        <a href='/archives'>Archives</a>
-      
-    
-  </nav>
-</div>
+  
 
+<div class="nav-wrap"><nav class="sub post cap"><a href="/">Recent</a><a href="/categories">Categories</a><a class="active" href="/tags">Tag: 并发模型</a><a href="/archives">Archives</a></nav></div>
   <div class="post-list post"><a class="post-card post " href="/concurrent/actor/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/actor.jpg"/></div><h2 class="post-title">Actor Model</h2><div class="excerpt"><p>Actors模型(Actor model)首先是由Carl Hewitt在1973定义， 由Erlang OTP (Open Telecom Platform) 推广，其消息传递更加符合面向对象的原始意图。 Actors属于并发组件模型 ，通过组件方式定义并发编程范式的高级阶段，避免使用者直接接触多线程并发或线程池等基础概念。</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-11-03T00:00:00.000Z">Nov 3, 2021</time></span><span class="cap breadcrumb">Actor 模型</span><span class="cap breadcrumb">并发模型</span></div></article>
 </a></div>
@@ -231,7 +212,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -248,7 +230,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

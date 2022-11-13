@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   
 
@@ -92,29 +93,9 @@
       
 
 
-  <div class='nav-wrap'>
-  <nav class='sub post cap'>
-    
-      <a class='active' href='/'>Recent</a>
-    
-    
-      
-        <a href='/categories'>Categories</a>
-      
-    
-    
-      
-        <a href='/tags'>Tags</a>
-      
-    
-    
-      
-        <a href='/archives'>Archives</a>
-      
-    
-  </nav>
-</div>
+  
 
+<div class="nav-wrap"><nav class="sub post cap"><a class="active" href="/">Recent</a><a href="/categories">Categories</a><a href="/tags">Tags</a><a href="/archives">Archives</a></nav></div>
   <div class="post-list post"><a class="post-card post " href="/kafka/kafka-reliability/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-2.jpg"/></div><h2 class="post-title">kafka 如何保障数据可靠性？</h2><div class="excerpt"><p>Kafka 中采用了多副本的机制，这是大多数分布式系统中惯用的手法，以此来实现水平扩展、提供容灾能力、提升可用性和可靠性等。
 我们对此可以引申出一系列的疑问：</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-18T00:00:00.000Z">Aug 18, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span><span class="cap breadcrumb" style="color:#03045e">可靠性</span><span class="pin"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/badge/3279dd441df8b.svg"/></span></div></article>
@@ -285,7 +266,8 @@ Qu...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Poste
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -302,7 +284,7 @@ Qu...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Poste
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins

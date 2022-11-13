@@ -3,6 +3,7 @@
 
 <head>
   <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1">
   <meta charset="utf-8">
   <meta name="robots" content="noindex,follow">
 
@@ -94,29 +95,9 @@
   
 
 
-  <div class='nav-wrap'>
-  <nav class='sub post cap'>
-    
-      <a href='/'>Recent</a>
-    
-    
-      
-        <a href='/categories'>Categories</a>
-      
-    
-    
-      
-        <a class='active' href='/tags'>Tag: 可靠性</a>
-      
-    
-    
-      
-        <a href='/archives'>Archives</a>
-      
-    
-  </nav>
-</div>
+  
 
+<div class="nav-wrap"><nav class="sub post cap"><a href="/">Recent</a><a href="/categories">Categories</a><a class="active" href="/tags">Tag: 可靠性</a><a href="/archives">Archives</a></nav></div>
   <div class="post-list post"><a class="post-card post " href="/redis/redis_persistence/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/redis/redis.png"/></div><h2 class="post-title">Redis 持久化： AOF & RDB</h2><div class="excerpt"><p>Redis 的一个普遍使用场景是把它当作缓存使用，因为它把后端数据库中的数据存储在内存中，然后直接从内存中读取数据，响应速度会非常快。但是，这里也有一个绝对不能忽略的问题：一旦服务器宕机，内存中的数据将全部丢失。</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2022-01-01T00:00:00.000Z">Jan 1, 2022</time></span><span class="cap breadcrumb" style="color:#03045e">可靠性</span><span class="cap breadcrumb">redis</span><span class="cap breadcrumb">持久化</span></div></article>
 </a><a class="post-card post " href="/kafka/kafka-reliability/">
@@ -234,7 +215,8 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
+  stellar.version = '1.15.1';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.15.1';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -251,7 +233,7 @@
   };
 
   // stellar js
-  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js"});
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins
