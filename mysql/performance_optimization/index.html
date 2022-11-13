@@ -7,8 +7,8 @@
   
 
   <meta http-equiv='x-dns-prefetch-control' content='on' />
-  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
   <link rel='dns-prefetch' href='//unpkg.com'>
 
   <meta name="renderer" content="webkit">
@@ -19,8 +19,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   <title>mysql - yanliang</title>
-
-  
 
   
     <meta name="description" content="数据库优化维度有四个：  硬件升级 系统配置 表结构设计 SQL语句及索引    优化选择：  优化成本：硬件升级 &gt; 系统配置 &gt; 表结构设计 &gt; SQL语句及索引。 优化效果：硬件升级 &lt; 系统配置 &lt; 表结构设计 &lt; SQL语句及索引。">
@@ -56,6 +54,11 @@
   
 
   
+
+  
+
+
+  
 </head>
 
 <body>
@@ -66,15 +69,19 @@
     <aside class='l_left' layout='post'>
     
 
+  
 
 <header class="header">
 
-<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/index-head.png" onerror="javascript:this.classList.add('error');this.src='https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main"><div style="line-height: 1.5; letter-spacing: 3px; position: relative;">Yanliang</div> <div style="font-size: .85rem; letter-spacing: 1px; font-weight: 500;">Believe in yourself.</div></div></a></div>
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/index-head.png" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title"><div style="line-height: 1.5; letter-spacing: 3px; position: relative;">Yanliang</div> <div style="font-size: .85rem; letter-spacing: 1px; font-weight: 500;">Believe in yourself.</div></div></a></div>
+
+
 <nav class="menu dis-select"><a class="nav-item active" href="/">Blog</a><a class="nav-item" href="/wiki/">Wiki</a><a class="nav-item" href="/friends/">Friends</a><a class="nav-item" href="/about/">More</a></nav></header>
+
 
 <div class="widgets">
 
-<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">TOC</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="toc-text">系统配置优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%86%85%E5%AD%98%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-text">从内存中读取数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E7%83%AD%E6%95%B0%E6%8D%AE"><span class="toc-text">预热数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%8F%E5%B0%91%E7%A3%81%E7%9B%98%E5%86%99%E5%85%A5%E6%AC%A1%E6%95%B0"><span class="toc-text">减少磁盘写入次数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98%E7%A3%81%E7%9B%98%E8%AF%BB%E5%86%99%E6%80%A7%E8%83%BD"><span class="toc-text">提高磁盘读写性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E7%BB%93%E6%9E%84%E4%BC%98%E5%8C%96"><span class="toc-text">表结构优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E8%AF%AD%E5%8F%A5%E5%8F%8A%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96"><span class="toc-text">SQL语句及索引优化</span></a></li></ol></div></div></div>
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">Mysql 性能优化</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="toc-text">系统配置优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%86%85%E5%AD%98%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-text">从内存中读取数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E7%83%AD%E6%95%B0%E6%8D%AE"><span class="toc-text">预热数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%8F%E5%B0%91%E7%A3%81%E7%9B%98%E5%86%99%E5%85%A5%E6%AC%A1%E6%95%B0"><span class="toc-text">减少磁盘写入次数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98%E7%A3%81%E7%9B%98%E8%AF%BB%E5%86%99%E6%80%A7%E8%83%BD"><span class="toc-text">提高磁盘读写性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E7%BB%93%E6%9E%84%E4%BC%98%E5%8C%96"><span class="toc-text">表结构优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E8%AF%AD%E5%8F%A5%E5%8F%8A%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96"><span class="toc-text">SQL语句及索引优化</span></a></li></ol></div></div></div>
 
 
 </div>
@@ -85,6 +92,7 @@
       
 
       
+
 
 <div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/mysql/">Mysql</a></div><div id="post-meta">💧 Posted on&nbsp;<time datetime="2021-10-23T00:00:00.000Z">Oct 23, 2021</time></div></div>
 
@@ -218,7 +226,7 @@
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>READ NEXT</span></section><section class="body fs14"><a id="next" href="/java/jvm/jvm-class-loader2/">类加载器<span class="note">Older</span></a><div class="line"></div><a id="prev" href="/JSONParser/">撸一个JSON解析器<span class="note">Newer</span></a></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/JSONParser/">撸一个JSON解析器</a></div><div class="item" id="next"><div class="note">Older</div><a href="/java/jvm/jvm-class-loader2/">类加载器</a></div></section></div>
 
 
 
@@ -242,7 +250,8 @@
 
 
       
-<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><object data="https://img.shields.io/static/v1?label=强力驱动&message=Hexo&style=social&logo=Hexo&logoColor=0E83CD&link=https://hexo.io/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=GitHub&style=social&logo=GitHub&logoColor=181717&link=https://github.com/gyl-coder"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=Vercel&style=social&logo=Vercel&logoColor=000000&link=https://vercel.com"></object> &nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=图片分发&message=jsDelivr&style=social&logo=jsDelivr&logoColor=E84D3D&link=https://www.jsdelivr.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=域名解析&message=Aliyun&style=social&logo=Alibaba Cloud&logoColor=FF6A00&link=https://www.aliyun.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=许可协议&message=CC BY-NC-SA 4.0&style=social&logo=Creative Commons&logoColor=EF9421&link=https://creativecommons.org/licenses/by-nc-sa/4.0/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=博客作者&message=Yanliang&style=social&logo=Blogger&logoColor=FF5722&link=https://yanliang.cool/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=原创主题&message=Stellar&style=social&logo=Badoo&logoColor=783BF9&link=https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0"></object>&nbsp;&nbsp;</div></footer>
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
 
       <div class='float-panel mobile-only blur' style='display:none'>
   <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
@@ -345,7 +354,7 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.7.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -358,14 +367,16 @@
 
   // required plugins (only load if needs)
   stellar.plugins = {
-    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
-    sitesjs: '/js/plugins/sites.js',
-    friendsjs: '/js/plugins/friends.js',
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js'
   };
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins
   if ('true' == 'true') {
-    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
   }
   if ('true' == 'true') {
     stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
@@ -378,13 +389,13 @@
   // -------- end 自定义首页文章轮播
 
   if ('' == 'true') {
-    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
   }
   if ('true' == 'true') {
-    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
   }
   if ('true' == 'true') {
-    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
   }
   if ('false' == 'true') {
     stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});

@@ -7,8 +7,8 @@
   
 
   <meta http-equiv='x-dns-prefetch-control' content='on' />
-  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
   <link rel='dns-prefetch' href='//unpkg.com'>
 
   <meta name="renderer" content="webkit">
@@ -19,8 +19,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   <title>Git: 安装与配置 - yanliang</title>
-
-  
 
   
     <meta name="description" content="安装">
@@ -34,8 +32,8 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys2.jpg">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys3.jpg">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys4.jpg">
-<meta property="article:published_time" content="2022-10-05T04:39:42.621Z">
-<meta property="article:modified_time" content="2022-10-05T04:39:42.621Z">
+<meta property="article:published_time" content="2022-11-13T08:38:28.437Z">
+<meta property="article:modified_time" content="2022-11-13T08:38:28.437Z">
 <meta property="article:author" content="yanliang">
 <meta property="article:tag" content="blog, Java, IT">
 <meta name="twitter:card" content="summary">
@@ -57,6 +55,11 @@
   
 
   
+
+  
+
+
+  
 </head>
 
 <body>
@@ -68,15 +71,17 @@
     <aside class='l_left' layout='wiki'>
     
 
+  
 
 <header class="header">
 
-<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/git/"><div class="main">Git 工具</div></a></div>
+<div class="logo-wrap wiki"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/git/"><div class="main" ff="title">Git</div></a></div>
 </header>
+
 
 <div class="widgets">
 
-<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">TOC</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/"><span class="toc-text">认识 Git</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/git/install-and-config/"><span class="toc-text">安装与配置</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF"><span class="toc-text">用户信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="toc-text">查看配置信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-ssh"><span class="toc-text">git-ssh</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/usage/"><span class="toc-text">基本操作入门</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/github/"><span class="toc-text">使用 GitHub</span></a></div></div></div>
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">安装与配置</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/"><span class="toc-text">认识 Git</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/git/install-and-config/"><span class="toc-text">安装与配置</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF"><span class="toc-text">用户信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="toc-text">查看配置信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-ssh"><span class="toc-text">git-ssh</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/usage/"><span class="toc-text">基本操作入门</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/git/github/"><span class="toc-text">使用 GitHub</span></a></div></div></div>
 
 
 
@@ -92,11 +97,11 @@
 
   
   
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/git/">Git 工具</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2022-10-05T04:39:42.621Z">Oct 5, 2022</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/git/">Git</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2022-11-13T08:38:28.437Z">Nov 13, 2022</time></div></div>
 
   <article class='content md wiki'>
   <h1 class="article-title"><span>安装与配置</span></h1>
-  <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><div class="tag-plugin tabs"id="tab_3""><ul class="nav-tabs"><li class="tab active"><a href="#tab_3-1">Linux</a></li><li class="tab"><a href="#tab_3-2">Windows</a></li><li class="tab"><a href="#tab_3-3">Mac</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tab_3-1"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/linux" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="desc fs12">https://git-scm.com/download/linux</span></div><div class="right"><div class="lazy img" data-bg="https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+  <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><div class="tag-plugin tabs"id="tab_3""><ul class="nav-tabs"><li class="tab active"><a href="#tab_3-1">Linux</a></li><li class="tab"><a href="#tab_3-2">Windows</a></li><li class="tab"><a href="#tab_3-3">Mac</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tab_3-1"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/linux" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://git-scm.com/download/linux</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>安装指定系统的依赖包：</p>
 <figure class="highlight plaintext"><figcaption><span>Centos/RedHat</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ yum install curl-devel expat-devel gettext-devel \</span><br><span class="line">  openssl-devel zlib-devel</span><br></pre></td></tr></table></figure>
@@ -105,10 +110,10 @@
 <p>解压安装下载的源码包：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ tar -zxf git-1.7.2.2.tar.gz</span><br><span class="line">$ cd git-1.7.2.2</span><br><span class="line">$ make prefix=/usr/local all</span><br><span class="line">$ sudo make prefix=/usr/local install</span><br></pre></td></tr></table></figure>
 
-<details class="tag-plugin folding" ><summary><span>使用终端指令安装</span></summary><div class="body"><p><strong>Debian/Ubuntu</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install libcurl4-gnutls-dev libexpat1-dev gettext \</span><br><span class="line">  libz-dev libssl-dev</span><br><span class="line"></span><br><span class="line">$ apt-get install git</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.8.1.2</span><br></pre></td></tr></table></figure><p><strong>CentOS/RedHat</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ yum install curl-devel expat-devel gettext-devel \</span><br><span class="line">  openssl-devel zlib-devel</span><br><span class="line"></span><br><span class="line">$ yum -y install git-core</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.7.1</span><br></pre></td></tr></table></figure></div></details></div><div class="tab-pane" id="tab_3-2"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://gitforwindows.org/" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="desc fs12">https://gitforwindows.org/</span></div><div class="right"><div class="lazy img" data-bg="https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<details class="tag-plugin folding" ><summary><span>使用终端指令安装</span></summary><div class="body"><p><strong>Debian/Ubuntu</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install libcurl4-gnutls-dev libexpat1-dev gettext \</span><br><span class="line">  libz-dev libssl-dev</span><br><span class="line"></span><br><span class="line">$ apt-get install git</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.8.1.2</span><br></pre></td></tr></table></figure><p><strong>CentOS/RedHat</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ yum install curl-devel expat-devel gettext-devel \</span><br><span class="line">  openssl-devel zlib-devel</span><br><span class="line"></span><br><span class="line">$ yum -y install git-core</span><br><span class="line"></span><br><span class="line">$ git --version</span><br><span class="line">git version 1.7.1</span><br></pre></td></tr></table></figure></div></details></div><div class="tab-pane" id="tab_3-2"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://gitforwindows.org/" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://gitforwindows.org/</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>完成安装之后，就可以使用命令行的 git 工具（已经自带了 ssh 客户端）了，另外还有一个图形界面的 Git 项目管理工具。</p>
-<p>在开始菜单里找到 <kbd>Git</kbd> -&gt; <kbd>Git Bash</kbd>，会弹出 Git 命令窗口，你可以在该窗口进行 Git 操作。</p></div><div class="tab-pane" id="tab_3-3"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/mac" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="desc fs12">https://git-scm.com/download/mac</span></div><div class="right"><div class="lazy img" data-bg="https://cdn.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<p>在开始菜单里找到 <kbd>Git</kbd> -&gt; <kbd>Git Bash</kbd>，会弹出 Git 命令窗口，你可以在该窗口进行 Git 操作。</p></div><div class="tab-pane" id="tab_3-3"><div class="tag-plugin link dis-select"><a class="link-card plain" title="下载地址" href="https://git-scm.com/download/mac" target="_blank" rel="external nofollow noopener noreferrer"><div class="left"><span class="title">下载地址</span><span class="cap link fs12">https://git-scm.com/download/mac</span></div><div class="right"><div class="lazy img" data-bg="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/link/8f277b4ee0ecd.svg"></div></div></a></div>
 
 <p>Mac 自带 git 并且随着系统版本的更新，自带的 git 也会升级到最新，一般无需手动安装。</p></div></div></div>
 
@@ -153,7 +158,7 @@
 
   </article>
   
-<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>READ NEXT</span></section><section class="body fs14"><a id="next" href="/wiki/git/usage/">基本操作入门<span class="note">Next</span></a><div class="line"></div><a id="prev" href="/wiki/git/">认识 Git<span class="note">Prev</span></a></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Prev</div><a href="/wiki/git/">认识 Git</a></div><div class="item" id="next"><div class="note">Next</div><a href="/wiki/git/usage/">基本操作入门</a></div></section></div>
 
   
 
@@ -175,7 +180,8 @@
 
 
       
-<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><object data="https://img.shields.io/static/v1?label=强力驱动&message=Hexo&style=social&logo=Hexo&logoColor=0E83CD&link=https://hexo.io/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=GitHub&style=social&logo=GitHub&logoColor=181717&link=https://github.com/gyl-coder"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=网站部署&message=Vercel&style=social&logo=Vercel&logoColor=000000&link=https://vercel.com"></object> &nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=图片分发&message=jsDelivr&style=social&logo=jsDelivr&logoColor=E84D3D&link=https://www.jsdelivr.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=域名解析&message=Aliyun&style=social&logo=Alibaba Cloud&logoColor=FF6A00&link=https://www.aliyun.com/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=许可协议&message=CC BY-NC-SA 4.0&style=social&logo=Creative Commons&logoColor=EF9421&link=https://creativecommons.org/licenses/by-nc-sa/4.0/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=博客作者&message=Yanliang&style=social&logo=Blogger&logoColor=FF5722&link=https://yanliang.cool/"></object>&nbsp;&nbsp;<object data="https://img.shields.io/static/v1?label=原创主题&message=Stellar&style=social&logo=Badoo&logoColor=783BF9&link=https://github.com/xaoxuu/hexo-theme-stellar/tree/1.4.0"></object>&nbsp;&nbsp;</div></footer>
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
 
       <div class='float-panel mobile-only blur' style='display:none'>
   <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
@@ -278,7 +284,7 @@
       }
     }
   };
-  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.7.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.12.0';
   stellar.config = {
     date_suffix: {
       just: 'Just',
@@ -291,14 +297,16 @@
 
   // required plugins (only load if needs)
   stellar.plugins = {
-    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
-    sitesjs: '/js/plugins/sites.js',
-    friendsjs: '/js/plugins/friends.js',
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js'
   };
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
 
   // optional plugins
   if ('true' == 'true') {
-    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
   }
   if ('true' == 'true') {
     stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
@@ -311,13 +319,13 @@
   // -------- end 自定义首页文章轮播
 
   if ('' == 'true') {
-    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://cdn.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
   }
   if ('true' == 'true') {
-    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
   }
   if ('true' == 'true') {
-    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
   }
   if ('false' == 'true') {
     stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});

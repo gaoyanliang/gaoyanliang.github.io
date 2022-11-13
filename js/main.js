@@ -213,21 +213,25 @@ if (stellar.plugins.lazyload) {
   });
 }
 
-// issuesjs
-if (stellar.plugins.sitesjs) {
-  const issues_api = document.getElementById('sites-api');
-  if (issues_api != undefined) {
-    stellar.jQuery(() => {
-      stellar.loadScript(stellar.plugins.sitesjs, { defer: true })
-    })
-  }
-}
-if (stellar.plugins.friendsjs) {
-  const issues_api = document.getElementById('friends-api');
-  if (issues_api != undefined) {
-    stellar.jQuery(() => {
-      stellar.loadScript(stellar.plugins.friendsjs, { defer: true })
-    })
+// stellar js
+if (stellar.plugins.stellar) {
+  for (let key of Object.keys(stellar.plugins.stellar)) {
+    let js = stellar.plugins.stellar[key];
+    if (key == 'linkcard') {
+      stellar.loadScript(js, { defer: true }).then(function () {
+        setCardLink(document.querySelectorAll('a.link-card'));
+      });
+    } else {
+      const els = document.getElementsByClassName('stellar-' + key + '-api');
+      if (els != undefined && els.length > 0) {
+        stellar.jQuery(() => {
+          stellar.loadScript(js, { defer: true });
+          if (key == 'timeline') {
+            stellar.loadScript(stellar.plugins.marked);
+          }
+        })
+      }
+    }
   }
 }
 
@@ -333,8 +337,22 @@ if (stellar.plugins.fancybox) {
 if (stellar.plugins.heti) {
   stellar.loadCSS(stellar.plugins.heti.css);
   stellar.loadScript(stellar.plugins.heti.js, { defer: true }).then(function () {
-    const heti = new Heti('.heti p');
-    heti.autoSpacing();
+    const heti = new Heti('.heti');
+
+    // Copied from heti.autoSpacing() without DOMContentLoaded.
+    // https://github.com/sivan/heti/blob/eadee6a3b748b3b7924a9e7d5b395d4bce479c9a/js/heti-addon.js
+    //
+    // We managed to minimize the code modification to ensure .autoSpacing()
+    // is synced with upstream; therefore, we use `.bind()` to emulate the
+    // behavior of .autoSpacing() so we can even modify almost no code.
+    void (function () {
+      const $$rootList = document.querySelectorAll(this.rootSelector)
+
+      for (let $$root of $$rootList) {
+        this.spacingElement($$root)
+      }
+    }).bind(heti)();
+
     stellar.plugins.heti.enable = false;
   });
 }
