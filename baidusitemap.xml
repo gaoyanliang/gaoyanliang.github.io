@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://yanliang.cool/docker/docker_single_process/</loc>
+    <lastmod>2022-05-05</lastmod>
+  </url>
+  <url>
+    <loc>https://yanliang.cool/docker/container/</loc>
+    <lastmod>2022-05-01</lastmod>
+  </url>
+  <url>
     <loc>https://yanliang.cool/redis/redis_persistence/</loc>
     <lastmod>2022-01-01</lastmod>
   </url>
