@@ -19,30 +19,24 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>JVM</title>
+  <title>algorithm</title>
 
   
-    <meta name="description" content="什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。 主流的JVM    虚拟机名称 介绍    HotSpot Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心   J9 J9是IBM开发的高度模块化的JVM   JRo">
+    <meta name="description" content="倒水问题水无限。3L和5L水桶各一个，怎样取4L的水？ 答案">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM 基础知识">
-<meta property="og:url" content="https://yanliang.cool/java/jvm/jvm/">
+<meta property="og:title" content="常见思维题一">
+<meta property="og:url" content="https://yanliang.cool/algorithm/algo1/">
 <meta property="og:site_name" content="yanliang">
-<meta property="og:description" content="什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。 主流的JVM    虚拟机名称 介绍    HotSpot Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心   J9 J9是IBM开发的高度模块化的JVM   JRo">
+<meta property="og:description" content="倒水问题水无限。3L和5L水桶各一个，怎样取4L的水？ 答案">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-1.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-2.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-3.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-4.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-5.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-6.png">
-<meta property="article:published_time" content="2021-08-04T00:00:00.000Z">
-<meta property="article:modified_time" content="2021-08-04T00:00:00.000Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/algo/a1.png">
+<meta property="article:published_time" content="2019-03-19T00:00:00.000Z">
+<meta property="article:modified_time" content="2019-03-19T00:00:00.000Z">
 <meta property="article:author" content="yanliang">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="JVM">
-<meta property="article:tag" content="Java 虚拟机">
+<meta property="article:tag" content="智力题">
+<meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-1.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/algo/a1.png">
   
   
 
@@ -87,7 +81,7 @@
 
 <div class="widgets">
 
-<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">JVM 基础知识</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFJVM"><span class="toc-text">什么是JVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM-%E4%B8%8E-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">JVM 与 操作系统的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM-JRE-JDK%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">JVM  JRE  JDK的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%A7%84%E8%8C%83%E5%92%8Cjava%E8%AF%AD%E8%A8%80%E8%A7%84%E8%8C%83%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">java虚拟机规范和java语言规范的关系</span></a></li></ol></div></div></div>
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">常见思维题一</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%92%E6%B0%B4%E9%97%AE%E9%A2%98"><span class="toc-text">倒水问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%81%E8%99%8E%E5%90%83%E7%BE%8A%E9%97%AE%E9%A2%98"><span class="toc-text">老虎吃羊问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#No-1"><span class="toc-text">No.1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-2"><span class="toc-text">No.2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-3"><span class="toc-text">No.3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-4"><span class="toc-text">No.4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-5"><span class="toc-text">No.5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-6"><span class="toc-text">No.6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-7"><span class="toc-text">No.7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-8"><span class="toc-text">No.8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-9"><span class="toc-text">No.9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#No-10"><span class="toc-text">No.10</span></a></li></ol></li></ol></div></div></div>
 
 <div class="widget-wrap" id="recent"><div class="widget-header cap theme dis-select"><span class="name">🔥 Recent Update</span><a class="cap-action" id="rss" title="Subscribe" href="/"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8938"><path d="M800.966 947.251c0-404.522-320.872-732.448-716.69-732.448V62.785c477.972 0 865.44 395.987 865.44 884.466h-148.75z m-162.273 0h-148.74c0-228.98-181.628-414.598-405.678-414.598v-152.01c306.205 0 554.418 253.68 554.418 566.608z m-446.24-221.12c59.748 0 108.189 49.503 108.189 110.557 0 61.063-48.44 110.563-108.188 110.563-59.747 0-108.18-49.5-108.18-110.563 0-61.054 48.433-110.556 108.18-110.556z" p-id="8939"></path></svg></a></div><div class="widget-body related-posts fs14"><a class="item title" href="/docker/docker_core/"><span class="title">Docker 系列(三)：Docker 核心原理</span></a><a class="item title" href="/docker/docker_compose/"><span class="title">Docker 系列(二)：Dockerfile & Docker Compose</span></a><a class="item title" href="/docker/docker_single_process/"><span class="title">为什么说容器是单进程模型？</span></a><a class="item title" href="/docker/container/"><span class="title">Docker 系列(一)：什么是容器？</span></a><a class="item title" href="/redis/redis_persistence/"><span class="title">Redis 持久化： AOF & RDB</span></a></div></div>
 </div>
@@ -100,70 +94,54 @@
       
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/java/">Java</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/java/jvm/">JVM</a></div><div id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-04T00:00:00.000Z">Aug 4, 2021</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/algorithm/">algorithm</a></div><div id="post-meta">💧 Posted on&nbsp;<time datetime="2019-03-19T00:00:00.000Z">Mar 19, 2019</time></div></div>
 
 <article class='content md post'>
-<h1 class="article-title"><span>JVM 基础知识</span></h1>
-<h2 id="什么是JVM"><a href="#什么是JVM" class="headerlink" title="什么是JVM"></a>什么是JVM</h2><p>JVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算<br>机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。</p>
-<p><strong>主流的JVM</strong></p>
-<table>
-<thead>
-<tr>
-<th>虚拟机名称</th>
-<th>介绍</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>HotSpot</td>
-<td>Oracle/Sun JDK和OpenJDK都使用HotSPot VM的相同核心</td>
-</tr>
-<tr>
-<td>J9</td>
-<td>J9是IBM开发的高度模块化的JVM</td>
-</tr>
-<tr>
-<td>JRockit</td>
-<td>JRockit 与 HotSpot 同属于 Oracle，目前为止 Oracle 一直在推进 HotSpot 与 JRockit 两款各有优势的虚拟机进行融合互补</td>
-</tr>
-<tr>
-<td>Zing</td>
-<td>由Azul Systems根据HostPot为基础改进的高性能低延迟的JVM</td>
-</tr>
-<tr>
-<td>Dalvik</td>
-<td>Android上的Dalvik 虽然名字不叫JVM，但骨子里就是不折不扣的JVM</td>
-</tr>
-</tbody></table>
-<h2 id="JVM-与-操作系统的关系"><a href="#JVM-与-操作系统的关系" class="headerlink" title="JVM 与 操作系统的关系"></a>JVM 与 操作系统的关系</h2><p>首选我们考虑这样一个问题，为什么要在程序和操作系统中间添加一个JVM？</p>
-<p>Java 是一门抽象程度特别高的语言，提供了自动内存管理等一系列的特性。这些特性直接在操作系统上实现是不太可能的，所以就需要 JVM 进行一番转换。</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-1.png"></p>
-<p>从上图中可以看到，有了 JVM 这个抽象层之后，Java 就可以实现跨平台了。JVM 只需要保证能够正确执行 .class 文件，就可以运行在诸如 Linux、Windows、MacOS 等平台上了。</p>
-<p>而 Java 跨平台的意义在于一次编译，处处运行，能够做到这一点 JVM 功不可没。比如我们在 Maven 仓库下载同一版本的 jar 包就可以到处运行，不需要在每个平台上再编译一次。</p>
-<p>现在的一些 JVM 的扩展语言，比如 Clojure、JRuby、Groovy 等，编译到最后都是 .class 文件，Java 语言的维护者，只需要控制好 JVM 这个解析器，就可以将这些扩展语言无缝的运行在 JVM 之上了。</p>
-<p>应用程序、JVM、操作系统之间的关系如下图所示：</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-2.png"></p>
-<p>我们用一句话概括 JVM 与操作系统之间的关系：JVM 上承开发语言，下接操作系统，它的中间接口就是字节码。</p>
-<h2 id="JVM-JRE-JDK的关系"><a href="#JVM-JRE-JDK的关系" class="headerlink" title="JVM  JRE  JDK的关系"></a>JVM  JRE  JDK的关系</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-3.png"></p>
-<p>JVM 是 Java 程序能够运行的核心。但是需要注意，JVM 自己什么也干不了，你需要给它提供生产原料（.class 文件）。仅仅是 JVM，是无法完成一次编译，处处运行的。它需要一个基本的类库，比如怎么操作文件、怎么连接网络等。</p>
-<p>而 Java 体系很慷慨，会一次性将 JVM 运行所需的类库都传递给它。JVM 标准加上实现的一大堆基础类库，就组成了 Java 的运行时环境，也就是我们常说的 JRE（Java Runtime Environment）对于 JDK 来说，就更庞大了一些。除了 JRE，JDK 还提供了一些非常好用的小工具，比如 javac、java、jar 等。它<br>是 Java 开发的核心，让外行也可以炼剑！</p>
-<p>JVM、JRE、JDK 它们三者之间的关系，可以用一个包含关系表示。</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-4.png"></p>
-<h2 id="java虚拟机规范和java语言规范的关系"><a href="#java虚拟机规范和java语言规范的关系" class="headerlink" title="java虚拟机规范和java语言规范的关系"></a>java虚拟机规范和java语言规范的关系</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-5.png"></p>
-<p>左半部分是 Java 虚拟机规范，其实就是为输入和执行字节码提供一个运行环境。右半部分是我们常说的 Java 语法规范，比如 switch、for、泛型、lambda 等相关的程序，最终都会编译成字节码。而连接左右两部分的桥梁依然是Java 的字节码。</p>
-<p>如果 .class 文件的规格是不变的，这两部分是可以独立进行优化的。但 Java 也会偶尔扩充一下 .class 文件的格式，增加一些字节码指令，以便支持更多的特性。</p>
-<p>我们可以把 Java 虚拟机可以看作是一台抽象的计算机，它有自己的指令集以及各种运行时内存区域。</p>
-<p>最后，我们简单看一下一个 Java 程序的执行过程，它到底是如何运行起来的。</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-6.png"></p>
-<p>这里的 Java 程序是文本格式的。比如下面这段 HelloWorld.java，它遵循的就是 Java 语言规范。其中，我们调用了System.out 等模块，也就是 JRE 里提供的类库。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 class="article-title"><span>常见思维题一</span></h1>
+<h2 id="倒水问题"><a href="#倒水问题" class="headerlink" title="倒水问题"></a>倒水问题</h2><p>水无限。3L和5L水桶各一个，怎样取4L的水？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/algo/a1.png" fancybox="true"/></div></div></div></details>
 
-<p>使用 JDK 的工具 javac 进行编译后，会产生 HelloWorld 的字节码。</p>
-<p>我们一直在说 Java 字节码是沟通 JVM 与 Java 程序的桥梁，下面使用 javap 来稍微看一下字节码到底长什么样子。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0 getstatic #2 &lt;java/lang/System.out&gt; // getstatic 获取静态字段的值</span><br><span class="line"></span><br><span class="line">3 ldc #3 &lt;Hello World&gt; // ldc 常量池中的常量值入栈</span><br><span class="line"></span><br><span class="line">5 invokevirtual #4 &lt;java/io/PrintStream.println&gt; // invokevirtual 运行时方法绑定调用方法</span><br><span class="line"></span><br><span class="line">8 return //void 函数返回</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
 
-<p>Java 虚拟机采用基于栈的架构，其指令由操作码和操作数组成。这些 字节码指令 ，就叫作 opcode。其中，getstatic、ldc、invokevirtual、return 等，就是 opcode，可以看到是比较容易理解的。</p>
-<p>JVM 就是靠解析这些 opcode 和操作数来完成程序的执行的。当我们使用 Java 命令运行 .class 文件的时候，实际上就相当于启动了一个 JVM 进程。</p>
-<p>然后 JVM 会翻译这些字节码，它有两种执行方式。常见的就是解释执行，将 opcode + 操作数翻译成机器代码；另外一种执行方式就是 JIT，也就是我们常说的即时编译，它会在一定条件下将字节码编译成机器码之后再执行。</p>
+<h2 id="老虎吃羊问题"><a href="#老虎吃羊问题" class="headerlink" title="老虎吃羊问题"></a>老虎吃羊问题</h2><p>岛上有100只老虎和1只羊，老虎可以吃草但是更愿意吃羊。</p>
+<ul>
+<li>假设A: 每次老虎吃完羊之后自己就变成了羊</li>
+<li>假设B: 所有老虎都很聪明也很理性，它们都想活下去</li>
+</ul>
+<p>请问这只羊会被吃吗?</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>我们先从1只老虎开始分析，如果只有一只老虎，那它一定会吃羊。因为就算吃完变成羊它也不用担心自己被吃掉。</p><p>如果岛上有两只老虎的话，那羊不会被吃掉，因为如果其中一只老虎吃掉羊之后自己就会变成羊被另一只老虎吃掉。</p><p>如果岛上有三只老虎，羊会被吃掉。因为一旦有一只最聪明的老虎吃掉羊之后，那只老虎自己变成羊，就变成了刚才所分析的2虎1羊的局面，剩下的2只老虎不敢吃掉变成羊的那只老虎。</p><p>如果岛上有4只老虎，羊不会被吃掉，因为一旦有一只虎吃掉羊，就会变成刚刚3虎1羊的局面，那只老虎变成的羊就会被吃掉。</p><p>以此类推，如果老虎的数量是偶数，羊不会被吃掉，如果老虎的数量是奇数，羊就会被吃掉。</p></div></details>
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="No-1"><a href="#No-1" class="headerlink" title="No.1"></a>No.1</h3><p>给一个瞎子52张扑克牌，并告诉他里面恰好有10张牌是正面朝上的。要求这个瞎子把牌分成两堆，使得每堆牌里正面朝上的牌的张数一样多。瞎子应该怎么做？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>把扑克牌分成两堆，一堆10张，一堆42张。然后，把小的那一堆里的所有牌全部翻过来。</p></div></details>
+
+
+<h3 id="No-2"><a href="#No-2" class="headerlink" title="No.2"></a>No.2</h3><p>如何用一枚硬币等概率地产生一个1到3之间的随机整数？如果这枚硬币是不公正的呢？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>如果是公正的硬币，则投掷两次，“正反”为1，“反正”为2，“正正”为3，“反反”重来。</p><p>如果是不公正的硬币，注意到出现“正反”和“反正”的概率一样，因此令“正反反正”、“反正正反”、“正反正反”分别为1、2、3，其余情况重来。另一种更妙的办法是，投掷三次硬币，“正反反”为1，“反正反”为2，“反反正”为3，其余情况重来。</p></div></details>
+
+<h3 id="No-3"><a href="#No-3" class="headerlink" title="No.3"></a>No.3</h3><p>30枚面值不全相同的硬币摆成一排，甲、乙两个人轮流选择这排硬币的其中一端，并取走最外边的那枚硬币。如果你先取硬币，能保证得到的钱不会比对手少吗？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>先取者可以让自己总是取奇数位置上的硬币或者总是取偶数位置上的硬币。数一数是奇数位置上的面值总和多还是偶数位置上的面值总和多，然后总是取这些位置上的硬币就可以了。</p></div></details>
+
+<h3 id="No-4"><a href="#No-4" class="headerlink" title="No.4"></a>No.4</h3><p> 一个环形轨道上有n个加油站，所有加油站的油量总和正好够车跑一圈。证明，总能找到其中一个加油站，使得初始时油箱为空的汽车从这里出发，能够顺利环行一圈回到起点。</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>总存在一个加油站，仅用它的油就足够跑到下一个加油站（否则所有加油站的油量加起来将不够全程）。把下一个加油站的所有油都提前搬到这个加 油站来，并把油已被搬走的加油站无视掉。在剩下的加油站中继续寻找油量足以到达下个加油站的地方，不断合并加油站，直到只剩一个加油站为止。显然从这里出发就能顺利跑完全程。</p><p>另一种证明方法：先让汽车油箱里装好足够多的油，随便从哪个加油站出发试跑一圈。车每到一个加油站时，记录此时油箱里剩下的油量，然后把那个加油站的油全部装上。试跑完一圈后，检查刚才路上到哪个加油站时剩的油量最少，那么空着油箱从那里出发显然一定能跑完全程。</p></div></details>
+
+<h3 id="No-5"><a href="#No-5" class="headerlink" title="No.5"></a>No.5</h3><p>初始时，两个口袋里各有一个球。把后面的n-2个球依次放入口袋，放进哪个口袋其概率与各口袋已有的球数成正比。这样下来，球数较少的那个口袋平均期望有多少个球？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>先考虑一个看似无关的问题——怎样产生一个1到n的随机排列。首先，在纸上写下数字1；然后，把2写在1的左边或者右边；然后，把3写在最 左边，最右边，或者插进1和2之间……总之，把数字i等概率地放进由前面i-1个数产生的（包括最左端和最右端在内的）共i个空位中的一个。这样生成的显 然是一个完全随机的排列。</p><p>我们换一个角度来看题目描述的过程：假想用一根绳子把两个球拴在一起，把这根绳子标号为1。接下来，把其中一个小球分裂成两个小球，这两个小球用 标号为2的绳子相连。总之，把“放进第i个球”的操作想象成把其中一个球分裂成两个用标有i-1的绳子相连的小球。联想我们前面的讨论，这些绳子的标号事 实上是一个随机的全排列，也就是说最开始绳子1的位置最后等可能地出现在每个地方。也就是说，它两边的小球个数(1,n-1)、(2,n-2)、 (3,n-3)、……、(n-1,1)这n-1种情况等可能地发生。因此，小袋子里的球数大约为n/4个。准确地说，当n为奇数时，小袋子里的球数为 (n+1)/4；当n为偶数时，小袋子里的球数为n^2/(4n-4)。</p></div></details>
+
+
+<h3 id="No-6"><a href="#No-6" class="headerlink" title="No.6"></a>No.6</h3><p>考虑一个n*n的棋盘，把有公共边的两个格子叫做相邻的格子。初始时，有些格子里有病毒。每一秒钟后，只要一个格子至少有两个相邻格子染上了病毒，那么他自己也会被感染。为了让所有的格子都被感染，初始时最少需要有几个带病毒的格子？给出一种方案并证明最优性。</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>至少要n个，比如一条对角线上的n个格子。n个格子也是必需的。当一个新的格子被感染后，全体被感染的格子所组成的图形的周长将减少0个、 2个或4个单位（具体减少了多少要看它周围被感染的格子有多少个）。又因为当所有格子都被感染后，图形的周长为4n，因此初始时至少要有n个被感染的格 子。</p></div></details>
+
+<h3 id="No-7"><a href="#No-7" class="headerlink" title="No.7"></a>No.7</h3><p>在一个m*n的棋盘上，有k个格子里放有棋子。是否总能对所有棋子进行红蓝二染色，使得每行每列的红色棋子和蓝色棋子最多差一个？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>可以。建一个二分图G(X,Y)，其中X有m个顶点代表了棋盘的m个行，Y有n个顶点代表了棋盘的n个列。第i行第j列有棋子就在X(i) 和Y(j)之间连一条边。先找出图G里的所有环（由于是二分图，环的长度一定是偶数），把环里的边红蓝交替染色。剩下的没染色的图一定是一些树。对每棵树 递归地进行操作：去掉一个叶子节点和对应边，把剩下的树进行合法的红蓝二染色，再把刚才去掉的顶点和边加回去，给这个边适当的颜色以满足要求。</p></div></details>
+
+<h3 id="No-8"><a href="#No-8" class="headerlink" title="No.8"></a>No.8</h3><p>任意给一个8<em>8的01矩阵，你每次只能选一个3</em>3或者4*4的子矩阵并把里面的元素全部取反。是否总有办法把矩阵里的所有数全部变为1？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>不能。大矩阵中有36个3<em>3的小矩阵和25个4</em>4的小矩阵，因此总共有61种可能的操作。显然，给定一个操作序列，这些操作的先后顺序 是无关紧要的；另外，在一个操作序列中使用两种或两种以上相同的操作也是无用的。因此，实质不同的操作序列只有2^61种。但8*8的01矩阵一共有 2^64种，因此不是每种情况都有办法达到目的。</p></div></details>
+
+<h3 id="No-9"><a href="#No-9" class="headerlink" title="No.9"></a>No.9</h3><p>五个洞排成一排，其中一个洞里藏有一只狐狸。每个夜晚，狐狸都会跳到一个相邻的洞里；每个白天，你都只允许检查其中一个洞。怎样才能保证狐狸最终会被抓住？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>按照2, 3, 4, 2, 3, 4的顺序检查狐狸洞可以保证抓住狐狸。为了说明这个方案是可行的，用集合F表示狐狸可能出现的位置，初始时F = {1, 2, 3, 4, 5}。如果它不在2号洞，则第二天狐狸已经跑到了F = {2, 3, 4, 5}。如果此时它不在3号洞，则第三天狐狸一定跑到了F = {1, 3, 4, 5}。如果此时它不在4号洞，则再过一晚后F = {2, 4}。如果此时它不在2号洞，则再过一天F = {3, 5}。如果此时它不在3号洞，再过一天它就一定跑到4号洞了。</p><p>方案不是唯一的，下面这些方案都是可行的：</p><p>2, 3, 4, 4, 3, 2<br>4, 3, 2, 2, 3, 4<br>4, 3, 2, 4, 3, 2</p></div></details>
+
+<h3 id="No-10"><a href="#No-10" class="headerlink" title="No.10"></a>No.10</h3><p>一个经典老题是说，把一个3<em>3</em>3的立方体切成27个单位立方体，若每一刀切完后都允许重新摆放各个小块的位置，最少可以用几刀？答案仍然是6刀，因为 正中间那个单位立方体的6个面都是后来才切出来的，因此怎么也需要6刀。考虑这个问题：若把一个n<em>n</em>n的立方体切成一个个单位立方体，最少需要几刀？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>事实上，从一个更强的命题出发反而能使问题变得更简单。对于一个a<em>b</em>c的长方体，我们需要f(a)+f(b)+f(c)刀，其中 f(x)=⌈log(x)/log(2)⌉。只需要注意到，在整个过程中的任何一步，切完当前最大的块所需要的刀数也就等于整个过程还需要的刀数，因为其 它小块需要的刀数都不会超过最大块所需刀数，它们都可以与最大块一道并行处理。这表明，我们的最优决策即是让当前的最大块尽可能的小，也就是说要把当前的 最大块尽可能相等地切成两半。利用数学归纳法，我们可以很快得到本段开头的结论。</p></div></details>
 
 
 <div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
@@ -171,7 +149,7 @@
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/framework/rpc-rest/">RPC vs REST</a></div><div class="item" id="next"><div class="note">Older</div><a href="/algorithm/algo3/">常见思维题三</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/algorithm/algo2/">常见思维题二</a></div><div class="item" id="next"></div></section></div>
 
 
 

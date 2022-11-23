@@ -1,3 +1,4 @@
+https://yanliang.cool/tags/
 https://yanliang.cool/wiki/design/
 https://yanliang.cool/wiki/git/
 https://yanliang.cool/wiki/network/
@@ -10,7 +11,6 @@ https://yanliang.cool/wiki/git/github/
 https://yanliang.cool/wiki/git/install-and-config/
 https://yanliang.cool/wiki/git/usage/
 https://yanliang.cool/wiki/network/application/
-https://yanliang.cool/tags/
 https://yanliang.cool/about/
 https://yanliang.cool/categories/
 https://yanliang.cool/friends/
@@ -47,11 +47,14 @@ https://yanliang.cool/tools/github-login-with-token/
 https://yanliang.cool/framework/unique-id/
 https://yanliang.cool/framework/rpc-rest/
 https://yanliang.cool/java/jvm/jvm/
-https://yanliang.cool/hello-world/
+https://yanliang.cool/algorithm/algo3/
+https://yanliang.cool/algorithm/algo2/
+https://yanliang.cool/algorithm/algo1/
 https://yanliang.cool/
 https://yanliang.cool/tags/json/
 https://yanliang.cool/tags/json-%E8%A7%A3%E6%9E%90%E5%99%A8/
-https://yanliang.cool/tags/hello-world/
+https://yanliang.cool/tags/%E6%99%BA%E5%8A%9B%E9%A2%98/
+https://yanliang.cool/tags/algorithm/
 https://yanliang.cool/tags/actor-%E6%A8%A1%E5%9E%8B/
 https://yanliang.cool/tags/%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/
 https://yanliang.cool/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/
@@ -94,7 +97,7 @@ https://yanliang.cool/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/
 https://yanliang.cool/tags/java-%E8%99%9A%E6%8B%9F%E6%9C%BA/
 https://yanliang.cool/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/
 https://yanliang.cool/categories/json/
-https://yanliang.cool/categories/hello-world/
+https://yanliang.cool/categories/algorithm/
 https://yanliang.cool/categories/%E5%B9%B6%E5%8F%91/
 https://yanliang.cool/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/
 https://yanliang.cool/categories/docker/

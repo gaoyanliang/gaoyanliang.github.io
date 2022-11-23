@@ -29,6 +29,7 @@
 <meta property="og:site_name" content="yanliang">
 <meta property="og:description" content="本文主要介绍了 Docker容器的核心实现原理，包括 Namespace、Cgroups、rootfs 等。 容器与进程  进程就是程序运行起来后的计算机执行环境的总和。  即：计算机内存中的数据、寄存器里的值、堆栈中的指令、被打开的文件，以及各种设备的状态信息的一个集合。  容器技术的核心功能，就是通过约束和修改进程的动态表现，从而为其创造出一个“边界”。  对于 Docker 等大多数 Lin">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/docker/docker3_1.png">
 <meta property="article:published_time" content="2022-05-20T00:00:00.000Z">
 <meta property="article:modified_time" content="2022-05-20T00:00:00.000Z">
 <meta property="article:author" content="yanliang">
@@ -36,6 +37,7 @@
 <meta property="article:tag" content="容器">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/docker/docker3_1.png">
   
   
 
@@ -80,7 +82,7 @@
 
 <div class="widgets">
 
-<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">Docker 系列(三)：Docker 核心原理</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E4%B8%8E%E8%BF%9B%E7%A8%8B"><span class="toc-text">容器与进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%94%E7%A6%BB%E4%B8%8E%E9%99%90%E5%88%B6"><span class="toc-text">隔离与限制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Namespace"><span class="toc-text">Namespace</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cgroups"><span class="toc-text">Cgroups</span></a></li></ol></li></ol></div></div></div>
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">Docker 系列(三)：Docker 核心原理</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E4%B8%8E%E8%BF%9B%E7%A8%8B"><span class="toc-text">容器与进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%94%E7%A6%BB%E4%B8%8E%E9%99%90%E5%88%B6"><span class="toc-text">隔离与限制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Namespace"><span class="toc-text">Namespace</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cgroups"><span class="toc-text">Cgroups</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F"><span class="toc-text">容器镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rootfs"><span class="toc-text">rootfs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E7%9A%84%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9"><span class="toc-text">镜像的主要特点</span></a></li></ol></li></ol></div></div></div>
 
 <div class="widget-wrap" id="recent"><div class="widget-header cap theme dis-select"><span class="name">🔥 Recent Update</span><a class="cap-action" id="rss" title="Subscribe" href="/"><svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8938"><path d="M800.966 947.251c0-404.522-320.872-732.448-716.69-732.448V62.785c477.972 0 865.44 395.987 865.44 884.466h-148.75z m-162.273 0h-148.74c0-228.98-181.628-414.598-405.678-414.598v-152.01c306.205 0 554.418 253.68 554.418 566.608z m-446.24-221.12c59.748 0 108.189 49.503 108.189 110.557 0 61.063-48.44 110.563-108.188 110.563-59.747 0-108.18-49.5-108.18-110.563 0-61.054 48.433-110.556 108.18-110.556z" p-id="8939"></path></svg></a></div><div class="widget-body related-posts fs14"><a class="item title" href="/docker/docker_core/"><span class="title">Docker 系列(三)：Docker 核心原理</span></a><a class="item title" href="/docker/docker_compose/"><span class="title">Docker 系列(二)：Dockerfile & Docker Compose</span></a><a class="item title" href="/docker/docker_single_process/"><span class="title">为什么说容器是单进程模型？</span></a><a class="item title" href="/docker/container/"><span class="title">Docker 系列(一)：什么是容器？</span></a><a class="item title" href="/redis/redis_persistence/"><span class="title">Redis 持久化： AOF & RDB</span></a></div></div>
 </div>
@@ -198,9 +200,116 @@
 <td>Hostname and NIS domain name 隔离主机名和域名信息</td>
 </tr>
 </tbody></table>
-<h3 id="Cgroups"><a href="#Cgroups" class="headerlink" title="Cgroups"></a>Cgroups</h3>
+<h3 id="Cgroups"><a href="#Cgroups" class="headerlink" title="Cgroups"></a>Cgroups</h3><p>通过上面的 Linux Namespace 已经可以创建 “容器” 了，但是会存在 <emp>资源抢占</emp> 的问题。</p>
+<p>还是以 PID Namespace 为例，来给你解释这个问题。</p>
+<p>虽然容器内的第1号进程在“障眼法”的干扰下只能看到容器里的情况，但是宿主机上，它作为第 100 号进程与其他所有进程之间依然是平等的竞争关系。这就意味着，虽然第 100 号进程表面上被隔离了起来，但是它所能够使用到的资源（比如 CPU、内存），却是可以随时被宿主机上的其他进程（或者其他容器)占用的。当然，这个 100号进程自己也可能把所有资源吃光。这些情况，显然都不是一个“沙盒”应该表现出来的合理行为。</p>
+<p><strong>而 Linux Cgroups 就是 Linux 内核中用来为进程设置资源限制的一个重要功能。</strong></p>
+<emp>Linux Cgroups 的全称是 Linux Control Group。它最主要的作用，就是限制一个进程组能够使用的资源上限，包括 CPU、内存、磁盘、网络带宽等等。</emp>
 
-<div class="article-footer reveal fs14"><section id="references"><div class="header"><span>References</span></div><div class="body"><ul><li class="post-title"><a href="https://www.lixueduan.com/posts/docker/03-container-core/" target="_blank" rel="external nofollow noopener noreferrer">Docker教程(三)---核心实现原理分析</a></li><li class="post-title"><a href="https://www.cnblogs.com/michael9/p/13039700.html#%E5%AE%B9%E5%99%A8%E7%9A%84%E9%9A%94%E7%A6%BBnamespace" target="_blank" rel="external nofollow noopener noreferrer">一篇文章带你吃透 Docker 原理</a></li><li class="post-title"><a href="https://blog.csdn.net/crazymakercircle/article/details/120747767" target="_blank" rel="external nofollow noopener noreferrer">Docker原理</a></li></ul></div></section><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+<p>此外，Cgroups 还能够对进程进行优先级设置、审计，以及将进程挂起和恢复等操作。在本文中，只重点探讨它与容器关系最紧密的“限制”能力，并通过一组实践来带你认识一下 Cgroups。</p>
+<p>每一个 CGroup 都是一组被相同的标准和参数限制的进程，不同的 CGroup 之间是有层级关系的，也就是说它们之间可以从父类继承一些用于限制资源使用的标准和参数。</p>
+<p>在 Linux 中，Cgroups 给用户暴露出来的操作接口是文件系统，即它以文件和目录的方式组织在操作系统的 /sys/fs/cgroup 路径下。在 Ubuntu 16.04 机器里，我可以用 mount 指令把它们展示出来，这条命令是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查看 cgroups 相关文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mount -t cgroup</span></span><br><span class="line">cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)</span><br><span class="line">cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_prio,net_cls)</span><br><span class="line">cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)</span><br><span class="line">cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)</span><br><span class="line">cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct,cpu)</span><br><span class="line">cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)</span><br><span class="line">cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)</span><br><span class="line">cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)</span><br><span class="line">cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)</span><br><span class="line">cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)</span><br><span class="line">cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)</span><br></pre></td></tr></table></figure>
+
+<p>它的输出结果，是一系列文件系统目录。如果你在自己的机器上没有看到这些目录，那就需要自己去挂载 Cgroups，具体做法可以自行 Google。</p>
+<p>在 <emp>/sys/fs/cgroup</emp> 下面有很多诸如 cpuset、cpu、 memory 这样的子目录，也叫子系统。这些都是这台机器当前可以被 Cgroups 进行限制的资源种类。而在子系统对应的资源种类下，就可以看到该类资源具体可以被限制的方法。</p>
+<p>比如，对 CPU 子系统来说，我们就可以看到如下几个配置文件，这个指令是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ls /sys/fs/cgroup/cpu</span><br><span class="line"><span class="meta">#</span><span class="bash"> 目录下大概有这么一些内容</span></span><br><span class="line">assist                 cgroup.event_control  cgroup.sane_behavior  cpuacct.stat   cpuacct.usage_percpu  cpu.cfs_quota_us  cpu.rt_runtime_us  cpu.stat  notify_on_release  system.slice</span><br><span class="line">cgroup.clone_children  cgroup.procs                 cpuacct.usage  cpu.cfs_period_us     cpu.rt_period_us  cpu.shares      release_agent      tasks</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>下面以限制 cpu 为例，展示 Cgroups 是如何进行资源限制的：</p>
+<p>首先在 cpu 子系统下面创建一个目录 container，比如，我们现在进入 /sys/fs/cgroup/cpu 目录下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@iz2ze0ephck4d0aztho5r5z cpu]# mkdir container</span><br><span class="line">[root@iz2ze0ephck4d0aztho5r5z cpu]# ls container/</span><br><span class="line">cgroup.clone_children  cgroup.event_control  cgroup.procs  cpuacct.stat  cpuacct.usage  cpuacct.usage_percpu  cpu.cfs_period_us  cpu.cfs_quota_us  cpu.rt_period_us  cpu.rt_runtime_us  cpu.shares  cpu.stat  notify_on_release  tasks</span><br></pre></td></tr></table></figure>
+
+<p>container 这个目录就称为一个“控制组”。操作系统会在你新创建的 container 目录下，<emp>自动生成</emp> 该子系统对应的资源限制文件。</p>
+<p>现在，我们在后台执行这样一条脚本:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="keyword">while</span> : ; <span class="keyword">do</span> : ; <span class="keyword">done</span> &amp;</span></span><br><span class="line">[1] 27218</span><br></pre></td></tr></table></figure>
+
+<p>上面的脚本执行了一个死循环，可以把计算机的 CPU 吃到 100%，根据它的输出，我们可以看到这个脚本在后台运行的进程号（PID）是 27218。</p>
+<p>查看一下CPU占用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br><span class="line"></span><br><span class="line">PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND    </span><br><span class="line">27218 root      20   0  115680    672    152 R 99.9  0.0   2:07.07 bash                                                  </span><br></pre></td></tr></table></figure>
+
+<p>果然这个PID=27218的进程占用了差不多100%的 CPU 资源。</p>
+<p>接下来我们就通过 Cgroups 对其进行限制，就用前面创建的 container 这个“控制组”。</p>
+<p>我们可以通过查看 container 目录下的文件，看到 container 控制组里的 CPU quota 还没有任何限制（即：-1），CPU period 则是默认的 100 ms（100000 us）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/fs/cgroup/cpu/container/cpu.cfs_quota_us</span> </span><br><span class="line">-1</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/fs/cgroup/cpu/container/cpu.cfs_period_us</span> </span><br><span class="line">100000</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文件功能说明(设定CPU使用周期使用时间上限):</p>
+<ol>
+<li>cpu.cfs_period_us：设定周期时间，必须与cfs_quota_us配合使用。</li>
+<li>cpu.cfs_quota_us ：设定周期内最多可使用的时间。这里的配置指task对单个cpu的使用上限，若cfs_quota_us是cfs_period_us的两倍，就表示在两个核上完全使用。数值范围为1000 - 1000,000（微秒）。<br>其他功能说明可参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhonglinzhang/article/details/64905759">https://blog.csdn.net/zhonglinzhang/article/details/64905759</a></li>
+</ol>
+</blockquote>
+<p>接下来，我们可以通过修改这些文件的内容来设置限制。比如，向 container 组里的 cfs_quota 文件写入 20 ms（20000 us）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> 20000 &gt; /sys/fs/cgroup/cpu/container/cpu.cfs_quota_us</span></span><br></pre></td></tr></table></figure>
+
+<p>这样意味着在每 100 ms 的时间里，被该控制组限制的进程只能使用 20 ms 的 CPU 时间，也就是说这个进程只能使用到 20% 的 CPU 带宽。</p>
+<p>接下来，我们把被限制的进程的 PID 写入 container 组里的 tasks 文件，上面的设置就会对该进程生效了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> 27218 &gt; /sys/fs/cgroup/cpu/container/tasks</span> </span><br></pre></td></tr></table></figure>
+
+<p>使用 top 指令查看一下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br><span class="line"></span><br><span class="line">PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND    </span><br><span class="line">27218 root      20   0  115680    672    152 R 20 0.0   2:07.07 bash                                                  </span><br></pre></td></tr></table></figure>
+
+<p>可以看到，计算机的 CPU 使用率立刻降到了 20% (%Cpu0 : 20.3 us)</p>
+<p>除 CPU 子系统外，Cgroups 的每一个子系统都有其独有的资源限制能力，比如：</p>
+<ul>
+<li>blkio，为块设备设定I/O 限制，一般用于磁盘等设备；</li>
+<li>cpuset，为进程分配单独的 CPU 核和对应的内存节点；</li>
+<li>memory，为进程设定内存使用的限制。</li>
+</ul>
+<p><strong>Linux Cgroups 的设计还是比较易用的，简单粗暴地理解呢，它就是一个子系统目录加上一组资源限制文件的组合。</strong></p>
+<p>而对于 Docker 等 Linux 容器项目来说，它们只需要在每个子系统下面，为每个容器创建一个控制组（即创建一个新目录），然后在启动容器进程之后，把这个进程的 PID 填写到对应控制组的 tasks 文件中就可以了。</p>
+<p>而至于在这些控制组下面的资源文件里填上什么值，就靠用户执行 docker run 时的参数指定了，比如这样一条命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -it --cpu-period=100000 --cpu-quota=20000 ubuntu /bin/bash</span></span><br></pre></td></tr></table></figure>
+
+<p>在启动这个容器后，我们可以通过查看 Cgroups 文件系统下，CPU 子系统中，“docker”这个控制组里的资源限制文件的内容来确认：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/fs/cgroup/cpu/docker/5d5c9f67d/cpu.cfs_period_us</span> </span><br><span class="line">100000</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/fs/cgroup/cpu/docker/5d5c9f67d/cpu.cfs_quota_us</span> </span><br><span class="line">20000</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>5d5c9f67d 其实就是我们运行的一个 Docker 容器，启动这个容器时，Docker 会为这个容器创建一个与容器标识符相同的 CGroup，在当前的主机上 CGroup 就会有以下的层级关系：</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cpu --- docker --- 5d5c9f67d</span><br><span class="line">          |    --- ...</span><br></pre></td></tr></table></figure>
+
+<p><strong>Cgroups 存在的问题</strong></p>
+<p>跟 Namespace 的情况类似，Cgroups 对资源的限制能力也有很多不完善的地方，被提及最多的自然是 /proc 文件系统的问题。</p>
+<p>Linux 下的 /proc 目录存储的是记录当前内核运行状态的一系列特殊文件，用户可以通过访问这些文件，查看系统以及当前正在运行的进程的信息，比如 CPU 使用情况、内存占用率等，这些文件也是 top 指令查看系统信息的主要数据来源。</p>
+<p>但是，如果在容器里执行 top 指令，会发现，它显示的信息居然是宿主机的 CPU 和内存数据，而不是当前容器的数据。</p>
+<p>造成这个问题的原因就是，/proc 文件系统并不知道用户通过 Cgroups 给这个容器做了什么样的资源限制，即：/proc 文件系统不了解 Cgroups 限制的存在。</p>
+<p>在生产环境中，这个问题必须进行修正，否则应用程序在容器里读取到的 CPU 核数、可用内存等信息都是宿主机上的数据，这会给应用的运行带来非常大的困惑和风险。这也是在企业中，容器化应用碰到的一个常见问题，也是容器相较于虚拟机另一个不尽如人意的地方。</p>
+<p><strong>解决方案:</strong> 使用 <emp>lxcfs</emp></p>
+<p>top 命令是从 /prof/stats 目录下获取数据，所以从道理上来讲，容器不挂载宿主机的 /prof/stats 目录就可以了。</p>
+<p>lxcfs 就是来实现这个功能的，做法是把宿主机的 /var/lib/lxcfs/proc/memoinfo 文件挂载到Docker容器的 /proc/meminfo 位置后。容器中进程读取相应文件内容时，LXCFS 的 FUSE 实现会从容器对应的Cgroup中读取正确的内存限制。从而使得应用获得正确的资源约束设定。kubernetes环境下，也能用，以 ds 方式运行 lxcfs ，自动给容器注入争取的 proc 信息。</p>
+<h2 class="tag-plugin quot" type="text" id="容器镜像"><a href="#容器镜像" class="headerlink" title="容器镜像"></a>容器镜像</h2>
+
+<p>上面介绍了，Namespace 的作用是“隔离”，它让应用进程只能看到该 Namespace 内的“世界”；而 Cgroups 的作用是“限制”，它给这个“世界”围上了一圈看不 见的墙。这么一折腾，进程就真的被“装”在了一个与世隔绝的房间里，而这些房间就是 PaaS 项目赖以生存的应用“沙盒”。</p>
+<p>可是，还有一个问题不知道你有没有仔细思考过：这个房间四周虽然有了墙，但是如果容器进程低头一看地面，又是怎样一副景象呢？换句话说，<emp>容器里的进程看到的文件系统又是什么样子的呢？</emp></p>
+<p>以 Dorcker 容器为例：</p>
+<p>Docker 镜像是一个只读的 Docker 容器模板，含有启动 Docker 容器所需的文件系统结构及其内容，因此是启动一个 Docker 容器的基础。Docker 镜像的文件内容以及一些运行 Docker 容器的配置文件组成了 Docker 容器的静态文件系统运行环境一rootfs。</p>
+<p>可以这么理解，Docker镜像是Docker容器的静态视角，Docker容器是Docker像的运行状态。</p>
+<h3 id="rootfs"><a href="#rootfs" class="headerlink" title="rootfs"></a>rootfs</h3><p>rootfs 是Docker容器在启动时内部进程可见的文件系统，即Docker容器的根目录。rootfs 通常包含一个操作系统运行所需的文件系统，例如可能包含典型的类Unix操作系统中的目录系统，如/dev, /proc, /bin, /etc, /lib, /usr, /tmp及运行Docke容器所需的配置文件、工具等。</p>
+<p>在Docker架构中，当Docker daemon 为Docker容器挂载rootfs时，沿用了Linux内核启动时的方法，即将rootfs设为只读模式。在挂载完毕之后，利用联合挂载(union mount )技术在已有的只读rootfs上再挂载一个读写层。这样，可读写层处于Docker容器文件系统的最顶层，其下可能联合挂载多个只读层，只有在Docker容器运行过程中文件系统发生变化时，才会把变化的文件内容写到可读写层，并隐藏只读层中的老版本文件。</p>
+<h3 id="镜像的主要特点"><a href="#镜像的主要特点" class="headerlink" title="镜像的主要特点"></a>镜像的主要特点</h3><p><strong>分层</strong></p>
+<p>Docker镜像是采用分层的方式构建的，每个镜像都由一系列的“镜像层”组成。分层结构是Docker镜像如此轻量的重要原因，当需要修改容器镜像内的某个文件时，只对处于最上方的读写层进行变动，不覆写下层已有文件系统的内容，已有文件在只读层中的原始版本仍然存在，但会被读写层中的新版文件所隐藏。当使用docker commit提交这个修改过的容器文件系统为一个新的镜像时，保存的内容仅为最上层读写文件系统中被更新过的文件。分层达到了在不同镜像之间共享镜像层的效果。</p>
+<p><strong>写时复制</strong></p>
+<p>Docker镜像使用了写时复制(copy-on-write)策略，在多个容器之间共享镜像，每个容器在启动的时候并不需要单独复制一份镜像文件，而是将所有镜像层以只读的方式挂载到一个挂载点，再在上面覆盖一个可读写的容器层。在未更改文件内容时，所有容器共享同一份数据，只有在Docker容器运行过程中文件系统发生变化时，才会把变化的文件内容写到可读写层，并隐藏只读层中的老版本文件。写时复制配合分层机制减少了镜像对磁盘空间的占用和容器启动时间。</p>
+<p><strong>内容寻址</strong></p>
+<p>内容寻址存储( content-addressable storage)的机制，根据文件内容来索引镜像和镜像层。docker对镜像层的内容计算校验和，生成一个内容哈希值，并以此哈希值代替之前的UUID作为镜像层的唯一标志。该机制主要提高了镜像的安全性，并在pull, push, load和save操作后检测数据的完整性。另外，基于内容哈希来索引镜像层，在一定程度上减少了ID的冲突并且增强了镜像层的共享。对于来自不同构建的镜像层，只要拥有相同的内容哈希，也能被不同的镜像共享。</p>
+<p><strong>联合挂载</strong></p>
+<p>通俗地讲，联合挂载技术可以在一个挂载点同时挂载多个文件系统，将挂载点的原目录与被挂载内容进行整合，使得最终可见的文件系统将会包含整合之后的各层的文件和目录。实现这种联合挂载技术的文件系统通常被称为联合文件系统(union filesystem )。</p>
+<p>如下图所示，以运行Ubuntu:14.04镜像后容器中的aufs文件系统为例。由于初始挂载时读写层为空，所以从用户的角度看，该容器的文件系统与底层的rootfs没有差别;然而从内核的角度来看，则是显式区分开来的两个层次。当需要修改镜像内的某个文件时，只对处于最上方的读写层进行了变动，不覆写下层已有文件系统的内容，已有文件在只读层中的原始版本仍然存在，但会被读写层中的新版文件所隐藏，当docker commit这个修改过的容器文件系统为一个新的镜像时，保存的内容仅为最上层读写文件系统中被更新过的文件。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/docker/docker3_1.png" fancybox="true"/></div></div>
+
+<p><strong>解答灵魂三问</strong></p>
+<p>(1). docker 镜像的本质是什么？</p>
+<p>答：是一个分层的文件系统。</p>
+<p>(2). docker中一个centos镜像大约200M左右，为什么一个centos系统的iso安装文件要好几个G？</p>
+<p>答：centos的iso文件包括bootfs和rootfs，而docker的centos镜像复用操作系统的bootfs。</p>
+<p>(3). docker中一个tomcat镜像大约500M左右，为什么一个tomcat安装包不足100M呢？</p>
+<p>答：docker中的镜像是分层的，tomcat虽然只有70多M，但是它需要依赖父镜像和基础镜像，所有整个对外暴露的tomcat镜像大约500M左右。</p>
+
+
+<div class="article-footer reveal fs14"><section id="references"><div class="header"><span>References</span></div><div class="body"><ul><li class="post-title"><a href="https://www.lixueduan.com/posts/docker/03-container-core/" target="_blank" rel="external nofollow noopener noreferrer">Docker教程(三)---核心实现原理分析</a></li><li class="post-title"><a href="https://www.cnblogs.com/michael9/p/13039700.html#%E5%AE%B9%E5%99%A8%E7%9A%84%E9%9A%94%E7%A6%BBnamespace" target="_blank" rel="external nofollow noopener noreferrer">一篇文章带你吃透 Docker 原理</a></li><li class="post-title"><a href="https://blog.csdn.net/crazymakercircle/article/details/120747767" target="_blank" rel="external nofollow noopener noreferrer">Docker原理</a></li><li class="post-title"><a href="https://cloud.tencent.com/developer/article/1541520" target="_blank" rel="external nofollow noopener noreferrer">容器镜像</a></li></ul></div></section><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
 </div></section></div>
 
 </article>
