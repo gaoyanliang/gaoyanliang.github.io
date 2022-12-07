@@ -102,7 +102,7 @@
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-4.jpg"/></div><h2 class="post-title">类加载器</h2><div class="excerpt"><p>类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内，然后在创建一个java.lang.Class对象，用来封装类在方法区内的数据结构。
 
 注意：JVM主要在程序第一次主动使用类的时候，才会去加载该类，也就是说，JVM并不是在一开始就把一个程序就所有的类都加载到内存中，而是到不得不用的时候才把它加载进来，而且只加载一次。
-</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-10-15T00:00:00.000Z">Oct 15, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">类加载器</span></div></article>
+</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-02-15T00:00:00.000Z">Feb 15, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">类加载器</span></div></article>
 </a><a class="post-card post " href="/java/jvm/jvm-class-loader/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-3.jpg"/></div><h2 class="post-title">JVM 类加载机制</h2><div class="excerpt"><p>类加载子系统主要包含如下几项功能：
 
@@ -113,7 +113,7 @@ ClassLoader只负责class文件的加载，至于它是否可以运行，则由E
 
 
 虚拟机把描述类的数据从 Class 文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。
-</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-10-14T00:00:00.000Z">Oct 14, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">类加载机制</span></div></article>
+</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-02-14T00:00:00.000Z">Feb 14, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">类加载机制</span></div></article>
 </a><a class="post-card post " href="/java/jvm/jvm-memory-manager/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-2.jpg"/></div><h2 class="post-title">JVM 内存管理</h2><div class="excerpt"><p>JVM 整体架构根据 JVM 规范，JVM 内存共分为: 程序计数器、虚拟机栈、本地方法栈、堆、方法区 这五个部分。
 
@@ -137,7 +137,7 @@ ClassLoader只负责class文件的加载，至于它是否可以运行，则由E
 
 虚 拟 机 栈
 线程私有，生命周期与线程相 同，使用连续的 内存空间
-Java 方法执行的内存模 型，存储局部变量表、 操作栈...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-10-13T00:00:00.000Z">Oct 13, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">Java 虚拟机</span><span class="cap breadcrumb">内存管理</span></div></article>
+Java 方法执行的内存模 型，存储局部变量表、 操作栈...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-02-13T00:00:00.000Z">Feb 13, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">Java 虚拟机</span><span class="cap breadcrumb">内存管理</span></div></article>
 </a><a class="post-card post " href="/java/jvm/jvm/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-1.jpg"/></div><h2 class="post-title">JVM 基础知识</h2><div class="excerpt"><p>什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。
 主流的JVM
@@ -157,7 +157,7 @@ J9
 J9是IBM开发的高度模块化的JVM
 
 
-...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-04T00:00:00.000Z">Aug 4, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">Java 虚拟机</span></div></article>
+...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-02-04T00:00:00.000Z">Feb 4, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">Java 虚拟机</span></div></article>
 </a></div>
   
 
@@ -166,7 +166,7 @@ J9是IBM开发的高度模块化的JVM
 
 
       
-<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 
       <div class='float-panel mobile-only blur' style='display:none'>

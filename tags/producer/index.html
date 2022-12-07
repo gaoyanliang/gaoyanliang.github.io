@@ -99,13 +99,13 @@
 
 <div class="nav-wrap"><nav class="sub post cap"><a href="/">Recent</a><a href="/categories">Categories</a><a class="active" href="/tags">Tag: producer</a><a href="/archives">Archives</a></nav></div>
   <div class="post-list post"><a class="post-card post " href="/kafka/kafka-producer-source-code/">
-<article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-9.jpg"/></div><h2 class="post-title">Kafka Producer 源码篇</h2><div class="excerpt"><p>
+<article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-9.jpg"/></div><h2 class="post-title">Kafka 系列(三)：Producer 源码篇</h2><div class="excerpt"><p>
 Kafka 系列文章列表Kafka 版本：2021-11 trunk 分支（当前最新版本3.0.0）
 
 在 Kafka 中，客户端由 Java 语言实现，服务端由 Scala 语言来实现的，在使用 Kafka 时，客户端是用户最先接触到部分，因此，kafka系列文章的源码分析也会从客户端端开始，今天讲的是 Producer 端发送模型的实现。
-在看这篇源码分析之前，不了解发送端原理的同学，...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-09-02T00:00:00.000Z">Sep 2, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span><span class="cap breadcrumb">producer</span></div></article>
+在看这篇源码分析之前，不了解发送端原理的同学，...</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-11T00:00:00.000Z">Aug 11, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span><span class="cap breadcrumb">producer</span></div></article>
 </a><a class="post-card post " href="/kafka/kafka-producer/">
-<article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-10.jpg"/></div><h2 class="post-title">Kafka Producer 原理篇</h2><div class="excerpt"><p>
+<article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-10.jpg"/></div><h2 class="post-title">Kafka 系列(二)：Producer 原理篇</h2><div class="excerpt"><p>
 Kafka 系列文章列表Kafka 版本：2021-11 trunk 分支（当前最新版本3.0.0）
 
 一个正常的生产者逻辑需要具备以下几个步骤：
@@ -114,7 +114,7 @@ Kafka 系列文章列表Kafka 版本：2021-11 trunk 分支（当前最新版本
 构建待发送的消息
 发送消息
 关闭生产者实例
-</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-09-01T00:00:00.000Z">Sep 1, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span><span class="cap breadcrumb">producer</span></div></article>
+</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-08T00:00:00.000Z">Aug 8, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span><span class="cap breadcrumb">producer</span></div></article>
 </a></div>
   
 
@@ -123,7 +123,7 @@ Kafka 系列文章列表Kafka 版本：2021-11 trunk 分支（当前最新版本
 
 
       
-<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 
       <div class='float-panel mobile-only blur' style='display:none'>
