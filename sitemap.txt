@@ -1,16 +1,10 @@
+https://yanliang.cool/recent/
 https://yanliang.cool/tags/
 https://yanliang.cool/wiki/design/
-https://yanliang.cool/wiki/git/
-https://yanliang.cool/wiki/network/
-https://yanliang.cool/wiki/resume/
 https://yanliang.cool/wiki/design/create/factory.html
 https://yanliang.cool/wiki/design/create/single.html
 https://yanliang.cool/wiki/design/other/immutability.html
 https://yanliang.cool/wiki/design/structural/structural-pattern.html
-https://yanliang.cool/wiki/git/github/
-https://yanliang.cool/wiki/git/install-and-config/
-https://yanliang.cool/wiki/git/usage/
-https://yanliang.cool/wiki/network/application/
 https://yanliang.cool/about/
 https://yanliang.cool/categories/
 https://yanliang.cool/friends/
