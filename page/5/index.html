@@ -96,7 +96,18 @@
   
 
 <div class="nav-wrap"><nav class="sub post cap"><a class="active" href="/">Recent</a><a href="/categories">Categories</a><a href="/tags">Tags</a><a href="/archives">Archives</a></nav></div>
-  <div class="post-list post"><a class="post-card post " href="/java/jvm/jvm-memory-manager/">
+  <div class="post-list post"><a class="post-card post " href="/java/jvm/jvm-class-loader/">
+<article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-3.jpg"/></div><h2 class="post-title">JVM 类加载机制</h2><div class="excerpt"><p>类加载子系统主要包含如下几项功能：
+
+负责从文件系统或是网络中加载.class文件，class文件在文件开头有特定的文件标识。 
+把加载后的class类信息存放于方法区，除了类信息之外，方法区还会存放运行时常量池信息，可能还包括字符串字面量和数字常量（这部分常量信息是Class文件中常量池部分的内存映射）。
+ClassLoader只负责class文件的加载，至于它是否可以运行，则由Execution Engine决定。 
+如果调用构造器实例化对象，则该对象存放在堆区。
+
+
+虚拟机把描述类的数据从 Class 文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。
+</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-02-14T00:00:00.000Z">Feb 14, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">类加载机制</span></div></article>
+</a><a class="post-card post " href="/java/jvm/jvm-memory-manager/">
 <article class="md"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-2.jpg"/></div><h2 class="post-title">JVM 内存管理</h2><div class="excerpt"><p>JVM 整体架构根据 JVM 规范，JVM 内存共分为: 程序计数器、虚拟机栈、本地方法栈、堆、方法区 这五个部分。
 
 
