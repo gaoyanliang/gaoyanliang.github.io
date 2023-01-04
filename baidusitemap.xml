@@ -1,195 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://yanliang.cool/cloud_native/kubernetes/</loc>
+    <loc>https://yanliang.cool//blog/cloud_native/kubernetes/</loc>
     <lastmod>2022-11-05</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/cloud_native/cloud_native/</loc>
+    <loc>https://yanliang.cool//blog/cloud_native/cloud_native/</loc>
     <lastmod>2022-11-02</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/go/context/</loc>
+    <loc>https://yanliang.cool//blog/go/context/</loc>
     <lastmod>2022-10-04</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/go/channel/</loc>
+    <loc>https://yanliang.cool//blog/go/channel/</loc>
     <lastmod>2022-10-02</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/docker/docker_core/</loc>
+    <loc>https://yanliang.cool//blog/docker/docker_core/</loc>
     <lastmod>2022-05-20</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/docker/docker_compose/</loc>
+    <loc>https://yanliang.cool//blog/docker/docker_compose/</loc>
     <lastmod>2022-05-10</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/docker/docker_single_process/</loc>
+    <loc>https://yanliang.cool//blog/docker/docker_single_process/</loc>
     <lastmod>2022-05-05</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/docker/container/</loc>
+    <loc>https://yanliang.cool//blog/docker/container/</loc>
     <lastmod>2022-05-01</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/design/highly-available/</loc>
+    <loc>https://yanliang.cool//blog/design/highly-available/</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/redis/redis_persistence/</loc>
+    <loc>https://yanliang.cool//blog/redis/redis_persistence/</loc>
     <lastmod>2021-10-01</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/mysql/performance_optimization/</loc>
+    <loc>https://yanliang.cool//blog/mysql/performance_optimization/</loc>
     <lastmod>2021-09-23</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/mysql/slow-query/</loc>
+    <loc>https://yanliang.cool//blog/mysql/slow-query/</loc>
     <lastmod>2021-09-21</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/tools/github-login-with-token/</loc>
+    <loc>https://yanliang.cool//blog/tools/github-login-with-token/</loc>
     <lastmod>2021-09-14</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/framework/scan-qr-code-to-login/</loc>
+    <loc>https://yanliang.cool//blog/framework/scan-qr-code-to-login/</loc>
     <lastmod>2021-09-02</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-listeners-config/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-listeners-config/</loc>
     <lastmod>2021-08-27</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-sequence/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-sequence/</loc>
     <lastmod>2021-08-26</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-rebalance/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-rebalance/</loc>
     <lastmod>2021-08-25</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-partition-alocation/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-partition-alocation/</loc>
     <lastmod>2021-08-24</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/exactly_once/</loc>
+    <loc>https://yanliang.cool//blog/kafka/exactly_once/</loc>
     <lastmod>2021-08-23</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/lost_messages/</loc>
+    <loc>https://yanliang.cool//blog/kafka/lost_messages/</loc>
     <lastmod>2021-08-21</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-optimization/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-optimization/</loc>
     <lastmod>2021-08-19</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-idempotence/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-idempotence/</loc>
     <lastmod>2021-08-17</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-reliability/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-reliability/</loc>
     <lastmod>2021-08-15</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-consumer/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-consumer/</loc>
     <lastmod>2021-08-12</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-producer-source-code/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-producer-source-code/</loc>
     <lastmod>2021-08-11</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-producer/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-producer/</loc>
     <lastmod>2021-08-08</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/kafka/kafka-concept/</loc>
+    <loc>https://yanliang.cool//blog/kafka/kafka-concept/</loc>
     <lastmod>2021-08-03</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/framework/unique-id/</loc>
+    <loc>https://yanliang.cool//blog/framework/unique-id/</loc>
     <lastmod>2021-07-12</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/design/rtorpo/</loc>
+    <loc>https://yanliang.cool//blog/design/rtorpo/</loc>
     <lastmod>2021-06-21</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/design/idempotent/</loc>
+    <loc>https://yanliang.cool//blog/design/idempotent/</loc>
     <lastmod>2021-06-18</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/framework/rpc-rest/</loc>
+    <loc>https://yanliang.cool//blog/framework/rpc-rest/</loc>
     <lastmod>2021-06-11</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/design/limiting/</loc>
+    <loc>https://yanliang.cool//blog/design/limiting/</loc>
     <lastmod>2021-06-05</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/design/how-to-design-extensible-limiting-algorithm/</loc>
+    <loc>https://yanliang.cool//blog/design/how-to-design-extensible-limiting-algorithm/</loc>
     <lastmod>2021-06-03</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/concurrent/thread_pool/</loc>
+    <loc>https://yanliang.cool//blog/concurrent/thread_pool/</loc>
     <lastmod>2021-05-15</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/concurrent/actor/</loc>
+    <loc>https://yanliang.cool//blog/concurrent/actor/</loc>
     <lastmod>2021-05-03</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/network/token_cookie_session/</loc>
+    <loc>https://yanliang.cool//blog/network/token_cookie_session/</loc>
     <lastmod>2021-04-14</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/network/what_happen_after_enter_url/</loc>
+    <loc>https://yanliang.cool//blog/network/what_happen_after_enter_url/</loc>
     <lastmod>2021-04-14</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/java/dynamic-proxy/</loc>
+    <loc>https://yanliang.cool//blog/java/dynamic-proxy/</loc>
     <lastmod>2021-03-12</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/java/abstract_interface/</loc>
+    <loc>https://yanliang.cool//blog/java/abstract_interface/</loc>
     <lastmod>2021-03-07</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/java/jvm/jvm-class-loader2/</loc>
+    <loc>https://yanliang.cool//blog/java/jvm/jvm-class-loader2/</loc>
     <lastmod>2021-02-15</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/java/jvm/jvm-class-loader/</loc>
+    <loc>https://yanliang.cool//blog/java/jvm/jvm-class-loader/</loc>
     <lastmod>2021-02-14</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/java/jvm/jvm-memory-manager/</loc>
+    <loc>https://yanliang.cool//blog/java/jvm/jvm-memory-manager/</loc>
     <lastmod>2021-02-13</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/java/jvm/jvm/</loc>
+    <loc>https://yanliang.cool//blog/java/jvm/jvm/</loc>
     <lastmod>2021-02-04</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/JSONParser/</loc>
+    <loc>https://yanliang.cool//blog/JSONParser/</loc>
     <lastmod>2021-01-24</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/algorithm/sort/</loc>
+    <loc>https://yanliang.cool//blog/algorithm/sort/</loc>
     <lastmod>2019-06-19</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/algorithm/algo3/</loc>
+    <loc>https://yanliang.cool//blog/algorithm/algo3/</loc>
     <lastmod>2019-05-21</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/algorithm/algo2/</loc>
+    <loc>https://yanliang.cool//blog/algorithm/algo2/</loc>
     <lastmod>2019-04-20</lastmod>
   </url>
   <url>
-    <loc>https://yanliang.cool/algorithm/algo1/</loc>
+    <loc>https://yanliang.cool//blog/algorithm/algo1/</loc>
     <lastmod>2019-03-19</lastmod>
   </url>
 </urlset> 

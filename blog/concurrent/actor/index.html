@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>actor</title>
+
+  
+    <meta name="description" content="Actors模型(Actor model)首先是由Carl Hewitt在1973定义， 由Erlang OTP (Open Telecom Platform) 推广，其消息传递更加符合面向对象的原始意图。 Actors属于并发组件模型 ，通过组件方式定义并发编程范式的高级阶段，避免使用者直接接触多线程并发或线程池等基础概念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Actor Model">
+<meta property="og:url" content="https://yanliang.cool/blog/concurrent/actor/">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="Actors模型(Actor model)首先是由Carl Hewitt在1973定义， 由Erlang OTP (Open Telecom Platform) 推广，其消息传递更加符合面向对象的原始意图。 Actors属于并发组件模型 ，通过组件方式定义并发编程范式的高级阶段，避免使用者直接接触多线程并发或线程池等基础概念。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/actor1.png">
+<meta property="article:published_time" content="2021-05-03T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-03T00:00:00.000Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="Actor 模型">
+<meta property="article:tag" content="并发模型">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/actor1.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/index-head.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title"><div style="line-height: 1.5; letter-spacing: 3px; position: relative;">Yanliang</div> <div style="font-size: .85rem; letter-spacing: 1px; font-weight: 500;">Believe in yourself.</div></div></a></div>
+
+<nav class="menu dis-select"><a class="nav-item active" href="/">Blog</a><a class="nav-item" href="/wiki/">Wiki</a><a class="nav-item" href="/friends/">Friends</a><a class="nav-item" href="/about/">More</a></nav></header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" placeholder="Search"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">Actor Model</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%80%A7%E8%A7%A3%E8%AF%BB"><span class="toc-text">特性解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-text">优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A3%E5%8A%BF"><span class="toc-text">劣势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%87%E5%8D%8E%E4%B8%80%E4%B8%8B"><span class="toc-text">升华一下</span></a></li></ol></div></div></widget>
+
+
+</div>
+<footer class="footer dis-select"><div class="social-wrap"><a class="social" title="Back to Top" href="#start" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/top.svg"/></a><a class="social" title="GitHub" href="https://github.com/gyl-coder/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/github.svg"/></a><a class="social" title="Spotify" href="https://open.spotify.com/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/music.svg"/></a><a class="social" title="Unsplash" href="https://unsplash.com/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/music.svg"/></a><a class="social" title="Comments" href="/about/#comments" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/message.svg"/></a></div></footer>
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></div><div id="post-meta">💧 Posted on&nbsp;<time datetime="2021-05-03T00:00:00.000Z">May 3, 2021</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>Actor Model</span></h1>
+<p>Actors模型(Actor model)首先是由Carl Hewitt在1973定义， 由Erlang OTP (Open Telecom Platform) 推广，其消息传递更加符合面向对象的原始意图。 Actors属于并发组件模型 ，通过组件方式定义并发编程范式的高级阶段，避免使用者直接接触多线程并发或线程池等基础概念。</p>
+<span id="more"></span>
+
+<p>在 Actor 模型中，一切都是 actor，actor 通过消息传递的方式与外界通信。消息传递是异步的。每个actor都有一个邮箱（Mailbox），该邮箱接收并缓存其他actor发过来的消息，actor一次只能同步处理一个消息，处理消息过程中，除了可以接收消息，不能做任何其他操作。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/actor1.png" fancybox="true"/></div></div>
+
+<p>使用 Actor 模型需要遵循以下几个基本原则：</p>
+<ul>
+<li>所有计算都是在 actor 内执行的</li>
+<li>actor 之间只能通过消息进行通信交流</li>
+<li>为了响应消息，actor 可以进行如下操作<ul>
+<li>更改状态或行为</li>
+<li>发消息给其他 actor</li>
+<li>创建有限数量的子 actor</li>
+</ul>
+</li>
+</ul>
+<h2 id="特性解读"><a href="#特性解读" class="headerlink" title="特性解读"></a>特性解读</h2><p><strong>所有计算都在一个 actor 中进行</strong></p>
+<p>actor 是最基本的计算单元，在使用 Actor 模型构建系统时，一切都是actor。无论是计算斐波那契序列还是维护系统中用户的状态，都可以在一个或多个 actor 中进行。</p>
+<p>Actor 模型中的 actor 不仅有状态，还有行为，和OOP有点像。不同的是OOP将对象（类实例）作为基本的计算单元。</p>
+<p>Actor 模型中另一个对高并发应用有帮助的是隔离actor状态的思想。actor 的状态永远不会直接暴露在外面，也无法直接被其他 actor 查看或修改，除非通过消息机制间接地进行。这种机制同样适用于 actor 的行为。actor内部的方法同样也不会直接暴露给其他 actor 。事实上，在 actor 内部，状态和行为可以被视为相同的因素。</p>
+<p><strong>actor 之间只能通过消息进行通信</strong></p>
+<p>在 Actor 模型中，所有的通信都是基于消息机制进行的，这也是 actor 之间进行通信的方法。</p>
+<p>每个 actor 在创建的时候都会获得一个地址，该地址是与该 actor 通信的入口。不能通过这个地址直接访问该 actor，但是可以通过这个地址发消息给它。</p>
+<p>发送给 actor 的消息是不可变的数据。这些消息会被发送到目标 actor 提供的地址并被存在邮箱（Mailbox）中。Actor 模型提供了最多投递一次的消息机制，这意味着有可能发生投递失败的情况，如果想要保证每次都投递成功，需要使用其他工具来辅助。</p>
+<blockquote>
+<p>akka 实现了最少投递一次的机制，更进一步提供了更加强大的顺序保证机制，可以确保正在通信的 actor 之间的消息都是按照顺序被送达的。也就是说，一个actor 发给另一个 actor多个消息的时候，可以确保消息被送达的顺序和发送顺序是一致的。</p>
+</blockquote>
+<p>消息被投递到邮箱（Mailbox）之后，actor 可以接受并处理这些消息，但是每次只能处理一条消息。所以actor 可以很自由的修改自己的内部状态，而不用担心是否会有其他线程也在操作该状态。</p>
+<p><strong>actor 可以创建子 actor</strong></p>
+<p>在 actor 模型中，一切都是 actor ，而且 actor 之间只能通过消息机制进行通信，但是 actor 还需要知道其他 actor 的存在。</p>
+<p>当 actor 接收到消息之后，可以进行的操作之一是创建有限数量的子 actor。之后父节点就会知道它的所有子节点的存在，并可以访问子节点的地址。</p>
+<p>除了通过创建子节点来获取其他 actor 的方法，一个 actor 还可以把地址信息通过消息机制发送给其他 actor。这样父节点便可以把他知道的所有actor 的地址信息通知给子 actor。</p>
+<p>actor 的这种层级结构意味着，除根节点外的所有节点都将拥有一个父节点，同时任何节点都可以拥有一个或多个子节点。这样从根节点开始遍历整棵树的actor集合被称为一个 actor 系统。</p>
+<p>actor系统中的每个 actor 总是可以通过其他地址被唯一标识。地址命名不需要遵循任何特定的规范，只要地址唯一即可。 akka 使用层级结构的模式来命名，就像目录结构一样。或者可以使用随机生成的唯一键。</p>
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><p><strong>更加面向对象</strong></p>
+<p>Actor类似面向对象编程（OOP）中的对象，每个Actor实例封装了自己相关的状态，并且和其他Actor处于物理隔离状态。</p>
+<blockquote>
+<p>举个游戏玩家的例子，每个玩家在Actor系统中是Player 这个Actor的一个实例，每个player都有自己的属性，比如Id，昵称，攻击力等，体现到代码级别其实和我们OO的代码并无多大区别，在系统内存级别也是出现了多个OO的实例</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PlayerActor</span> </span>&#123;        </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span> Id &#123; get; set; &#125;        </span><br><span class="line">  <span class="keyword">public</span> string Name &#123; get; set; &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>无锁</strong></p>
+<p>Actor 模型内部的状态由它自己维护，即它内部数据只能由它自己修改(通过消息传递来进行状态修改)，所以使用Actors模型进行并发编程可以很好地避免这些问题。</p>
+<p><strong>异步</strong></p>
+<p>每个Actor都有一个专用的MailBox来接收消息，这也是Actor实现异步的基础。当一个Actor实例向另外一个Actor发消息的时候，并非直接调用Actor的方法，而是把消息传递到对应的MailBox里，就好像邮递员，并不是把邮件直接送到收信人手里，而是放进每家的邮箱，这样邮递员就可以快速的进行下一项工作。所以在Actor系统里，Actor发送一条消息是非常快的。</p>
+<p>这样的设计主要优势就是解耦了Actor，数万个Actor并发的运行，每个actor都以自己的步调运行，且发送消息，接收消息都不会被阻塞。</p>
+<p><strong>隔离</strong></p>
+<p>每个Actor的实例都维护着自己的状态，与其他Actor实例处于物理隔离状态，并非像 <code>多线程+锁</code> 模式那样基于共享数据。</p>
+<p><strong>天生分布式</strong></p>
+<p>每个Actor实例的位置透明，无论Actor地址是在本地还是在远程机器上对于代码来说都是一样的。每个Actor的实例非常小，最多几百字节，所以单机几十万的Actor的实例很轻松。由于位置透明性，所以Actor系统可以随意的横向扩展来应对并发，对于调用者来说，调用的Actor的位置就在本地，当然这也得益于Actor系统强大的路由系统。 </p>
+<p><strong>容错</strong></p>
+<p>传统的编程方式都是在将来可能出现异常的地方去捕获异常来保证系统的稳定性，这就是所谓的防御式编程。但是防御式编程也有自己的缺点，类似于现实，防御的一方永远不能100%的防御住所有将来可能出现代码缺陷的地方。比如在java代码中很多地方充斥着判断变量是否为nil，这些就属于防御式编码最典型的案例。</p>
+<p>但是Actor模型的程序并不进行防御式编程，而是遵循“任其崩溃”的哲学，让Actor的管理者们来处理这些崩溃问题。比如一个Actor崩溃之后，管理者可以选择创建新的实例或者记录日志。每个Actor的崩溃或者异常信息都可以反馈到管理者那里，这就保证了Actor系统在管理每个Actor实例的灵活性。</p>
+<h2 id="劣势"><a href="#劣势" class="headerlink" title="劣势"></a>劣势</h2><p>由于同一类型的Actor对象是分散在多个宿主之中，所以取多个Actor的集合是个软肋。比如在电商系统中，商品作为一类Actor，查询一个商品的列表在多数情况下经过以下过程：首先根据查询条件筛选出一系列商品id，根据商品id分别取商品Actor列表（很可能会产生一个商品搜索的服务，无论是用es或者其他搜索引擎）。如果量非常大的话，有产生网络风暴的危险（虽然几率非常小）。在实时性要求不是太高的情况下，其实也可以独立出来商品Actor的列表，利用MQ接收商品信息修改的信号来处理数据一致性的问题。</p>
+<p>在很多情况下基于Actor模型的分布式系统，缓存很有可能是进程内缓存，也就是说每个Actor其实都在进程内保存了自己的状态信息，业内通常把这种服务成为有状态服务。但是每个Actor又有自己的生命周期，会产生问题吗？还是拿商品作为例子， 如果环境是非Actor并发模型，商品的缓存可以利用LRU策略来淘汰非活跃的商品缓存，来保证内存不会使用过量，如果是基于Actor模型的进程内缓存呢，每个actor其实就是缓存本身，就不那么容易利用LRU策略来保证内存使用量了，因为Actor的活跃状态对于你来说是未知的。</p>
+<p>分布式事物问题，其实这是所有分布式模型都面临的问题，非由于Actor而存在。还是以商品Actor为例，添加一个商品的时候，商品Actor和统计商品的Actor（很多情况下确实被设计为两类Actor服务）需要保证事物的完整性，数据的一致性。在很多的情况下可以牺牲实时一致性用最终一致性来保证。</p>
+<p>每个Actor的mailBox有可能会出现堆积或者满的情况，当这种情况发生，新消息的处理方式是被抛弃还是等待呢，所以当设计一个Actor系统的时候mailBox的设计需要注意。</p>
+<h2 id="升华一下"><a href="#升华一下" class="headerlink" title="升华一下"></a>升华一下</h2><ol>
+<li>通过以上介绍，既然Actor对于位置是透明的，任何Actor对于其他Actor就好像在本地一样。基于这个特性我们可以做很多事情了，以前传统的分布式系统，A服务器如果想和B服务器通信，要么RPC的调用（http调用不太常用），要么通过MQ系统。但是在Actor系统中，服务器之间的通信都变的很优雅了，虽然本质上也属于RPC调用，但是对于编码者来说就好像在调用本地函数一样。其实现在比较时兴的是Streaming方式。</li>
+<li>由于Actor系统的执行模型是单线程，并且异步，所以凡是有资源竞争的类似功能都非常适合Actor模型，比如秒杀活动。</li>
+<li>基于以上的介绍，Actor模型在设计层面天生就支持了负载均衡，而且对于水平扩容支持的非常好。当然Actor的分布式系统也是需要服务注册中心的。</li>
+<li>虽然Actor是单线程执行模型，并不意味着每个Actor都需要占用一个线程，其实Actor上执行的任务就像Golang的goroutine一样，完全可以是一个轻量级的东西，而且一个宿主上所有的Actor可以共享一个线程池，这就保证了在使用最少线程资源的情况下，最大量化业务代码。</li>
+</ol>
+
+
+<div class="article-footer reveal fs14"><section id="references"><div class="header"><span>References</span></div><div class="body"><ul><li class="post-title"><a href="https://cloud.tencent.com/developer/news/698662" target="_blank" rel="external nofollow noopener noreferrer">分布式高并发下Actor模型如此优秀</a></li></ul></div></section><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/blog/concurrent/thread_pool/">线程池详解</a></div><div class="item" id="next"><div class="note">Older</div><a href="/blog/network/token_cookie_session/">Token、Cookie、Session傻傻分不清楚？</a></div></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md-text reveal' id="comments">
+    <section class='header cmt-title cap theme'>
+      Join the discussion
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" data-repo="gaoyanliang/beaudar" data-repo-id="MDEwOlJlcG9zaXRvcnkzOTMzNzI1Nzg=" data-category="Announcements" data-category-id="DIC_kwDOF3Jjos4CTZES" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+    </section>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.18.5';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadJS() {
+    const els = document.querySelectorAll("#comments #giscus");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+    loadJS();
+  });
+</script>
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

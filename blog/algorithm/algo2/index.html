@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>algorithm</title>
+
+  
+    <meta name="description" content="轮流拿石子问题：一共有N颗石子（或者其他乱七八糟的东西），每次最多取M颗最少取1颗，A，B轮流取，谁最后会获胜？（假设他们每次都取最优解）。 答案：简单的巴什博奕：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;StrayWolf&#x2F;p&#x2F;5396427.html 问题：有若干堆石子，每堆石子的数量是有限的，二个人依次从这些石子堆中拿取任意的石子，至少一个（不能不取），最后一个拿光石子的人胜利。 答案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见思维题二">
+<meta property="og:url" content="https://yanliang.cool/blog/algorithm/algo2/">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="轮流拿石子问题：一共有N颗石子（或者其他乱七八糟的东西），每次最多取M颗最少取1颗，A，B轮流取，谁最后会获胜？（假设他们每次都取最优解）。 答案：简单的巴什博奕：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;StrayWolf&#x2F;p&#x2F;5396427.html 问题：有若干堆石子，每堆石子的数量是有限的，二个人依次从这些石子堆中拿取任意的石子，至少一个（不能不取），最后一个拿光石子的人胜利。 答案">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-04-20T00:00:00.000Z">
+<meta property="article:modified_time" content="2019-04-20T00:00:00.000Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="智力题">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/index-head.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title"><div style="line-height: 1.5; letter-spacing: 3px; position: relative;">Yanliang</div> <div style="font-size: .85rem; letter-spacing: 1px; font-weight: 500;">Believe in yourself.</div></div></a></div>
+
+<nav class="menu dis-select"><a class="nav-item active" href="/">Blog</a><a class="nav-item" href="/wiki/">Wiki</a><a class="nav-item" href="/friends/">Friends</a><a class="nav-item" href="/about/">More</a></nav></header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" placeholder="Search"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">常见思维题二</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AE%E6%B5%81%E6%8B%BF%E7%9F%B3%E5%AD%90"><span class="toc-text">轮流拿石子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%9A%82%E8%9A%81%E8%B5%B0%E6%A0%91%E6%9E%9D"><span class="toc-text">蚂蚁走树枝</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%B7%E7%9B%97%E5%88%86%E9%87%91%E5%B8%81"><span class="toc-text">海盗分金币</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E7%81%AB%E6%9E%AA%E6%89%8B"><span class="toc-text">三个火枪手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9A%E7%8A%AF%E6%8B%BF%E8%B1%86%E5%AD%90"><span class="toc-text">囚犯拿豆子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E7%94%9F%E7%8C%9C%E7%94%9F%E6%97%A5"><span class="toc-text">学生猜生日</span></a></li></ol></div></div></widget>
+
+
+</div>
+<footer class="footer dis-select"><div class="social-wrap"><a class="social" title="Back to Top" href="#start" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/top.svg"/></a><a class="social" title="GitHub" href="https://github.com/gyl-coder/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/github.svg"/></a><a class="social" title="Spotify" href="https://open.spotify.com/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/music.svg"/></a><a class="social" title="Unsplash" href="https://unsplash.com/" target="_blank" rel="external nofollow noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/music.svg"/></a><a class="social" title="Comments" href="/about/#comments" rel="noopener noreferrer"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/social/message.svg"/></a></div></footer>
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/algorithm/">algorithm</a></div><div id="post-meta">💧 Posted on&nbsp;<time datetime="2019-04-20T00:00:00.000Z">Apr 20, 2019</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>常见思维题二</span></h1>
+<h2 id="轮流拿石子"><a href="#轮流拿石子" class="headerlink" title="轮流拿石子"></a>轮流拿石子</h2><p>问题：一共有N颗石子（或者其他乱七八糟的东西），每次最多取M颗最少取1颗，A，B轮流取，谁最后会获胜？（假设他们每次都取最优解）。</p>
+<p>答案：简单的巴什博奕：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/StrayWolf/p/5396427.html">https://www.cnblogs.com/StrayWolf/p/5396427.html</a></p>
+<p>问题：有若干堆石子，每堆石子的数量是有限的，二个人依次从这些石子堆中拿取任意的石子，至少一个（不能不取），最后一个拿光石子的人胜利。</p>
+<p>答案：较复杂的尼姆博弈：<a target="_blank" rel="noopener" href="https://blog.csdn.net/BBHHTT/article/details/80199541">https://blog.csdn.net/BBHHTT/article/details/80199541</a></p>
+<span id="more"></span>
+
+<h2 id="蚂蚁走树枝"><a href="#蚂蚁走树枝" class="headerlink" title="蚂蚁走树枝"></a>蚂蚁走树枝</h2><p>放N只蚂蚁在一条长度为M树枝上，蚂蚁与蚂蚁之间碰到就各自往反方向走，问总距离或者时间。</p>
+<p>答案：这个其实就一个诀窍：蚂蚁相碰就往反方向走，可以直接看做没有发生任何事：大家都相当于独立的</p>
+<p>A蚂蚁与B蚂蚁相碰后你可以看做没有发生这次碰撞，这样无论是求时间还是距离都很简单了。</p>
+<h2 id="海盗分金币"><a href="#海盗分金币" class="headerlink" title="海盗分金币"></a>海盗分金币</h2><p>5个海盗抢到了100枚金币，每一颗都一样的大小和价值。</p>
+<p>他们决定这么分：</p>
+<p>抽签决定自己的号码（1，2，3，4，5）</p>
+<p>首先，由1号提出分配方案，然后大家5人进行表决，当半数以上的人同意时（ 不包括半数，这是重点），按照他的提案进行分配，否则将被扔入大海喂鲨鱼。</p>
+<p>如果1号死后，再由2号提出分配方案，然后大家4人进行表决，当且仅当半超过半数的人同意时，按照他的提案进行分配，否则将被扔入大海喂鲨鱼。</p>
+<p>依次类推……</p>
+<p>假设每一位海盗都足够聪明，并且利益至上，能多分一枚金币绝不少分，那么1号海盗该怎么分金币才能使自己分到最多的金币呢？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>从后向前推，如果1至3号强盗都喂了鲨鱼，只剩4号和5号的话，5号一定投反对票让4号喂鲨鱼，以独吞全部金币。所以，4号惟有支持3号才能保命。</p><p>3号知道这一点，就会提出“100，0，0”的分配方案，对4号、5号一毛不拔而将全部金币归为已有，因为他知道4号一无所获但还是会投赞成票，再加上自己一票，他的方案即可通过。</p><p>不过，2号推知3号的方案，就会提出“98，0，1，1”的方案，即放弃3号，而给予4号和5号各一枚金币。由于该方案对于4号和5号来说比在3号分配时更为有利，他们将支持他而不希望他出局而由3号来分配。这样，2号将拿走98枚金币。</p><p>同样，2号的方案也会被1号所洞悉，1号并将提出（97，0，1，2，0）或（97，0，1，0，2）的方案，即放弃2号，而给3号一枚金币，同时给4号（或5号）2枚金币。由于1号的这一方案对于3号和4号（或5号）来说，相比2号分配时更优，他们将投1号的赞成票，再加上1号自己的票，1号的方案可获通过，97枚金币可轻松落入囊中。这无疑是1号能够获取最大收益的方案了！答案是：1号强盗分给3号1枚金币，分给4号或5号强盗2枚，自己独得97枚。分配方案可写成（97，0，1，2，0）或（97，0，1，0，2）。</p><p><strong>此题还有变种：</strong> 就是只需要一半人同意即可，不需要一半人以上同意方案就可以通过，在其他条件不变的情况下，1号该怎么分配才能获得最多的金币？</p><p>答案：类似的推理过程</p><p>4号：4号提出的方案的时候肯定是最终方案，因为不管5号同意不同意都能通过，所以4号5号不必担心自己被投入大海。那此时5号获得的金币为0，4号获得的金币为100。</p><p>5号：因为4号提方案的时候 ，自己获取的金币为0 。所以只要4号之前的人分配给自己的金币大于0就同意该方案。</p><p>4号：如果3号提的方案一定能获得通过（原因：3号给5号的金币大于0， 5号就同意 因此就能通过），那自己获得的金币就为0，所以只要2号让自己获得的金币大于0就会同意。</p><p>3号：因为到了自己提方案的时候可以给5号一金币，自己的方案就能通过，但考虑到2号提方案的时候给4号一个金币，2号的方案就会通过，那自己获得的金币就为0。所以只要1号让自己获得的金币大于0就会同意。</p><p>2号：因为到了自己提方案的时候只要给4号一金币，就能获得通过，根本就不用顾及3 号 5号同意不同意，所以不管1号怎么提都不会同意。</p><p>1号：2号肯定不会同意。但只要给3号一块金币，5号一块金币（因为5号如果不同意，那么4号分配的时候，他什么都拿不到）就能获得通过。<br>所以答案是 98，0，1，0，1。</p><p>类似的问题也可用类似的推理，并不难</p></div></details>
+
+
+<h2 id="三个火枪手"><a href="#三个火枪手" class="headerlink" title="三个火枪手"></a>三个火枪手</h2><p>彼此痛恨的甲、乙、丙三个枪手准备决斗。甲枪法最好，十发八中；乙枪法次之，十发六中；丙枪法最差，十发四中。如果三人同时开枪，并且每人每轮只发一枪；那么枪战后，谁活下来的机会大一些？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>一般人认为甲的枪法好，活下来的可能性大一些。但合乎推理的结论是，枪法最糟糕的丙活下来的几率最大。</p><p>那么我们先来分析一下各个枪手的策略。</p><p>如同田忌赛马一般，枪手甲一定要对枪手乙先开枪。因为乙对甲的威胁要比丙对甲的威胁更大，甲应该首先干掉乙，这是甲的最佳策略。</p><p>同样的道理，枪手乙的最佳策略是第一枪瞄准甲。乙一旦将甲干掉，乙和丙进行对决，乙胜算的概率自然大很多。</p><p>枪手丙的最佳策略也是先对甲开枪。乙的枪法毕竟比甲差一些，丙先把甲干掉再与乙进行对决，丙的存活概率还是要高一些。</p><p>我们根据分析来计算一下三个枪手在上述情况下的存活几率：</p><p>第一轮：甲射乙，乙射甲，丙射甲。</p><ul><li>甲的活率为24%（40% X 60%）</li><li>乙的活率为20%(100% - 80%)</li><li>丙的活率为100%（无人射丙）。</li></ul><p>由于丙100％存活率，因此根据上轮甲乙存活的情况来计算三人第二轮的存活几率：</p><p>情况1：甲活乙死（24% X 80% = 19.2%）</p><p>甲射丙，丙射甲：甲的活率为60%，丙的活率为20%。</p><p>情况2：乙活甲死（20% X 76% = 15.2%）</p><p>乙射丙，丙射乙：乙的活率为60%，丙的活率为40%。</p><p>情况3：甲乙同活（24% X 20% = 4.8%）</p><p>重复第一轮。</p><p>情况4：甲乙同死（76% X 80% = 60.8%）</p><p>枪战结束。</p><p>据此来计算三人活率：</p><ul><li>甲的活率为(19.2% X 60%) + (4.8% X 24%) = 12.672%</li><li>乙的活率为(15.2% X 60%) + (4.8% X 20%) = 10.08%</li><li>丙的活率为(19.2% X 20%) + (15.2% X 40%) + (4.8% X 100%) + (60.8% X 100%) = 75.52%</li></ul><p>通过对两轮枪战的详细概率计算，我们发现枪法最差的丙存活的几率最大，枪法较好的甲和乙的存活几率却远低于丙的存活几率。</p><p>来自：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/288093713/answer/482192781">https://www.zhihu.com/question/288093713/answer/482192781</a></p></div></details>
+
+<h2 id="囚犯拿豆子"><a href="#囚犯拿豆子" class="headerlink" title="囚犯拿豆子"></a>囚犯拿豆子</h2><p>有5个囚犯被***，他们请求上诉，于是法官愿意给他们一个机会。</p>
+<p>犯人抽签分好顺序，按序每人从100粒豆子中随意抓取，最多可以全抓，最少可以不抓，可以和别人抓的一样多。</p>
+<p>最终，抓的最多的和最少的要被处死。</p>
+<ul>
+<li>他们都是非常聪明且自私的人。</li>
+<li>他们的原则是先求保命。如果不能保命，就拉人陪葬。</li>
+<li>100颗不必都分完。</li>
+<li>若有重复的情况，则也算最大或最小，一并处死（中间重复不算）。</li>
+</ul>
+<p>假设每个犯人都足够聪明，但每个犯人并不知道其他犯人足够聪明。那么，谁活下来的可能性最大？</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>不存在“谁活下来的可能性比较大”的问题。实际情况是5个人都要死。答案看起来很扯淡，但推理分析后却发现十分符合逻辑。</p><p>根据题意，一号知道有五个人抓豆子，为保性命，他只要让豆子在20颗以内就可以了。但是他足够聪明的话他一定拿20颗，因为无论多拿一颗：2,3,4号的人一定会拿20颗最后死的人就会是最多的1号和最少的5号   还是少拿一颗：2,3,4号拿20个后，5号选择也拿20个拉上1234号垫背。（下面会说为什么多拿少拿也只会相差一颗）</p><p>2号是知道1号抓了几颗豆子(20)的。那么，对于2号来说，只有2种选择：与1号一样多，或者不一样多。我们就从这里入手。</p><p>情况一，假如2号选择与1号的豆子数不一样多，也就是说2号选择比1号多或者比1号少。</p><p>我们先要证明，如果2号选择比1号多或者比1号少，那么他一定会选择比1号只多1颗或者只少1颗。</p><p>要证明这个并不算太难。因为每个囚犯的第一选择是先求保命，要保命就要尽量使自己的豆子数既不是最多也不是最少。当2号决定选择比1号多的时候，他已经可以保证自己不是最少，为了尽量使自己不是最多，当然比1号多出来的数量越小越好。因为这个数量如果与一号相差大于1的话，那么3号就有机会抓到的居中数，相差越大，二号成为最多的可能性也就越大。反之，当2号决定选择比1号少的时候，也是同样的道理，他会选择只比1号少1颗。既然2号只会会选择比1号多1颗或者比1号少1颗，那么1、2号的豆子数一定是2个连续的自然数，和一定是2n+1（其中1个人是n,另1人是n+1）。</p><p>轮到3号的时候，他可以从剩下的豆子数知道1、2号的数量和，也就不难计算出n的值。而3号也只有2个选择：n颗或者n+1颗。为什么呢？这与上面的证明是一样的道理，保命原则，取最接近的数量，这里不再赘述。</p><p>不过，3号选择的时候会有一个特殊情况，在这一情况下，他一定会选择较小的n，而不是较大的n+1。这一特殊情况就是，当3号知道自己选择了n后(已保证自己不是最多)，剩下的豆子数由于数量有限，4、5号中一定有人比n要少，这样自己一定可以活下来。计算的话就是 [100-(3n+1)]/2&lt;=n ，不难算出，在这个特殊情况下，n&gt;=20。也就是说，当1、2号选择了20或21颗的时候，3号只要选择20颗，就可以保证自己活下来。</p><p>这样一来剩下的豆子只剩39颗，4、5号至少有一人少于20颗的（这个人当然是后选的5号），这样死的将是5号和1、2号中选21颗的那个人。当然，1号、2号肯定不会有人选择21这一“倒霉”的数字（因为他们都是聪明人），这样的话，上述“特殊情况（即3号选择n）”就不会发生了。</p><p>综上所述，2345这四个人不难从剩下的豆子数知道前面几个人的数量总和，也就不难进而计算出n的值，而这样一来他们也只有n或者n+1这两种选择。最后的5号也是不难算出n的。在前4个人只选择了2个数字(n和n+1)的情况下，5号已是必死无疑，这时,根据“死也要拉几个垫背”的条件，5号会选择n或n+1，选择5个人一起完蛋。</p><p>情况二，如果2号选择了与1号不一样多的话，最终结果是5个人一起死，那么2号只有选择与1号一样多了。</p><p>那么1、2号的和就是2n，而3号如果选择n+1或者n -1的话，就又回到第一点的情况去了(前3个人的和是3m+1或3m+2)，于是3号也只能选择n ，当然，4号还是只能选n，最后的结果仍旧是5个人一起完蛋。</p><p>“最后处死抓的最多和最少的囚犯”严格执行这句话的话，除非有人舍己为人，死二留三。但这是足够聪明且自私的囚犯，所以这五个聪明人的下场是全死，这道题只不过是找了一个处死所有人的借口罢了. . . . . .</p><p>变种问题：如果每个囚犯都知道其他囚犯足够聪明，事情会怎么发展？</p><p>答案：</p><p>这样的情况下囚犯一也会像我们一样推导出前面的结论，那么根据自私的规定，他会直接拿完100个，大家一起完蛋(反正结局已定)</p></div></details>
+
+
+
+
+<h2 id="学生猜生日"><a href="#学生猜生日" class="headerlink" title="学生猜生日"></a>学生猜生日</h2><p>这种题目笔试中出现的次数比较多，用排除法比较好解决</p>
+<p>小明和小强都是张老师的学生，张老师的生日是M月N日,</p>
+<p>2人都知道张老师的生日是下列10组中的一天，张老师把M值告诉了小明,</p>
+<p>把N值告诉了小强，张老师问他们知道他的生日是那一天吗?</p>
+<p>3月4日 3月5日 3月8日</p>
+<p>6月4日 6月7日</p>
+<p>9月1日 9月5日</p>
+<p>12月1日 12月2日 12月8日</p>
+<p>小明说:如果我不知道的话，小强肯定也不知道.</p>
+<p>小强说:本来我也不知道，但是现在我知道了.</p>
+<p>小明说:哦，那我也知道了.</p>
+<p>请根据以上对话推断出张老师的生日是哪一天?</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>排除法：</p><p>1.小明肯定小强不知道是哪天，排除所有月份里有单独日的月份：6月和12月&lt;因为如果小强的M是2或者7的话，小强就知道了，所以把6月7日与12月2日排除&gt;，所以小明拿到的是3或者9</p><p>2.小强本来不知道，所以小强拿到的不是2或者7，但是小强现在知道了，说明把6月与12月排除后，小强拿到的是1,4,8中的一个&lt;这里小强肯定没拿到5，否则他不会知道是哪天的&gt;</p><p>3.小明现在也知道了，说明小明拿到的不是3，否则他不会知道是3月4日还是3月8日的，所以小明拿到的是9才能唯一确定生日</p><p>综上，答案是9月1日</p></div></details>
+
+<p>小明和小强是赵老师的学生，张老师的生日是M月N日，张老师</p>
+<p>把M值告诉小明，N值告诉小强</p>
+<p>给他们六个选项</p>
+<p>3月1日  3月3日  7月3日  7月5日  </p>
+<p>9月1日  11月7日</p>
+<p>小明说:我猜不出来</p>
+<p>小强说:本来我也猜不出来，但是现在我知道了</p>
+<p>问:张老师生日多少</p>
+<p>答案：3月1日</p>
+<details class="tag-plugin folding" ><summary><span>答案</span></summary><div class="body"><p>排除法：</p><p>1.小明说猜不出来，说明小明拿到的不是单独出现的9或者11，说明老师生日只能是3月或者7月</p><p>2.小强原本不知道，说明小强拿到的不是单独出现的5或者7，说明老是生日是1日或3日</p><p>3.小强现在知道了，说明小强拿到的是1，因为如果拿到的是3，那么小强就不知道是3月3日还是7月3日了</p><p>综上，老师生日是3月1日</p></div></details>
+
+
+<p><strong>参考文章：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.nowcoder.com/discuss/262595">https://www.nowcoder.com/discuss/262595</a></p>
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/blog/algorithm/algo3/">常见思维题三</a></div><div class="item" id="next"><div class="note">Older</div><a href="/blog/algorithm/algo1/">常见思维题一</a></div></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md-text reveal' id="comments">
+    <section class='header cmt-title cap theme'>
+      Join the discussion
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" data-repo="gaoyanliang/beaudar" data-repo-id="MDEwOlJlcG9zaXRvcnkzOTMzNzI1Nzg=" data-category="Announcements" data-category-id="DIC_kwDOF3Jjos4CTZES" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+    </section>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.18.5';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadJS() {
+    const els = document.querySelectorAll("#comments #giscus");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+    loadJS();
+  });
+</script>
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
