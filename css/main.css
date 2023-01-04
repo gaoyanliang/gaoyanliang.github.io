@@ -4987,10 +4987,6 @@ img[fancybox='true'] {
 .swiper-slide {
   cursor: zoom-in;
 }
-.cmt-body.beaudar {
-  margin: 0 -4px;
-  width: calc(100% + 8px);
-}
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 @import url("https://fonts.googleapis.com/css?family=Teko:700");
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:600");
