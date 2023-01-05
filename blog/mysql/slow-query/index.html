@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -144,7 +144,7 @@
 <p>一般都会在age这个字段增加一个索引，否则就是一个全表扫描,但是在建了age上的索引后，这个语句还是执行慢，因为满足这个条件的数据有超过1亿行。建立索引表的组织结构图如下： </p>
 <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/blogImgs@main/blog/img/post/mysql/m8.png" fancybox="true"/></div></div>
 
-<p>那么上面的sql语句执行流程是，从索引age上用树搜索，取出第一个age=10的记录，得到它的主键ID的值，根据ID值去主键索引树取整行的信息，作为结果集的一部分返回，在索引age上向右扫描，取出下一个ID值，到主键索引上取出整行信息，作为结果集的一部分返回。重复改操作，只到碰到第一个 <code>age &gt; 15</code> 的记录。</p>
+<p>那么上面的sql语句执行流程是，从索引age上用树搜索，取出第一个age&#x3D;10的记录，得到它的主键ID的值，根据ID值去主键索引树取整行的信息，作为结果集的一部分返回，在索引age上向右扫描，取出下一个ID值，到主键索引上取出整行信息，作为结果集的一部分返回。重复改操作，只到碰到第一个 <code>age &gt; 15</code> 的记录。</p>
 <p>其实最终我们关心的是扫描行数，对于一个大表，不止要有索引，索引的过滤性也要足够好，像刚才的例子age这个索引，它的过滤性就不够好，在设计表结构的时候，我们要让索引的过滤性足够好，也就是区分度比较高。</p>
 <p>那么过滤性好了，是不是标识查询的扫描行数就一定少呢？在看一个例子，参考下图：</p>
 <blockquote>
@@ -162,7 +162,7 @@
 <p>可以看到这个执行过程它的回表次数特别多，性能不够好，有没有优化的方法呢？</p>
 <p>在Mysql5.6版本引入了index condition pushdown 的优化。优化的执行流程是：</p>
 <p>从联合索引树上找到第一个年龄字段是张开头的记录，判断这个索引记录上的年龄值是不是8，如果是就回表，取出整行数据，做为结果集返回的一部分，如果不是就就丢弃，不需要回表，在联合索引树上向右遍历，并判断年龄字段后，根据需要做回表，知道碰到联合索引树上，名字的第一个字不是张的记录为止。</p>
-<p>这个过程跟上面的过程的差别，是在遍历联合索引的过程中，将age=8这个条件下推到索引遍历的过程中，减少了回表次数。假设全国名字第一个字是张的人里面，有100W个年龄是8的小朋友，那么这个查询过程中，在联合索引里要遍历8000W次，而回表只需要100w次。</p>
+<p>这个过程跟上面的过程的差别，是在遍历联合索引的过程中，将age&#x3D;8这个条件下推到索引遍历的过程中，减少了回表次数。假设全国名字第一个字是张的人里面，有100W个年龄是8的小朋友，那么这个查询过程中，在联合索引里要遍历8000W次，而回表只需要100w次。</p>
 <p>可以看到index condition pushdown优化的效果还是很不错的，但是这个优化还是没有绕开最左前缀原则的限制，因此在联合索引里，还是要扫描8000W行，有没有更进一步的优化呢？</p>
 <h3 id="虚拟列"><a href="#虚拟列" class="headerlink" title="虚拟列"></a>虚拟列</h3><p>可以采用虚拟列的优化方式。</p>
 <p>把名字的第一个字，和年龄做一个联合索引，可以使用 mysql5.7 引入的虚拟列来实现，对应的修改表结构的sql语句是这么写的：</p>

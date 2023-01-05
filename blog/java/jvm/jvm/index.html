@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -22,12 +22,12 @@
   <title>JVM</title>
 
   
-    <meta name="description" content="什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。 主流的JVM    虚拟机名称 介绍    HotSpot Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心   J9 J9是IBM开发的高度模块化的JVM   JRo">
+    <meta name="description" content="什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。 主流的JVM    虚拟机名称 介绍    HotSpot Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心   J9 J9是IBM开发的高度模块化的JVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM 基础知识">
 <meta property="og:url" content="https://yanliang.cool/blog/java/jvm/jvm/">
 <meta property="og:site_name" content="yanliang">
-<meta property="og:description" content="什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。 主流的JVM    虚拟机名称 介绍    HotSpot Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心   J9 J9是IBM开发的高度模块化的JVM   JRo">
+<meta property="og:description" content="什么是JVMJVM是Java Virtual Machine（Java虚拟机）的缩写，JVM是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的。 主流的JVM    虚拟机名称 介绍    HotSpot Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心   J9 J9是IBM开发的高度模块化的JVM">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-1.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-2.png">
@@ -113,7 +113,7 @@
 </thead>
 <tbody><tr>
 <td>HotSpot</td>
-<td>Oracle/Sun JDK和OpenJDK都使用HotSPot VM的相同核心</td>
+<td>Oracle&#x2F;Sun JDK和OpenJDK都使用HotSPot VM的相同核心</td>
 </tr>
 <tr>
 <td>J9</td>
@@ -153,7 +153,7 @@
 <p>最后，我们简单看一下一个 Java 程序的执行过程，它到底是如何运行起来的。</p>
 <p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-6.png"></p>
 <p>这里的 Java 程序是文本格式的。比如下面这段 HelloWorld.java，它遵循的就是 Java 语言规范。其中，我们调用了System.out 等模块，也就是 JRE 里提供的类库。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorld</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>使用 JDK 的工具 javac 进行编译后，会产生 HelloWorld 的字节码。</p>
 <p>我们一直在说 Java 字节码是沟通 JVM 与 Java 程序的桥梁，下面使用 javap 来稍微看一下字节码到底长什么样子。</p>

@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -136,7 +136,7 @@
 <blockquote>
 <p>举个游戏玩家的例子，每个玩家在Actor系统中是Player 这个Actor的一个实例，每个player都有自己的属性，比如Id，昵称，攻击力等，体现到代码级别其实和我们OO的代码并无多大区别，在系统内存级别也是出现了多个OO的实例</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PlayerActor</span> </span>&#123;        </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span> Id &#123; get; set; &#125;        </span><br><span class="line">  <span class="keyword">public</span> string Name &#123; get; set; &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PlayerActor</span> &#123;        </span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> Id &#123; get; set; &#125;        </span><br><span class="line">  <span class="keyword">public</span> string Name &#123; get; set; &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>无锁</strong></p>
 <p>Actor 模型内部的状态由它自己维护，即它内部数据只能由它自己修改(通过消息传递来进行状态修改)，所以使用Actors模型进行并发编程可以很好地避免这些问题。</p>

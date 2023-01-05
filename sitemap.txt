@@ -4,6 +4,7 @@ https://yanliang.cool/wiki/design/
 https://yanliang.cool/wiki/design/create/factory.html
 https://yanliang.cool/wiki/design/create/single.html
 https://yanliang.cool/wiki/design/other/immutability.html
+https://yanliang.cool/wiki/design/other/producer-consumer.html
 https://yanliang.cool/wiki/design/structural/structural-pattern.html
 https://yanliang.cool/about/
 https://yanliang.cool/categories/

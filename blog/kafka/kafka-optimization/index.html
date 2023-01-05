@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -125,9 +125,9 @@
 <h2 id="顺序写"><a href="#顺序写" class="headerlink" title="顺序写"></a>顺序写</h2><p>一般来说，完成一次磁盘IO，需要经过 <strong>寻道、旋转和数据传输</strong> 三个步骤。</p>
 <p>影响磁盘 IO 性能的因素也就发生在上面三个步骤上，因此主要花费的时间就是：</p>
 <ul>
-<li>寻道时间：Tseek 是指将读写磁头移动至正确的磁道上所需要的时间。寻道时间越短，I/O 操作越快，目前磁盘的平均寻道时间一般在 3-15ms。</li>
-<li>旋转延迟：Trotation 是指盘片旋转将请求数据所在的扇区移动到读写磁盘下方所需要的时间。旋转延迟取决于磁盘转速，通常用磁盘旋转一周所需时间的 1/2 表示。比如：7200rpm 的磁盘平均旋转延迟大约为 60*1000/7200/2 = 4.17ms，而转速为 15000rpm 的磁盘其平均旋转延迟为 2ms。</li>
-<li>数据传输时间：Ttransfer 是指完成传输所请求的数据所需要的时间，它取决于数据传输率，其值等于数据大小除以数据传输率。目前 IDE/ATA 能达到 133MB/s，SATA II 可达到 300MB/s 的接口数据传输率，数据传输时间通常远小于前两部分消耗时间。简单计算时可忽略。</li>
+<li>寻道时间：Tseek 是指将读写磁头移动至正确的磁道上所需要的时间。寻道时间越短，I&#x2F;O 操作越快，目前磁盘的平均寻道时间一般在 3-15ms。</li>
+<li>旋转延迟：Trotation 是指盘片旋转将请求数据所在的扇区移动到读写磁盘下方所需要的时间。旋转延迟取决于磁盘转速，通常用磁盘旋转一周所需时间的 1&#x2F;2 表示。比如：7200rpm 的磁盘平均旋转延迟大约为 60*1000&#x2F;7200&#x2F;2 &#x3D; 4.17ms，而转速为 15000rpm 的磁盘其平均旋转延迟为 2ms。</li>
+<li>数据传输时间：Ttransfer 是指完成传输所请求的数据所需要的时间，它取决于数据传输率，其值等于数据大小除以数据传输率。目前 IDE&#x2F;ATA 能达到 133MB&#x2F;s，SATA II 可达到 300MB&#x2F;s 的接口数据传输率，数据传输时间通常远小于前两部分消耗时间。简单计算时可忽略。</li>
 </ul>
 <p>因此，如果在写磁盘的时候省去寻道、旋转可以极大地提高磁盘读写的性能。</p>
 <blockquote>
@@ -144,7 +144,7 @@
 <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/blogImgs/blog/img/post/kafka/kafka14.png" fancybox="true"/></div></div>
 
 <p>leader 与 follower 之间的同步，与上面 consumer 消费数据的过程是同理的。</p>
-<p>page cache中的数据会随着内核中 flusher 线程的调度以及对 sync()/fsync() 的调用写回到磁盘，就算进程崩溃，也不用担心数据丢失。另外，如果 consumer 要消费的消息不在page cache里，才会去磁盘读取，并且会顺便预读出一些相邻的块放入 page cache，以方便下一次读取。</p>
+<p>page cache中的数据会随着内核中 flusher 线程的调度以及对 sync()&#x2F;fsync() 的调用写回到磁盘，就算进程崩溃，也不用担心数据丢失。另外，如果 consumer 要消费的消息不在page cache里，才会去磁盘读取，并且会顺便预读出一些相邻的块放入 page cache，以方便下一次读取。</p>
 <p>因此如果 Kafka producer 的生产速率与 consumer 的消费速率相差不大，那么就能几乎只靠对 broker page cache 的读写完成整个生产 - 消费过程，磁盘访问非常少。</p>
 <h2 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h2><p>Kafka 自己实现了网络模型做 RPC。底层基于 Java NIO，采用和 Netty 一样的 Reactor 线程模型。</p>
 <p>这部分暂时还未细究。。。</p>
@@ -159,7 +159,7 @@
 </blockquote>
 <p><strong>越多的分区需要打开更多的文件句柄</strong></p>
 <p>在 kafka 的 broker 中，每个分区都会对照着文件系统的一个目录。在 kafka 的数据日志文件目录中，每个日志数据段都会分配两个文件，一个索引文件和一个数据文件。因此，随着 partition 的增多，需要的文件句柄数急剧增加，必要时需要调整操作系统允许打开的文件句柄数。</p>
-<p><strong>客户端 / 服务器端需要使用的内存就越多</strong></p>
+<p><strong>客户端 &#x2F; 服务器端需要使用的内存就越多</strong></p>
 <p>客户端 producer 有个参数 batch.size，默认是 16KB。它会为每个分区缓存消息，一旦满了就打包将消息批量发出。看上去这是个能够提升性能的设计。不过很显然，因为这个参数是分区级别的，如果分区数越多，这部分缓存所需的内存占用也会更多。</p>
 <p><strong>降低高可用性</strong></p>
 <p>分区越多，每个 Broker 上分配的分区也就越多，当一个发生 Broker 宕机，那么恢复时间将很长。</p>

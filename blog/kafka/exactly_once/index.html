@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -142,7 +142,7 @@
 <p>事务型 Producer 能够保证将消息原子性地写入到多个分区中。这批消息要么全部写入成功，要么全部失败。另外，事务型 Producer 也不惧进程的重启。Producer 重启回来后，Kafka 依然保证它们发送消息的精确一次处理。</p>
 <p>设置事务型 Producer 的方法也很简单，满足两个要求即可：</p>
 <ul>
-<li>和幂等性 Producer 一样，开启 enable.idempotence = true。</li>
+<li>和幂等性 Producer 一样，开启 enable.idempotence &#x3D; true。</li>
 <li>设置 Producer 端参数 transactional. id。最好为其设置一个有意义的名字。</li>
 </ul>
 <p>此外，你还需要在 Producer 代码中做一些调整，如这段代码所示：</p>

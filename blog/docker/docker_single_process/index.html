@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -106,7 +106,7 @@
 <div class="tag-plugin quot"><h2 class="content" id="容器为单进程的原因" type="text"><a href="#容器为单进程的原因" class="headerlink" title="容器为单进程的原因"></a>容器为单进程的原因</h2></div>
 
 <p>我们说 Docker 容器是”单进程模型”，并不代表容器只能运行一个进程，而是指容器没有回收孤儿进程的能力。</p>
-<p>通常容器会起一个/bin/sh 进程（称为容器的 1 号进程），如果我们继续在容器中创建进程，那么新的进程都是这个 1 号进程的子进程。Docker 判断一个容器是否启动正常，是判断 Docker 容器的 1 号进程的状态，如果 1 号进程启动正常，那么就认为容器运行正常，否则，容器运行失败。</p>
+<p>通常容器会起一个&#x2F;bin&#x2F;sh 进程（称为容器的 1 号进程），如果我们继续在容器中创建进程，那么新的进程都是这个 1 号进程的子进程。Docker 判断一个容器是否启动正常，是判断 Docker 容器的 1 号进程的状态，如果 1 号进程启动正常，那么就认为容器运行正常，否则，容器运行失败。</p>
 <p>因此，如果在容器内部启动了过多的进程，那么当容器的 1 号进程结束之后，由于 1 号进程不具有管理多进程，多线程的能力，所以在容器内部创建的其他进程都会处于没有人接管的状态，此时这些进程都会变为孤儿进程。</p>
 
 

@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -141,7 +141,7 @@
 <li>账号密码登录时，客户端会将设备信息一起传递给服务端，</li>
 <li>如果账号密码校验通过，服务端会把账号与设备进行一个绑定，存在一个数据结构中，这个数据结构中包含了账号ID，设备ID，设备类型等等</li>
 </ol>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const token = &#123;</span><br><span class="line">  acountid:&#x27;账号ID&#x27;,</span><br><span class="line">  deviceid:&#x27;登录的设备ID&#x27;,</span><br><span class="line">  deviceType:&#x27;设备类型，如 iso,android,pc......&#x27;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const token = <span class="punctuation">&#123;</span></span><br><span class="line">  acountid<span class="punctuation">:</span>&#x27;账号ID&#x27;<span class="punctuation">,</span></span><br><span class="line">  deviceid<span class="punctuation">:</span>&#x27;登录的设备ID&#x27;<span class="punctuation">,</span></span><br><span class="line">  deviceType<span class="punctuation">:</span>&#x27;设备类型，如 iso<span class="punctuation">,</span>android<span class="punctuation">,</span>pc......&#x27;<span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>然后服务端会生成一个 token，用它来映射数据结构，这个 token 其实就是一串有着特殊意义的字符串，它的意义就在于，通过它可以找到对应的账号与设备信息。</p>
 <ol start="3">
@@ -154,7 +154,7 @@
 <blockquote>
 <p>客户端登录的目的，就是获得属于自己的token。</p>
 </blockquote>
-<div class="tag-plugin note" ><div class="title">token 和 设备信息一起发送给服务器。既然可以截获token, 是不是也可以截获设备信息呢？如果都两者都拿到了呢？</div><div class="body"><p>魔高一尺，道高一丈，没有最安全，只有更安全。系统的安全除了token外，还需要其他的保障，技术上比如SSL/TLS通信加密，业务上异常地点登陆验证等。</p></div></div>
+<div class="tag-plugin note" ><div class="title">token 和 设备信息一起发送给服务器。既然可以截获token, 是不是也可以截获设备信息呢？如果都两者都拿到了呢？</div><div class="body"><p>魔高一尺，道高一丈，没有最安全，只有更安全。系统的安全除了token外，还需要其他的保障，技术上比如SSL&#x2F;TLS通信加密，业务上异常地点登陆验证等。</p></div></div>
 
 <p>那么在扫码登录过程中，PC端是怎么获得属于自己的token呢？</p>
 <p>不可能手机端直接把自己的token给PC端用！token只能属于某个客户端私有，其他人或者是其他客户端是用不了的。</p>

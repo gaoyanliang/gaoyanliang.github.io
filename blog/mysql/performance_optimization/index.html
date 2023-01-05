@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -117,7 +117,7 @@
 <p>扩大innodb_buffer_pool_size，能够全然从内存中读取数据。最大限度降低磁盘操作。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> <span class="string">&#x27;innodb_buffer_pool_pages_%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_data <span class="operator">|</span> <span class="number">8190</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_dirty <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_flushed <span class="operator">|</span> <span class="number">12646</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_free <span class="operator">|</span> <span class="number">0</span> <span class="operator">|</span> <span class="number">0</span> 表示已经被用光</span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_misc <span class="operator">|</span> <span class="number">1</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Innodb_buffer_pool_pages_total <span class="operator">|</span> <span class="number">8191</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------------------+-------+</span></span><br></pre></td></tr></table></figure>
 
-<p>innodb_buffer_pool_size默认为128M，理论上可以扩大到内存的3/4或4/5。</p>
+<p>innodb_buffer_pool_size默认为128M，理论上可以扩大到内存的3&#x2F;4或4&#x2F;5。</p>
 <h3 id="预热数据"><a href="#预热数据" class="headerlink" title="预热数据"></a>预热数据</h3><p>默认情况，仅在某条数据被读取一次之后，才会缓存在 innodb_buffer_pool。所以，数据库刚刚启动，须要进行数据预热，将磁盘上的数据尽可能缓存到内存中。</p>
 <p>数据预热能够提高读取速度。</p>
 <p>对于InnoDB数据库，进行数据预热的脚本是:</p>
@@ -193,7 +193,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> user_base <span class="keyword">where</span> age<span class="operator">=</span><span class="number">36</span><span class="operator">/</span><span class="number">2</span>;</span><br></pre></td></tr></table></figure>
 
 <p><strong>13. 避免隐式类型转换</strong></p>
-<p>where子句中出现column字段的类型和传入的参数类型不一致的时候发生的类型转换，建议先确定where中的参数类型。 where age=’18’</p>
+<p>where子句中出现column字段的类型和传入的参数类型不一致的时候发生的类型转换，建议先确定where中的参数类型。 where age&#x3D;’18’</p>
 <p><strong>14. 对于联合索引来说，要遵守最左前缀法则</strong></p>
 <p>举列来说索引含有字段id、name、school，可以直接用id字段，也可以id、name这样的顺序，但是name;school都无法使用这个索引。所以在创建联合索引的时候一定要注意索引字段顺序，常用的查询字段放在最前面。</p>
 <p><strong>15. 必要时可以使用force index来强制查询走某个索引</strong></p>

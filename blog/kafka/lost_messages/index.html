@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -150,12 +150,12 @@
 <p><strong>Kafka 没有提供同步刷盘的方式，也就是说单个 Broker 丢失消息是必定会出现的。</strong></p>
 <p>为了解决单个 broker 数据丢失问题，Kafka 通过 producer 和 broker 协同处理单个 broker 丢失参数的情况：</p>
 <ul>
-<li><strong>acks=0</strong>，producer 不等待 broker 的响应，效率最高，但是消息很可能会丢。</li>
-<li><strong>acks=1</strong>，leader broker 收到消息后，不等待其他 follower 的响应，即返回 ack。也可以理解为 ack 数为 1。<ul>
+<li><strong>acks&#x3D;0</strong>，producer 不等待 broker 的响应，效率最高，但是消息很可能会丢。</li>
+<li><strong>acks&#x3D;1</strong>，leader broker 收到消息后，不等待其他 follower 的响应，即返回 ack。也可以理解为 ack 数为 1。<ul>
 <li>此时，如果 follower 还没有收到 leader 同步的消息 leader 就挂了，那么消息会丢失。</li>
 </ul>
 </li>
-<li><strong>acks=-1(-1 等效于 all)</strong> ，leader broker 收到消息后，挂起，等待所有 ISR 列表中的 follower 返回结果后，再返回 ack。<ul>
+<li><strong>acks&#x3D;-1(-1 等效于 all)</strong> ，leader broker 收到消息后，挂起，等待所有 ISR 列表中的 follower 返回结果后，再返回 ack。<ul>
 <li>这种配置下，如果 Leader 刚收到消息就断电，producer 可以知道消息没有被发送成功，将会重新发送。</li>
 <li>如果在 follower 收到数据以后，成功返回 ack，leader 断电，数据将存在于原来的 follower 中。在重新选举以后，新的 leader 会持有该部分数据。</li>
 </ul>
@@ -188,11 +188,11 @@
 </ul>
 <p><strong>避免 Broker 端丢失</strong></p>
 <ul>
-<li>3）设置 acks = all。acks 是 Producer 的一个参数，代表了你对 “已提交” 消息的定义。如果设置成 all，则表明所有副本 Broker 都要接收到消息，该消息才算是 “已提交”。这是最高等级的“已提交” 定义。</li>
-<li>4）设置 unclean.leader.election.enable = false。这是 Broker 端的参数，它控制的是哪些 Broker 有资格竞选分区的 Leader。如果一个 Broker 落后原先的 Leader 太多，那么它一旦成为新的 Leader，必然会造成消息的丢失。故一般都要将该参数设置成 false，即不允许这种情况的发生。</li>
-<li>5）设置 replication.factor &gt;= 3。这也是 Broker 端的参数。其实这里想表述的是，最好将消息多保存几份，毕竟目前防止消息丢失的主要机制就是冗余。</li>
+<li>3）设置 acks &#x3D; all。acks 是 Producer 的一个参数，代表了你对 “已提交” 消息的定义。如果设置成 all，则表明所有副本 Broker 都要接收到消息，该消息才算是 “已提交”。这是最高等级的“已提交” 定义。</li>
+<li>4）设置 unclean.leader.election.enable &#x3D; false。这是 Broker 端的参数，它控制的是哪些 Broker 有资格竞选分区的 Leader。如果一个 Broker 落后原先的 Leader 太多，那么它一旦成为新的 Leader，必然会造成消息的丢失。故一般都要将该参数设置成 false，即不允许这种情况的发生。</li>
+<li>5）设置 replication.factor &gt;&#x3D; 3。这也是 Broker 端的参数。其实这里想表述的是，最好将消息多保存几份，毕竟目前防止消息丢失的主要机制就是冗余。</li>
 <li>6）设置 min.insync.replicas &gt; 1。这依然是 Broker 端参数，控制的是消息至少要被写入到多少个副本才算是 “已提交”。设置成大于 1 可以提升消息持久性。在实际环境中千万不要使用默认值 1。</li>
-<li>7）确保 replication.factor &gt; min.insync.replicas。如果两者相等，那么只要有一个副本挂机，整个分区就无法正常工作了。我们不仅要改善消息的持久性，防止数据丢失，还要在不降低可用性的基础上完成。推荐设置成 replication.factor = min.insync.replicas + 1。</li>
+<li>7）确保 replication.factor &gt; min.insync.replicas。如果两者相等，那么只要有一个副本挂机，整个分区就无法正常工作了。我们不仅要改善消息的持久性，防止数据丢失，还要在不降低可用性的基础上完成。推荐设置成 replication.factor &#x3D; min.insync.replicas + 1。</li>
 </ul>
 <p><strong>避免 Consumer 端丢失</strong></p>
 <ul>
@@ -201,7 +201,7 @@
 <h2 id="5-小结"><a href="#5-小结" class="headerlink" title="5. 小结"></a>5. 小结</h2><p>消息生命周期中的 3 个地方都可能会出现消息丢失情况：</p>
 <ul>
 <li>1）Producer 端：通过回调确保消息成功发送到 Kafka 了</li>
-<li>2）Broker 端：通过多 Broker 以及 Producer 端设置 acks=all 降低消息丢失概率</li>
+<li>2）Broker 端：通过多 Broker 以及 Producer 端设置 acks&#x3D;all 降低消息丢失概率</li>
 <li>3）Consumer 端：一定要在消息处理完成后再提交位移</li>
 </ul>
 <p>需要应用程序和 Kafka 一起配合才能保证消息不丢失。</p>

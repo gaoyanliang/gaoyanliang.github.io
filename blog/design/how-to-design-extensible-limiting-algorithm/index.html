@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -143,7 +143,7 @@
 <p>为了以最小的延迟确定这些速率限制，有必要在内存中进行本地检查。这可以通过放松速率检查条件和使用最终一致的模型来实现。例如，每个节点可以创建一个数据同步周期，该周期将与中央数据存储同步。每个节点定期将每个使用者的计数器增量和它看到的窗口推送到数据存储，数据存储将自动更新这些值。然后，节点可以检索更新后的值来更新其内存版本。集群内节点之间的这种收敛→发散→再收敛的循环最终是一致的。</p>
 <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/20200305181532.png" fancybox="true"/></div></div>
 
-<p>节点聚合的周期速率应该是可配置的。当流量分布在群集中的多个节点上时（例如，当坐在一个轮询调度平衡器后面时），较短的同步间隔将导致较少的数据点分散，而较长的同步间隔将对数据存储施加较小的读/写压力，更少的开销在每个节点上获取新的同步值。</p>
+<p>节点聚合的周期速率应该是可配置的。当流量分布在群集中的多个节点上时（例如，当坐在一个轮询调度平衡器后面时），较短的同步间隔将导致较少的数据点分散，而较长的同步间隔将对数据存储施加较小的读&#x2F;写压力，更少的开销在每个节点上获取新的同步值。</p>
 <h2 id="使用Kong快速设置速率限制"><a href="#使用Kong快速设置速率限制" class="headerlink" title="使用Kong快速设置速率限制"></a>使用Kong快速设置速率限制</h2><p>Kong是一个开源的API网关，它使构建具有速率限制的可伸缩服务变得非常容易。它被全球超过300,000个活动实例使用。它可以完美地从单个的Kong节点扩展到大规模的、跨越全球的Kong集群。</p>
 <p>Kong位于API前面，是上游API的主要入口。在处理请求和响应时，Kong将执行你决定添加到API中的任何插件。</p>
 <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/20200305181731.png" fancybox="true"/></div></div>
@@ -153,7 +153,7 @@
 <h3 id="在Kong上添加API"><a href="#在Kong上添加API" class="headerlink" title="在Kong上添加API"></a>在Kong上添加API</h3><p>下一步是使用Kong的admin API在Kong上添加一个API。我们将使用httpbin作为示例，它是一个针对API的免费测试服务。get URL将把我的请求数据镜像成JSON。我们还假设Kong在本地系统上的默认端口上运行。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -i -X POST \</span><br><span class="line">--url http://localhost:8001/apis/ \</span><br><span class="line">--data &#x27;name=test&#x27; \</span><br><span class="line">--data &#x27;uris=/test&#x27; \</span><br><span class="line">--data &#x27;upstream_url=http://httpbin.org/get&#x27;</span><br></pre></td></tr></table></figure>
 
-<p>现在 Kong 意识到每个发送到 “/test” 的请求都应该代理到 httpbin。我们可以向它的代理端口上的 Kong 发出以下请求来测试它：</p>
+<p>现在 Kong 意识到每个发送到 “&#x2F;test” 的请求都应该代理到 httpbin。我们可以向它的代理端口上的 Kong 发出以下请求来测试它：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:8000/test</span><br><span class="line">&#123;</span><br><span class="line">    &quot;args&quot;: &#123;&#125;,</span><br><span class="line">    &quot;headers&quot;: &#123;</span><br><span class="line">    &quot;Accept&quot;: &quot;*/*&quot;,</span><br><span class="line">    &quot;Connection&quot;: &quot;close&quot;,</span><br><span class="line">    &quot;Host&quot;: &quot;httpbin.org&quot;,</span><br><span class="line">    &quot;User-Agent&quot;: &quot;curl/7.51.0&quot;,</span><br><span class="line">    &quot;X-Forwarded-Host&quot;: &quot;localhost&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;origin&quot;: &quot;localhost, 52.89.171.202&quot;,</span><br><span class="line">    &quot;url&quot;: &quot;http://localhost/get&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>它还是好的！Kong 已经接收了请求并将其代理到 httpbin，httpbin 已将我的请求头和我的原始 IP 地址进行了镜像。</p>

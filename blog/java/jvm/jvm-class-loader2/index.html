@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -107,16 +107,16 @@
 
 <h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><p>jvm支持两种类型的加载器，分别是引导类加载器和 自定义加载器 </p>
 <ul>
-<li>引导类加载器是由c/c++实现的</li>
-<li>自定义加载器是由java实现的。 </li>
+<li>引导类加载器是由c&#x2F;c++实现的</li>
+<li>自定义加载器是由java实现的。</li>
 </ul>
 <p>jvm规范定义自定义加载器是指派生于抽象类ClassLoder的类加载器。按照这样的加载器的类型划分，在程序中我们最常见的类加载器是：引导类加载器BootStrapClassLoader、自定义类加载器(Extension Class Loader、System Class Loader、User-Defined ClassLoader）</p>
 <p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-40.png"></p>
 <blockquote>
 <p>上图中的加载器划分为包含关系而并非继承关系</p>
 </blockquote>
-<h3 id="启动类加载器"><a href="#启动类加载器" class="headerlink" title="启动类加载器"></a>启动类加载器</h3><p>这个类加载器使用c/c++实现，嵌套再jvm内部，用来加载Java的核心类库（JAVA_HOME/jre/lib/rt.jar、resource.jar或sun.boot.class.path路径下的内容），用于提供JVM自身需要的类。并不继承自java.lang.ClassLoader，没有父加载器</p>
-<h3 id="扩展类加载器"><a href="#扩展类加载器" class="headerlink" title="扩展类加载器"></a>扩展类加载器</h3><p>java语言编写，由sun.misc.Launcher$ExtClassLoader实现。从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre/lib/ext 子目录（扩展目录）下加载类库。如果用户创建的JAR 放在此目录下，也会自动由扩展类加载器加载；派生于 ClassLoader。 父类加载器为启动类加载器</p>
+<h3 id="启动类加载器"><a href="#启动类加载器" class="headerlink" title="启动类加载器"></a>启动类加载器</h3><p>这个类加载器使用c&#x2F;c++实现，嵌套再jvm内部，用来加载Java的核心类库（JAVA_HOME&#x2F;jre&#x2F;lib&#x2F;rt.jar、resource.jar或sun.boot.class.path路径下的内容），用于提供JVM自身需要的类。并不继承自java.lang.ClassLoader，没有父加载器</p>
+<h3 id="扩展类加载器"><a href="#扩展类加载器" class="headerlink" title="扩展类加载器"></a>扩展类加载器</h3><p>java语言编写，由sun.misc.Launcher$ExtClassLoader实现。从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre&#x2F;lib&#x2F;ext 子目录（扩展目录）下加载类库。如果用户创建的JAR 放在此目录下，也会自动由扩展类加载器加载；派生于 ClassLoader。 父类加载器为启动类加载器</p>
 <h3 id="系统类加载器"><a href="#系统类加载器" class="headerlink" title="系统类加载器"></a>系统类加载器</h3><p>java语言编写，由 sun.misc.Lanucher$AppClassLoader 实现。该类加载是程序中默认的类加载器，一般来说，Java应用的类都是由它来完成加载的，它负责加载环境变量classpath或系统属性java.class.path 指定路径下的类库；派生于 ClassLoader 。父类加载器为扩展类加载器 。通过ClassLoader#getSystemClassLoader() 方法可以获取到该类加载器。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class ClassLoaderTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        // 获取系统类加载器</span><br><span class="line">        ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();</span><br><span class="line">        System.out.println(systemClassLoader); // sun.misc.Launcher$AppClassLoader@18b4aac2</span><br><span class="line">        </span><br><span class="line">        // 获取系统类加载器的父类加载器，扩展类加载器</span><br><span class="line">        ClassLoader extClassLoader = systemClassLoader.getParent();</span><br><span class="line">        System.out.println(extClassLoader); // sun.misc.Launcher$ExtClassLoader@1b6d3586</span><br><span class="line">        </span><br><span class="line">        // 获取扩展类加载器的上层启动类加载器，这里获取不到</span><br><span class="line">        ClassLoader bootstrapClassLoader = extClassLoader.getParent();</span><br><span class="line">        System.out.println(bootstrapClassLoader); // null</span><br><span class="line"></span><br><span class="line">        // 获取用户自定义类的加载器，classLoader的打印结果和systemClassLoader的结果完全一致</span><br><span class="line">        ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();</span><br><span class="line">        System.out.println(classLoader); // sun.misc.Launcher$AppClassLoader@18b4aac2</span><br><span class="line">        </span><br><span class="line">        // 核心类库使用的是启动类加载器，以String为例</span><br><span class="line">        ClassLoader stringClassLoader = String.class.getClassLoader();</span><br><span class="line">        System.out.println(stringClassLoader);  // null</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

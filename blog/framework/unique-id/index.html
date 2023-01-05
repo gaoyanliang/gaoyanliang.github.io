@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -171,15 +171,15 @@
 <td>0</td>
 </tr>
 </tbody></table>
-<p>等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id= max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update id_generator <span class="keyword">set</span> max_id <span class="operator">=</span> #&#123;max_id<span class="operator">+</span>step&#125;, version <span class="operator">=</span> version <span class="operator">+</span> <span class="number">1</span> <span class="keyword">where</span> version <span class="operator">=</span> # &#123;version&#125; <span class="keyword">and</span> biz_type <span class="operator">=</span> XXX</span><br></pre></td></tr></table></figure>
+<p>等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id&#x3D; max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> id_generator <span class="keyword">set</span> max_id <span class="operator">=</span> #&#123;max_id<span class="operator">+</span>step&#125;, version <span class="operator">=</span> version <span class="operator">+</span> <span class="number">1</span> <span class="keyword">where</span> version <span class="operator">=</span> # &#123;version&#125; <span class="keyword">and</span> biz_type <span class="operator">=</span> XXX</span><br></pre></td></tr></table></figure>
 
 <p>由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多。</p>
 <h3 id="UUID"><a href="#UUID" class="headerlink" title="UUID"></a>UUID</h3><p>UUID (Universally Unique Identifier) 的目的，是让分布式系统中的所有元素，都能有唯一的辨识资讯，而不需要透过中央控制端来做辨识资讯的指定。如此一来，每个人都可以建立不与其它人冲突的 UUID。在这样的情况下，就不需考虑数据库建立时的名称重复问题。</p>
 <p>UUID的标准形式: 16字节128位，通常以36长度的字符串表示.</p>
 <p>示例：550e8400-e29b-41d4-a716-446655440000，到目前为止业界一共有5种方式生成UUID。</p>
 <p>在Java中我们可以直接使用下面的API生成UUID:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UUID uuid  =  UUID.randomUUID(); String s = UUID.randomUUID().toString();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">UUID</span> <span class="variable">uuid</span>  <span class="operator">=</span>  UUID.randomUUID(); <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> UUID.randomUUID().toString();</span><br></pre></td></tr></table></figure>
 
 <p><strong>优点</strong></p>
 <ul>
@@ -199,7 +199,7 @@
 <p><strong>优化方案</strong></p>
 <ul>
 <li>为了解决UUID不可读， 可以使用UUID to Int64的方法 。</li>
-<li>为了解决UUID无序的问题，NHibernate在其主键生成方式中提供了Comb算法（combined guid/timestamp）。保留GUID的10个字节，用另6个字节表示GUID生成的时间（DateTime）。</li>
+<li>为了解决UUID无序的问题，NHibernate在其主键生成方式中提供了Comb算法（combined guid&#x2F;timestamp）。保留GUID的10个字节，用另6个字节表示GUID生成的时间（DateTime）。</li>
 </ul>
 <blockquote>
 <p>像用作订单号UUID这样的字符串没有丝毫的意义，看不出和订单相关的有用信息；而对于数据库来说用作业务主键ID，它不仅是太长还是字符串，存储性能差查询也很耗时，所以不推荐用作分布式ID。</p>
@@ -211,7 +211,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A：1,6,11,16,21</span><br><span class="line">B：2,7,12,17,22</span><br><span class="line">C：3,8,13,18,23</span><br><span class="line">D：4,9,14,19,24</span><br><span class="line">E：5,10,15,20,25</span><br></pre></td></tr></table></figure>
 
 <p>这个负载到哪台机器上需要提前设定好，未来很难做修改。但是3-5台服务器基本能够满足，都可以获得不同的ID。步长和初始值一定需要事先设定好。使用Redis集群也可以防止单点故障的问题。</p>
-<p>比较适合使用Redis来生成日切流水号。比如订单号=日期+当日自增长号。可以每天在Redis中生成一个Key，使用INCR进行累加。</p>
+<p>比较适合使用Redis来生成日切流水号。比如订单号&#x3D;日期+当日自增长号。可以每天在Redis中生成一个Key，使用INCR进行累加。</p>
 <p>用redis实现需要注意一点，要考虑到redis持久化的问题。</p>
 <p><strong>优点</strong></p>
 <ul>
@@ -230,7 +230,7 @@
 <p>Snowflake ID组成结构：正数位（占1比特）+ 时间戳（占41比特）+ 机器ID（占5比特）+ 数据中心（占5比特）+ 自增值（占12比特），总共64比特组成的一个Long类型。</p>
 <ul>
 <li>第一个bit位（1bit）：Java中long的最高位是符号位代表正负，正数是0，负数是1，一般生成ID都为正数，所以默认为0。</li>
-<li>时间戳部分（41bit）：毫秒级的时间，不建议存当前时间戳，而是用（当前时间戳 - 固定开始时间戳）的差值，可以使产生的ID从更小的值开始；41位的时间戳可以使用69年，(1L &lt;&lt; 41) / (1000L * 60 * 60 * 24 * 365) = 69年</li>
+<li>时间戳部分（41bit）：毫秒级的时间，不建议存当前时间戳，而是用（当前时间戳 - 固定开始时间戳）的差值，可以使产生的ID从更小的值开始；41位的时间戳可以使用69年，(1L &lt;&lt; 41) &#x2F; (1000L * 60 * 60 * 24 * 365) &#x3D; 69年</li>
 <li>工作机器id（10bit）：也被叫做workId，这个可以灵活配置，机房或者机器号组合都可以。</li>
 <li>序列号部分（12bit），自增值支持同一毫秒内同一个节点可以生成4096个ID</li>
 </ul>
@@ -259,13 +259,13 @@
 
 <h3 id="美团-Leaf"><a href="#美团-Leaf" class="headerlink" title="美团 Leaf"></a>美团 Leaf</h3><p>Leaf由美团开发，Leaf同时支持号段模式和snowflake算法模式，可以切换使用。</p>
 <h4 id="号段模式"><a href="#号段模式" class="headerlink" title="号段模式"></a>号段模式</h4><p>先导入源码 <u>https://github.com/Meituan-Dianping/Leaf</u>，再建一张表 <emp>leaf_alloc</emp> </p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> IF <span class="keyword">EXISTS</span> `leaf_alloc`;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `leaf_alloc` (</span><br><span class="line">  `biz_tag` <span class="type">varchar</span>(<span class="number">128</span>)  <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;业务key&#x27;</span>,</span><br><span class="line">  `max_id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;1&#x27;</span> COMMENT <span class="string">&#x27;当前已经分配了的最大id&#x27;</span>,</span><br><span class="line">  `step` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;初始步长，也是动态调整的最小步长&#x27;</span>,</span><br><span class="line">  `description` <span class="type">varchar</span>(<span class="number">256</span>)  <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;业务key的描述&#x27;</span>,</span><br><span class="line">  `update_time` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> UPDATE <span class="built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="string">&#x27;数据库维护的更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`biz_tag`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> IF <span class="keyword">EXISTS</span> `leaf_alloc`;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `leaf_alloc` (</span><br><span class="line">  `biz_tag` <span class="type">varchar</span>(<span class="number">128</span>)  <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> COMMENT <span class="string">&#x27;业务key&#x27;</span>,</span><br><span class="line">  `max_id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;1&#x27;</span> COMMENT <span class="string">&#x27;当前已经分配了的最大id&#x27;</span>,</span><br><span class="line">  `step` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;初始步长，也是动态调整的最小步长&#x27;</span>,</span><br><span class="line">  `description` <span class="type">varchar</span>(<span class="number">256</span>)  <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;业务key的描述&#x27;</span>,</span><br><span class="line">  `update_time` <span class="type">timestamp</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="string">&#x27;数据库维护的更新时间&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`biz_tag`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB;</span><br></pre></td></tr></table></figure>
 
 <p>然后在项目中开启号段模式，配置对应的数据库信息，并关闭 snowflake 模式</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">leaf.name=com.sankuai.leaf.opensource.test</span></span><br><span class="line"><span class="string">leaf.segment.enable=true</span></span><br><span class="line"><span class="string">leaf.jdbc.url=jdbc:mysql://localhost:3306/leaf_test?useUnicode=true&amp;characterEncoding=utf8&amp;characterSetResults=utf8</span></span><br><span class="line"><span class="string">leaf.jdbc.username=root</span></span><br><span class="line"><span class="string">leaf.jdbc.password=root</span></span><br><span class="line"></span><br><span class="line"><span class="string">leaf.snowflake.enable=false</span></span><br><span class="line"><span class="comment">#leaf.snowflake.zk.address=</span></span><br><span class="line"><span class="comment">#leaf.snowflake.port=</span></span><br></pre></td></tr></table></figure>
 
 <p>启动leaf-server 模块的 LeafServerApplication项目就跑起来了</p>
-<p>号段模式获取分布式自增ID的测试url ：http：//localhost：8080/api/segment/get/leaf-segment-test</p>
+<p>号段模式获取分布式自增ID的测试url ：http：&#x2F;&#x2F;localhost：8080&#x2F;api&#x2F;segment&#x2F;get&#x2F;leaf-segment-test</p>
 <p>监控号段模式：<a target="_blank" rel="noopener" href="http://localhost:8080/cache">http://localhost:8080/cache</a></p>
 <h4 id="snowflake模式"><a href="#snowflake模式" class="headerlink" title="snowflake模式"></a>snowflake模式</h4><p>Leaf的snowflake模式依赖于ZooKeeper，不同于原始snowflake算法也主要是在workId的生成上，Leaf中workId是基于ZooKeeper的顺序Id来生成的，每个应用在使用Leaf-snowflake时，启动时都会都在Zookeeper中生成一个顺序Id，相当于一台机器对应一个顺序节点，也就是一个workId。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">leaf.snowflake.enable=true</span></span><br><span class="line"><span class="string">leaf.snowflake.zk.address=127.0.0.1</span></span><br><span class="line"><span class="string">leaf.snowflake.port=2181</span></span><br></pre></td></tr></table></figure>
@@ -281,15 +281,15 @@
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">datasource.tinyid.names=primary</span></span><br><span class="line"><span class="string">datasource.tinyid.primary.driver-class-name=com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="string">datasource.tinyid.primary.url=jdbc:mysql://ip:port/databaseName?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</span></span><br><span class="line"><span class="string">datasource.tinyid.primary.username=root</span></span><br><span class="line"><span class="string">datasource.tinyid.primary.password=123456</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>测试</strong></p>
-<p>获取分布式自增ID: <a target="_blank" rel="noopener" href="http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&amp;token=0f673adf80504e2eaa552f5d791b644c&#39;">http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&amp;token=0f673adf80504e2eaa552f5d791b644c&#39;</a></p>
-<p>批量获取分布式自增ID: <a target="_blank" rel="noopener" href="http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&amp;token=0f673adf80504e2eaa552f5d791b644c&amp;batchSize=10&#39;">http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&amp;token=0f673adf80504e2eaa552f5d791b644c&amp;batchSize=10&#39;</a></p>
+<p>获取分布式自增ID: <a target="_blank" rel="noopener" href="http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&token=0f673adf80504e2eaa552f5d791b644c">http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&amp;token=0f673adf80504e2eaa552f5d791b644c</a>‘</p>
+<p>批量获取分布式自增ID: <a target="_blank" rel="noopener" href="http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&token=0f673adf80504e2eaa552f5d791b644c&batchSize=10">http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&amp;token=0f673adf80504e2eaa552f5d791b644c&amp;batchSize=10</a>‘</p>
 <h4 id="Java客户端方式接入"><a href="#Java客户端方式接入" class="headerlink" title="Java客户端方式接入"></a>Java客户端方式接入</h4><p><strong>引入依赖</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.xiaoju.uemc.tinyid&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;tinyid-client&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;$&#123;tinyid.version&#125;&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
 
 <p><strong>配置文件</strong></p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">tinyid.server</span> <span class="string">=localhost:9999</span></span><br><span class="line"><span class="string">tinyid.token</span> <span class="string">=0f673adf80504e2eaa552f5d791b644c</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取单个分布式自增ID</span></span><br><span class="line">Long id =  TinyId.nextId(<span class="string">&quot;test&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按需批量分布式自增ID</span></span><br><span class="line">List&lt;Long&gt; ids =  TinyId.nextId(<span class="string">&quot;test&quot;</span>, <span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取单个分布式自增ID</span></span><br><span class="line"><span class="type">Long</span> <span class="variable">id</span> <span class="operator">=</span>  TinyId.nextId(<span class="string">&quot;test&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按需批量分布式自增ID</span></span><br><span class="line">List&lt;Long&gt; ids =  TinyId.nextId(<span class="string">&quot;test&quot;</span>, <span class="number">10</span>);</span><br></pre></td></tr></table></figure>
 
 <p>test 是具体业务类型</p>
 

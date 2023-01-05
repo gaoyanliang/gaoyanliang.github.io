@@ -2,7 +2,7 @@
 <html lang='en'>
 
 <head>
-  <meta name="generator" content="Hexo 5.4.0">
+  <meta name="generator" content="Hexo 6.3.0">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
   <meta charset="utf-8">
   
@@ -123,7 +123,7 @@
 <li>预加载</li>
 </ol>
 </blockquote>
-<p>虚拟机启动时加载，加载的是JAVA_HOME/lib/下的rt.jar下的.class文件，这个jar包里面的内容是程序运行时非常常常用到的，像java.lang.*、java.util.、java.io. 等等，因此随着虚拟机一起加载。要证明这一点很简单，写一个空的main函数，设置虚拟机参数为”-XX:+TraceClassLoading”来获取类加载信息，运行一下：</p>
+<p>虚拟机启动时加载，加载的是JAVA_HOME&#x2F;lib&#x2F;下的rt.jar下的.class文件，这个jar包里面的内容是程序运行时非常常常用到的，像java.lang.*、java.util.、java.io. 等等，因此随着虚拟机一起加载。要证明这一点很简单，写一个空的main函数，设置虚拟机参数为”-XX:+TraceClassLoading”来获取类加载信息，运行一下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[Opened E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.Object from E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">[Loaded java.io.Serializable from E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.Comparable from E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.CharSequence from E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.String from E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">[Loaded java.lang.reflect.AnnotatedElement from E:\developer\JDK8\JDK\jre\lib\rt.jar]</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
 
 <blockquote>
@@ -154,7 +154,7 @@
 </ol>
 </blockquote>
 <p>连接阶段的第一步，这一阶段的目的是为了确保.class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。</p>
-<p>Java语言本身是相对安全的语言（相对C/C++来说），但是前面说过，.class文件未必要从Java源码编译而来，可以使用任何途径产生，甚至包括用十六进制编辑器直接编写来产生.class文件。在字节码语言层面上，Java代码至少从语义上是可以表达出来的。虚拟机如果不检查输入的字节流，对其完全信任的话，很可能会因为载入了有害的字节流而导致系统崩溃，所以验证是虚拟机对自身保护的一项重要工作。</p>
+<p>Java语言本身是相对安全的语言（相对C&#x2F;C++来说），但是前面说过，.class文件未必要从Java源码编译而来，可以使用任何途径产生，甚至包括用十六进制编辑器直接编写来产生.class文件。在字节码语言层面上，Java代码至少从语义上是可以表达出来的。虚拟机如果不检查输入的字节流，对其完全信任的话，很可能会因为载入了有害的字节流而导致系统崩溃，所以验证是虚拟机对自身保护的一项重要工作。</p>
 <p>验证阶段将做一下几个工作，具体就不细讲了（详情可参考《深入理解Java虚拟机》），这是虚拟机实现层面的问题：</p>
 <ul>
 <li>文件格式验证</li>
@@ -170,7 +170,7 @@
 <p>准备阶段是正式为类变量分配内存并设置其初始值的阶段，这些变量所使用的内存都将在方法区中分配。关于这点，有两个地方注意一下：</p>
 <ol>
 <li>这时候进行内存分配的仅仅是类变量（被static修饰的变量），而不是实例变量，实例变量将会在对象实例化的时候随着对象一起分配在Java堆中</li>
-<li>这个阶段赋初始值的变量指的是那些不被final修饰的static变量，比如”public static int value = 123”，value在准备阶段过后是0而不是123，给value赋值为123的动作将在初始化阶段才进行；比如”public static final int value =123;”就不一样了，在准备阶段，虚拟机就会给value赋值为123。</li>
+<li>这个阶段赋初始值的变量指的是那些不被final修饰的static变量，比如”public static int value &#x3D; 123”，value在准备阶段过后是0而不是123，给value赋值为123的动作将在初始化阶段才进行；比如”public static final int value &#x3D;123;”就不一样了，在准备阶段，虚拟机就会给value赋值为123。</li>
 </ol>
 <p>各个数据类型的零值如下表：</p>
 <table>
@@ -244,7 +244,7 @@
 <p>用javap把这段代码的.class反编译一下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Constant pool:</span><br><span class="line">#1 = Class #2 // com/xrq/test6/TestMain</span><br><span class="line">#2 = Utf8 com/xrq/test6/TestMain</span><br><span class="line">#3 = Class #4 // java/lang/Object</span><br><span class="line">#4 = Utf8 java/lang/Object</span><br><span class="line">#5 = Utf8 i</span><br><span class="line">#6 = Utf8 I</span><br><span class="line">#7 = Utf8 d</span><br><span class="line">#8 = Utf8 D</span><br><span class="line">#9 = Utf8 &lt;init&gt;</span><br><span class="line">#10 = Utf8 ()V</span><br><span class="line">#11 = Utf8 Code</span><br><span class="line">#12 = Methodref #3.#13 // java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">#13 = NameAndType #9:#10 // &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">#14 = Utf8 LineNumberTable</span><br><span class="line">#15 = Utf8 LocalVariableTable</span><br><span class="line">#16 = Utf8 this</span><br><span class="line">#17 = Utf8 Lcom/xrq/test6/TestMain;</span><br><span class="line">#18 = Utf8 print</span><br><span class="line">#19 = Utf8 trueOrFalse</span><br><span class="line">#20 = Utf8 ()Z</span><br><span class="line">#21 = Utf8 SourceFile</span><br><span class="line">#22 = Utf8 TestMain.java</span><br></pre></td></tr></table></figure>
 
-<p>看到Constant Pool也就是常量池中有22项内容，其中带”Utf8”的就是符号引用。比如#2，它的值是”com/xrq/test6/TestMain”，表示的是这个类的全限定名；又比如#5为i，#6为I，它们是一对的，表示变量时Integer（int）类型的，名字叫做i；#6为D、#7为d也是一样，表示一个Double（double）类型的变量，名字为d；</p>
+<p>看到Constant Pool也就是常量池中有22项内容，其中带”Utf8”的就是符号引用。比如#2，它的值是”com&#x2F;xrq&#x2F;test6&#x2F;TestMain”，表示的是这个类的全限定名；又比如#5为i，#6为I，它们是一对的，表示变量时Integer（int）类型的，名字叫做i；#6为D、#7为d也是一样，表示一个Double（double）类型的变量，名字为d；</p>
 <p>#18、#19表示的都是方法的名字。</p>
 <p>总而言之，符号引用和我们上面讲的是一样的，是对于类、变量、方法的描述。符号引用和虚拟机的内存布局是没有关系的，引用的目标未必已经加载到内存中了。</p>
 <ol start="2">
