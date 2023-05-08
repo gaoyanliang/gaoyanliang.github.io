@@ -92,7 +92,14 @@
   
 
 <div class="nav-wrap"><nav class="sub post cap"><a class="active" href="/">Recent</a><a href="/categories">Categories</a><a href="/tags">Tags</a><a href="/archives">Archives</a><a href="/recent/">🔥Hot</a></nav></div>
-  <div class="post-list post"><a class="post-card post " href="/blog/kafka/kafka-optimization/">
+  <div class="post-list post"><a class="post-card post photo " href="/blog/kafka/kafka-partition-alocation/">
+<div class="cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-head.png"/><div class="cover-info"position="bottom"><div class="title">Kafka有哪几处地方有分区分配的概念?</div></div></div>
+</a><a class="post-card post photo " href="/blog/kafka/exactly_once/">
+<div class="cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/exactly-once.png"/><div class="cover-info"position="bottom"><div class="title">Kafka 是如何实现精确一次（exactly once）语义的？</div></div></div>
+</a><a class="post-card post " href="/blog/kafka/lost_messages/">
+<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/lost-messages.png"/></div><h2 class="post-title">Kafka 系列(八)：如何避免消息丢失?</h2><div class="excerpt"><p>本文主要从 Producer、Broker、Consumer 等 3 个方面分析了 Kafka 应该如何配置才能避免消息丢失。
+1. 概述在使用 MQ 的时候最大的问题就是消息丢失，常见的丢失情况如下：</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-21T00:00:00.000Z">Aug 21, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span></div></article>
+</a><a class="post-card post " href="/blog/kafka/kafka-optimization/">
 <article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/blogImgs/blog/img/post/kafka/thumbnail/kafka-3.jpg"/></div><h2 class="post-title">Kafka 系列(七)：kafka 对性能的优化</h2><div class="excerpt"><p>性能问题一般常出现在三个地方:
 
 网络
@@ -141,25 +148,10 @@ Kafka 系列文章列表Kafka 版本：2021-11 trunk 分支（当前最新版本
 </p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-08T00:00:00.000Z">Aug 8, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span><span class="cap breadcrumb">producer</span></div></article>
 </a><a class="post-card post " href="/blog/kafka/kafka-concept/">
 <article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/kafka/thumbnail/kafka-1.png"/></div><h2 class="post-title">Kafka 系列(一)：基本概念</h2><div class="excerpt"><p>本文主要介绍一下kafka中的基本概念，主要包括：Producer、Consumer、topic、partition、offset、broker、ISR、AR、HW、LEO等。</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-08-03T00:00:00.000Z">Aug 3, 2021</time></span><span class="cap breadcrumb" style="color:#ffa000">kafka</span></div></article>
-</a><a class="post-card post " href="/blog/framework/unique-id/">
-<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/blogImgs@main/blog/img/post/framework/unique-id.png"/></div><h2 class="post-title">分布式ID</h2><div class="excerpt"><p>概述唯一id是我们在设计阶段常常遇到的问题。
-在复杂的分布式系统中，几乎都需要对大量的数据和消息进行唯一标识。在设计初期，我们需要考虑日后数据量的级别，如果可能会对数据进行分库分表，那么就需要有一个全局唯一id来标识一条数据或记录。
-生成唯一id的策略有多种，但是每种策略都有它的适用场景、优点以及局限性。</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-07-12T00:00:00.000Z">Jul 12, 2021</time></span><span class="cap breadcrumb">分布式ID</span><span class="cap breadcrumb" style="color:#f4a261">全局唯一ID</span><span class="pin"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/badge/3279dd441df8b.svg"/></span></div></article>
-</a><a class="post-card post " href="/blog/design/rtorpo/">
-<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/rtorpo.jpg"/></div><h2 class="post-title">RTO & RPO</h2><div class="excerpt"><p>RTO &amp; RPO在故障恢复方面，目前业界公认有三个目标值得努力。
-
-恢复时间：企业能忍受多长时间没有 IT，处于停业状态。
-网络多长时间能够恢复
-业务层面的恢复
-
-整个恢复过程中，最关键的衡量指标有两个：一个是 RTO，另一个是 RPO。
-所谓 RTO，Recovery Time Objective，是指故障发生后，从 IT 系统宕机导致业务停顿之时开始，到 IT 系统恢复至可以支持各部门运作、恢复运营之时，此两点之间的时间段称为 RTO。</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-06-21T00:00:00.000Z">Jun 21, 2021</time></span><span class="cap breadcrumb">RTO</span><span class="cap breadcrumb">RPO</span></div></article>
-</a><a class="post-card post " href="/blog/design/idempotent/">
-<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/idempotent.jpg"/></div><h2 class="post-title">幂等性</h2><div class="excerpt"><p>什么是幂等性幂等性最早是数学里面的一个概念，后来被用于计算机领域，用于表示任意多次请求均与一次请求执行的结果相同，也就是说对于一个接口而言，无论调用了多少次，最终得到的结果都是一样的。比如以下代码：</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-06-18T00:00:00.000Z">Jun 18, 2021</time></span><span class="cap breadcrumb">幂等性</span><span class="cap breadcrumb">系统设计</span></div></article>
 </a></div>
   
   <div class='paginator-wrap dis-select'>
-  <a class="extend prev" rel="prev" href="/page/2/"></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"></a>
+  <a class="extend prev" rel="prev" href="/page/2/"></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"></a>
   </div>
 
 

@@ -92,7 +92,24 @@
   
 
 <div class="nav-wrap"><nav class="sub post cap"><a class="active" href="/">Recent</a><a href="/categories">Categories</a><a href="/tags">Tags</a><a href="/archives">Archives</a><a href="/recent/">🔥Hot</a></nav></div>
-  <div class="post-list post"><a class="post-card post " href="/blog/java/jvm/jvm-class-loader/">
+  <div class="post-list post"><a class="post-card post " href="/blog/java/dynamic-proxy/">
+<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/sheji/proxy.jpg"/></div><h2 class="post-title">动态代理</h2><div class="excerpt"><p>代理模式代理模式是一种比较好理解的设计模式。
+简单来说就是：我们使用代理对象来代替对真实对象(real object)的访问，这样就可以在不修改原目标对象的前提下，提供额外的功能操作，扩展目标对象的能力，实现功能的增强。
+生活中的代购、租房中介、售票黄牛、婚介、经纪人、快递、事务代理、非侵入式日志监听等，都是代理 模式的实际体现。
+使用代理模式主要有两个目的：
+
+一是保护目标对象
+二是增强目标对象功能（比如说在目标对象的某个方法执行前后增加一些自定义的操作）
+</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-03-12T00:00:00.000Z">Mar 12, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">设计</span><span class="cap breadcrumb">动态代理</span></div></article>
+</a><a class="post-card post " href="/blog/java/abstract_interface/">
+<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/java/abstract-interface.webp"/></div><h2 class="post-title">接口 vs 抽象类的区别？</h2><div class="excerpt"><p>在面向对象编程中，抽象类和接口是两个经常被用到的语法概念，是面向对象四大特性，以及很多设计模式、设计思想、设计原则编程实现的基础。
+比如：我们可以使用接口来实现面向对象的抽象特性、多态特性和基于接口而非实现的设计原则，使用抽象类来实现面向对象的继承特性和模板设计模式等。</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-03-07T00:00:00.000Z">Mar 7, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">接口</span><span class="cap breadcrumb">抽象</span></div></article>
+</a><a class="post-card post " href="/blog/java/jvm/jvm-class-loader2/">
+<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-4.jpg"/></div><h2 class="post-title">类加载器</h2><div class="excerpt"><p>类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内，然后在创建一个java.lang.Class对象，用来封装类在方法区内的数据结构。
+
+注意：JVM主要在程序第一次主动使用类的时候，才会去加载该类，也就是说，JVM并不是在一开始就把一个程序就所有的类都加载到内存中，而是到不得不用的时候才把它加载进来，而且只加载一次。
+</p></div><div class="meta cap"><span class="cap" id="post-meta">💧 Posted on&nbsp;<time datetime="2021-02-15T00:00:00.000Z">Feb 15, 2021</time></span><span class="cap breadcrumb">Java</span><span class="cap breadcrumb">JVM</span><span class="cap breadcrumb">类加载器</span></div></article>
+</a><a class="post-card post " href="/blog/java/jvm/jvm-class-loader/">
 <article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn/blog/img/post/java/jvm/jvm-3.jpg"/></div><h2 class="post-title">JVM 类加载机制</h2><div class="excerpt"><p>类加载子系统主要包含如下几项功能：
 
 负责从文件系统或是网络中加载.class文件，class文件在文件开头有特定的文件标识。 
@@ -153,12 +170,10 @@ JSON 与 JS 的区别以及和 XML 的区别具体请参考百度百科</p></div
 <div class="cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/algo/algo3.jpg"/><div class="cover-info"position="top"><div class="cap">脑洞大开</div><div class="title">常见思维题三</div></div></div>
 </a><a class="post-card post photo " href="/blog/algorithm/algo2/">
 <div class="cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/algo/algo2.jpg"/><div class="cover-info"position="top"><div class="cap">测测你的智商</div><div class="title">常见思维题二</div></div></div>
-</a><a class="post-card post photo " href="/blog/algorithm/algo1/">
-<div class="cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/post/algo/algo1.jpg"/><div class="cover-info"position="top"><div class="cap">脑洞大开</div><div class="title">常见思维题一</div></div></div>
 </a></div>
   
   <div class='paginator-wrap dis-select'>
-  <a class="extend prev" rel="prev" href="/page/4/"></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><span class="extend next" rel="next"></span>
+  <a class="extend prev" rel="prev" href="/page/4/"></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"></a>
   </div>
 
 
