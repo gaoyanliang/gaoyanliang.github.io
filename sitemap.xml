@@ -29,6 +29,24 @@
   </url>
   
   <url>
+    <loc>https://yanliang.cool/wiki/ddia/colophon.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/glossary.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/wiki/ddia/</loc>
     
     <lastmod>2023-06-09</lastmod>
@@ -128,25 +146,7 @@
   </url>
   
   <url>
-    <loc>https://yanliang.cool/recent/</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/tags/</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch1.html</loc>
+    <loc>https://yanliang.cool/wiki/ddia/ch12.html</loc>
     
     <lastmod>2023-06-09</lastmod>
     
@@ -192,6 +192,51 @@
   
   <url>
     <loc>https://yanliang.cool/wiki/ddia/ch6.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/recent/</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/tags/</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch1.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch10.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch11.html</loc>
     
     <lastmod>2023-06-09</lastmod>
     

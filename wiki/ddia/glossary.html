@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Designing Data-Intensive Applications: 术语表 - yanliang</title>
+
+  
+    <meta name="description" content="请注意，本术语表中的定义简短而简单，旨在传达核心思想，而不是术语的完整细微之处。 有关更多详细信息，请参阅正文中的参考资料。   异步（asynchronous） 不等待某些事情完成（例如，将数据发送到网络中的另一个节点），并且不会假设要花多长时间。请参阅“同步复制与异步复制”、“同步网络与异步网络”以及“系统模型与现实”。  原子（atomic）  在并发操作的上下文中：描述一个在单个时间点看">
+<meta property="og:type" content="website">
+<meta property="og:title" content="术语表">
+<meta property="og:url" content="https://yanliang.cool/wiki/ddia/glossary.html">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="请注意，本术语表中的定义简短而简单，旨在传达核心思想，而不是术语的完整细微之处。 有关更多详细信息，请参阅正文中的参考资料。   异步（asynchronous） 不等待某些事情完成（例如，将数据发送到网络中的另一个节点），并且不会假设要花多长时间。请参阅“同步复制与异步复制”、“同步网络与异步网络”以及“系统模型与现实”。  原子（atomic）  在并发操作的上下文中：描述一个在单个时间点看">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-06-09T10:21:37.314Z">
+<meta property="article:modified_time" content="2023-06-09T10:21:37.314Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="blog, Java, IT">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+  
+
+
+
+
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/ddia/"><div class="main" ff="title">Designing Data-Intensive Applications</div><div class="sub cap">数据密集型应用系统设计</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/ddia/" placeholder="Search in /wiki/ddia/"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">DDID</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/#start"><span class="toc-text">数据密集型应用系统设计</span></a></div></div><div class="widget-header cap dis-select"><span class="name">序言</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/preface.html"><span class="toc-text">序言</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第一部分：数据系统基础</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-i.html"><span class="toc-text">第一部分：数据系统基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch1.html"><span class="toc-text">第一章：可靠性、可伸缩性和可维护性</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch2.html"><span class="toc-text">第二章：数据模型与查询语言</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch3.html"><span class="toc-text">第三章：存储与检索</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch4.html"><span class="toc-text">第四章：编码与演化</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第二部分：分布式数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-ii.html"><span class="toc-text">第二部分：分布式数据</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch5.html"><span class="toc-text">第五章：复制</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch6.html"><span class="toc-text">第六章：分区</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch7.html"><span class="toc-text">第七章：事务</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch8.html"><span class="toc-text">第八章：分布式系统的麻烦</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch9.html"><span class="toc-text">第九章：一致性与共识</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第三部分：衍生数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-iii.html"><span class="toc-text">第三部分：衍生数据</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch10.html"><span class="toc-text">第十章：批处理</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch11.html"><span class="toc-text">第十一章：流处理</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch12.html"><span class="toc-text">第十二章：数据系统的未来</span></a></div></div><div class="widget-header cap dis-select"><span class="name">术语表</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/ddia/glossary.html"><span class="toc-text">术语表</span></a></div></div><div class="widget-header cap dis-select"><span class="name">后记</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/colophon.html"><span class="toc-text">后记</span></a></div></div></widget>
+
+
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/design/"><span class="title">Design Pattern</span><span class="excerpt">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</span></a></div></widget></div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/ddia/">Designing Data-Intensive Applications</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T10:21:37.314Z">Jun 9, 2023</time></div></div>
+
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>术语表</span></h1>
+  <blockquote>
+<p>请注意，本术语表中的定义简短而简单，旨在传达核心思想，而不是术语的完整细微之处。 有关更多详细信息，请参阅正文中的参考资料。</p>
+</blockquote>
+<ul>
+<li><p><strong>异步（asynchronous）</strong></p>
+<p>不等待某些事情完成（例如，将数据发送到网络中的另一个节点），并且不会假设要花多长时间。请参阅“<a href="ch5#%E5%90%8C%E6%AD%A5%E5%A4%8D%E5%88%B6%E4%B8%8E%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6">同步复制与异步复制</a>”、“<a href="ch8#%E5%90%8C%E6%AD%A5%E7%BD%91%E7%BB%9C%E4%B8%8E%E5%BC%82%E6%AD%A5%E7%BD%91%E7%BB%9C">同步网络与异步网络</a>”以及“<a href="ch8#%E7%B3%BB%E7%BB%9F%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%8E%B0%E5%AE%9E">系统模型与现实</a>”。</p>
+</li>
+<li><p><strong>原子（atomic）</strong></p>
+<p> 在并发操作的上下文中：描述一个在单个时间点看起来生效的操作，所以另一个并发进程永远不会遇到处于“半完成”状态的操作。另见隔离。</p>
+<p> 在事务的上下文中：将一些写入操作分为一组，这组写入要么全部提交成功，要么遇到错误时全部回滚。请参阅“<a href="ch7#%E5%8E%9F%E5%AD%90%E6%80%A7">原子性</a>”和“<a href="ch9#%E5%8E%9F%E5%AD%90%E6%8F%90%E4%BA%A4%E4%B8%8E%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">原子提交与两阶段提交</a>”。</p>
+</li>
+<li><p><strong>背压（backpressure）</strong></p>
+<p>接收方接收数据速度较慢时，强制降低发送方的数据发送速度。也称为流量控制。请参阅“<a href="ch11#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E7%B3%BB%E7%BB%9F">消息传递系统</a>”。</p>
+</li>
+<li><p><strong>批处理（batch process）</strong></p>
+<p>一种计算，它将一些固定的（通常是大的）数据集作为输入，并将其他一些数据作为输出，而不修改输入。见<a href="ch10">第十章</a>。</p>
+</li>
+<li><p><strong>边界（bounded）</strong></p>
+<p>有一些已知的上限或大小。例如，网络延迟情况（请参阅“<a href="ch8#%E8%B6%85%E6%97%B6%E4%B8%8E%E6%97%A0%E7%A9%B7%E7%9A%84%E5%BB%B6%E8%BF%9F">超时与无穷的延迟</a>”）和数据集（请参阅<a href="ch11">第十一章</a>的介绍）。</p>
+</li>
+<li><p><strong>拜占庭故障（Byzantine fault）</strong></p>
+<p>表现异常的节点，这种异常可能以任意方式出现，例如向其他节点发送矛盾或恶意消息。请参阅“<a href="ch8#%E6%8B%9C%E5%8D%A0%E5%BA%AD%E6%95%85%E9%9A%9C">拜占庭故障</a>”。</p>
+</li>
+<li><p><strong>缓存（cache）</strong></p>
+<p>一种组件，通过存储最近使用过的数据，加快未来对相同数据的读取速度。缓存中通常存放部分数据：因此，如果缓存中缺少某些数据，则必须从某些底层较慢的数据存储系统中，获取完整的数据副本。</p>
+</li>
+<li><p><strong>CAP定理（CAP theorem）</strong></p>
+<p>一个被广泛误解的理论结果，在实践中是没有用的。请参阅“<a href="ch9#CAP%E5%AE%9A%E7%90%86">CAP定理</a>”。</p>
+</li>
+<li><p><strong>因果关系（causality）</strong></p>
+<p>事件之间的依赖关系，当一件事发生在另一件事情之前。例如，后面的事件是对早期事件的回应，或者依赖于更早的事件，或者应该根据先前的事件来理解。请参阅“<a href="ch5#%E2%80%9C%E6%AD%A4%E5%89%8D%E5%8F%91%E7%94%9F%E2%80%9D%E7%9A%84%E5%85%B3%E7%B3%BB%E5%92%8C%E5%B9%B6%E5%8F%91">“此前发生”的关系和并发</a>”和“<a href="ch9#%E9%A1%BA%E5%BA%8F%E4%B8%8E%E5%9B%A0%E6%9E%9C%E5%85%B3%E7%B3%BB">顺序与因果关系</a>”。</p>
+</li>
+<li><p><strong>共识（consensus）</strong></p>
+<p>分布式计算的一个基本问题，就是让几个节点同意某些事情（例如，哪个节点应该是数据库集群的领导者）。问题比乍看起来要困难得多。请参阅“<a href="ch9#%E5%AE%B9%E9%94%99%E5%85%B1%E8%AF%86">容错共识</a>”。</p>
+</li>
+<li><p><strong>数据仓库（data warehouse）</strong></p>
+<p>一个数据库，其中来自几个不同的OLTP系统的数据已经被合并和准备用于分析目的。请参阅“<a href="ch3#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93">数据仓库</a>”。</p>
+</li>
+<li><p><strong>声明式（declarative）</strong></p>
+<p>描述某些东西应有的属性，但不知道如何实现它的确切步骤。在查询的上下文中，查询优化器采用声明性查询并决定如何最好地执行它。请参阅“<a href="ch2#%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80">数据查询语言</a>”。</p>
+</li>
+<li><p><strong>非规范化（denormalize）</strong></p>
+<p>为了加速读取，在标准数据集中引入一些冗余或重复数据，通常采用缓存或索引的形式。非规范化的值是一种预先计算的查询结果，像物化视图。请参阅“<a href="ch7#%E5%8D%95%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%A4%9A%E5%AF%B9%E8%B1%A1%E6%93%8D%E4%BD%9C">单对象和多对象操作</a>”和“<a href="ch11#%E4%BB%8E%E5%90%8C%E4%B8%80%E4%BA%8B%E4%BB%B6%E6%97%A5%E5%BF%97%E4%B8%AD%E6%B4%BE%E7%94%9F%E5%A4%9A%E4%B8%AA%E8%A7%86%E5%9B%BE">从同一事件日志中派生多个视图</a>”。</p>
+</li>
+<li><p><strong>衍生数据（derived data）</strong></p>
+<p>一种数据集，根据其他数据通过可重复运行的流程创建。必要时，你可以运行该流程再次创建衍生数据。衍生数据通常用于提高特定数据的读取速度。常见的衍生数据有索引、缓存和物化视图。请参阅<a href="part-iii">第三部分</a>的介绍。</p>
+</li>
+<li><p><strong>确定性（deterministic）</strong></p>
+<p>描述一个函数，如果给它相同的输入，则总是产生相同的输出。这意味着它不能依赖于随机数字、时间、网络通信或其他不可预测的事情。</p>
+</li>
+<li><p><strong>分布式（distributed）</strong></p>
+<p>在由网络连接的多个节点上运行。对于部分节点故障，具有容错性：系统的一部分发生故障时，其他部分仍可以正常工作，通常情况下，软件无需了解故障相关的确切情况。请参阅“<a href="ch8#%E6%95%85%E9%9A%9C%E4%B8%8E%E9%83%A8%E5%88%86%E5%A4%B1%E6%95%88">故障与部分失效</a>”。</p>
+</li>
+<li><p><strong>持久（durable）</strong></p>
+<p>以某种方式存储数据，即使发生各种故障，也不会丢失数据。请参阅“<a href="ch7#%E6%8C%81%E4%B9%85%E6%80%A7">持久性</a>”。</p>
+</li>
+<li><p><strong>ETL（Extract-Transform-Load）</strong></p>
+<p>提取-转换-加载（Extract-Transform-Load）。从源数据库中提取数据，将其转换为更适合分析查询的形式，并将其加载到数据仓库或批处理系统中的过程。请参阅“<a href="ch3#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93">数据仓库</a>”。</p>
+</li>
+<li><p><strong>故障切换（failover）</strong></p>
+<p>在具有单一领导者的系统中，故障切换是将领导角色从一个节点转移到另一个节点的过程。请参阅“<a href="ch5#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9%E5%AE%95%E6%9C%BA">处理节点宕机</a>”。</p>
+</li>
+<li><p><strong>容错（fault-tolerant）</strong></p>
+<p>如果出现问题（例如，机器崩溃或网络连接失败），可以自动恢复。请参阅“<a href="ch1#%E5%8F%AF%E9%9D%A0%E6%80%A7">可靠性</a>”。</p>
+</li>
+<li><p><strong>流量控制（flow control）</strong></p>
+<p>见背压（backpressure）。</p>
+</li>
+<li><p><strong>追随者（follower）</strong></p>
+<p>一种数据副本，仅处理领导者或主库发出的数据变更，不直接接受来自客户端的任何写入。也称为备库、从库、只读副本或热备份。请参阅“<a href="ch5#%E9%A2%86%E5%AF%BC%E8%80%85%E4%B8%8E%E8%BF%BD%E9%9A%8F%E8%80%85">领导者与追随者</a>”。</p>
+</li>
+<li><p><strong>全文检索（full-text search）</strong></p>
+<p>通过任意关键字来搜索文本，通常具有附加特征，例如匹配类似的拼写词或同义词。全文索引是一种支持这种查询的次级索引。请参阅“<a href="ch3#%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%92%8C%E6%A8%A1%E7%B3%8A%E7%B4%A2%E5%BC%95">全文搜索和模糊索引</a>”。</p>
+</li>
+<li><p><strong>图（graph）</strong></p>
+<p>一种数据结构，由顶点（可以指向的东西，也称为节点或实体）和边（从一个顶点到另一个顶点的连接，也称为关系或弧）组成。请参阅“<a href="ch2#%E5%9B%BE%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B">图数据模型</a>”。 </p>
+</li>
+<li><p><strong>散列（hash）</strong></p>
+<p>将输入转换为看起来像随机数值的函数。相同的输入会转换为相同的数值，不同的输入一般会转换为不同的数值，也可能转换为相同数值（也被称为冲突）。请参阅“<a href="ch6#%E6%A0%B9%E6%8D%AE%E9%94%AE%E7%9A%84%E6%95%A3%E5%88%97%E5%88%86%E5%8C%BA">根据键的散列分区</a>”。</p>
+</li>
+<li><p><strong>幂等（idempotent）</strong></p>
+<p>用于描述一种操作可以安全地重试执行，即执行多次的效果和执行一次的效果相同。请参阅“<a href="ch11#%E5%B9%82%E7%AD%89%E6%80%A7">幂等性</a>”。</p>
+</li>
+<li><p><strong>索引（index）</strong></p>
+<p>一种数据结构。通过索引，你可以根据特定字段的值，在所有数据记录中进行高效检索。请参阅“<a href="ch3#%E9%A9%B1%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">驱动数据库的数据结构</a>”。</p>
+</li>
+<li><p><strong>隔离性（isolation）</strong></p>
+<p>在事务上下文中，用于描述并发执行事务的互相干扰程度。串行运行具有最强的隔离性，不过其它程度的隔离也通常被使用。请参阅“<a href="ch7#%E9%9A%94%E7%A6%BB%E6%80%A7">隔离性</a>”。</p>
+</li>
+<li><p><strong>连接（join）</strong></p>
+<p>汇集有共同点的记录。在一个记录与另一个记录有关（外键，文档参考，图中的边）的情况下最常用，查询需要获取参考所指向的记录。请参阅“<a href="ch2#%E5%A4%9A%E5%AF%B9%E4%B8%80%E5%92%8C%E5%A4%9A%E5%AF%B9%E5%A4%9A%E7%9A%84%E5%85%B3%E7%B3%BB">多对一和多对多的关系</a>”和“<a href="ch10#Reduce%E4%BE%A7%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%88%86%E7%BB%84">Reduce侧连接与分组</a>”。</p>
+</li>
+<li><p><strong>领导者（leader）</strong></p>
+<p>当数据或服务被复制到多个节点时，领导者是被指定为可以接受数据变更的副本。领导者可以通过某些协议选举产生，也可以由管理员手动选择。领导者也被称为主库。请参阅“<a href="ch5#%E9%A2%86%E5%AF%BC%E8%80%85%E4%B8%8E%E8%BF%BD%E9%9A%8F%E8%80%85">领导者与追随者</a>”。</p>
+</li>
+<li><p><strong>线性化（linearizable）</strong></p>
+<p>表现为系统中只有一份通过原子操作更新的数据副本。请参阅“<a href="ch9#%E7%BA%BF%E6%80%A7%E4%B8%80%E8%87%B4%E6%80%A7">线性一致性</a>”。</p>
+</li>
+<li><p><strong>局部性（locality）</strong></p>
+<p>一种性能优化方式，如果经常在相同的时间请求一些离散数据，把这些数据放到一个位置。请参阅“<a href="ch2#%E6%9F%A5%E8%AF%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E5%B1%80%E9%83%A8%E6%80%A7">查询的数据局部性</a>”。</p>
+</li>
+<li><p><strong>锁（lock）</strong></p>
+<p>一种保证只有一个线程、节点或事务可以访问的机制，如果其它线程、节点或事务想访问相同元素，则必须等待锁被释放。请参阅“<a href="ch7#%E4%B8%A4%E9%98%B6%E6%AE%B5%E9%94%81%E5%AE%9A">两阶段锁定</a>”和“<a href="ch8#%E9%A2%86%E5%AF%BC%E8%80%85%E5%92%8C%E9%94%81">领导者和锁</a>”。</p>
+</li>
+<li><p><strong>日志（log）</strong></p>
+<p>日志是一个只能以追加方式写入的文件，用于存放数据。预写式日志用于在存储引擎崩溃时恢复数据（请参阅“<a href="ch3#%E8%AE%A9B%E6%A0%91%E6%9B%B4%E5%8F%AF%E9%9D%A0">让B树更可靠</a>”）；结构化日志存储引擎使用日志作为它的主要存储格式（请参阅“<a href="ch3#SSTables%E5%92%8CLSM%E6%A0%91">SSTables和LSM树</a>”）；复制型日志用于把写入从领导者复制到追随者（请参阅“<a href="ch5#%E9%A2%86%E5%AF%BC%E8%80%85%E4%B8%8E%E8%BF%BD%E9%9A%8F%E8%80%85">领导者与追随者</a>”）；事件性日志可以表现为数据流（请参阅“<a href="ch11#%E5%88%86%E5%8C%BA%E6%97%A5%E5%BF%97">分区日志</a>”）。</p>
+</li>
+<li><p><strong>物化（materialize）</strong></p>
+<p>急切地计算并写出结果，而不是在请求时计算。请参阅“<a href="ch3#%E8%81%9A%E5%90%88%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%AB%8B%E6%96%B9%E4%BD%93%E5%92%8C%E7%89%A9%E5%8C%96%E8%A7%86%E5%9B%BE">聚合：数据立方体和物化视图</a>”和“<a href="ch10#%E7%89%A9%E5%8C%96%E4%B8%AD%E9%97%B4%E7%8A%B6%E6%80%81">物化中间状态</a>”。</p>
+</li>
+<li><p><strong>节点（node）</strong></p>
+<p>计算机上运行的一些软件的实例，通过网络与其他节点通信以完成某项任务。</p>
+</li>
+<li><p><strong>规范化（normalized）</strong></p>
+<p>以没有冗余或重复的方式进行结构化。 在规范化数据库中，当某些数据发生变化时，你只需要在一个地方进行更改，而不是在许多不同的地方复制很多次。 请参阅“<a href="ch2#%E5%A4%9A%E5%AF%B9%E4%B8%80%E5%92%8C%E5%A4%9A%E5%AF%B9%E5%A4%9A%E7%9A%84%E5%85%B3%E7%B3%BB">多对一和多对多的关系</a>”。</p>
+</li>
+<li><p><strong>OLAP（Online Analytic Processing）</strong></p>
+<p>在线分析处理。 通过对大量记录进行聚合（例如，计数，总和，平均）来表征的访问模式。 请参阅“<a href="ch3#%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E8%BF%98%E6%98%AF%E5%88%86%E6%9E%90%EF%BC%9F">事务处理还是分析？</a>”。</p>
+</li>
+<li><p><strong>OLTP（Online Transaction Processing）</strong></p>
+<p>在线事务处理。 访问模式的特点是快速查询，读取或写入少量记录，这些记录通常通过键索引。 请参阅“<a href="ch3#%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E8%BF%98%E6%98%AF%E5%88%86%E6%9E%90%EF%BC%9F">事务处理还是分析？</a>”。</p>
+</li>
+<li><p><strong>分区（partitioning）</strong></p>
+<p>将单机上的大型数据集或计算结果拆分为较小部分，并将其分布到多台机器上。 也称为分片。见<a href="ch6">第六章</a>。</p>
+</li>
+<li><p><strong>百分位点（percentile）</strong></p>
+<p>通过计算有多少值高于或低于某个阈值来衡量值分布的方法。 例如，某个时间段的第95个百分位响应时间是时间t，则该时间段中，95%的请求完成时间小于t，5%的请求完成时间要比t长。 请参阅“<a href="ch1#%E6%8F%8F%E8%BF%B0%E6%80%A7%E8%83%BD">描述性能</a>”。</p>
+</li>
+<li><p><strong>主键（primary key）</strong></p>
+<p>唯一标识记录的值（通常是数字或字符串）。 在许多应用程序中，主键由系统在创建记录时生成（例如，按顺序或随机）; 它们通常不由用户设置。 另请参阅次级索引。</p>
+</li>
+<li><p><strong>法定人数（quorum）</strong></p>
+<p>在操作完成之前，需要对操作进行投票的最少节点数量。 请参阅“<a href="ch5#%E8%AF%BB%E5%86%99%E7%9A%84%E6%B3%95%E5%AE%9A%E4%BA%BA%E6%95%B0">读写的法定人数</a>”。</p>
+</li>
+<li><p><strong>再平衡（rebalance）</strong></p>
+<p>将数据或服务从一个节点移动到另一个节点以实现负载均衡。 请参阅“<a href="ch6#%E5%88%86%E5%8C%BA%E5%86%8D%E5%B9%B3%E8%A1%A1">分区再平衡</a>”。</p>
+</li>
+<li><p><strong>复制（replication）</strong></p>
+<p>在几个节点（副本）上保留相同数据的副本，以便在某些节点无法访问时，数据仍可访问。请参阅<a href="ch5">第五章</a>。</p>
+</li>
+<li><p><strong>模式（schema）</strong></p>
+<p>一些数据结构的描述，包括其字段和数据类型。 可以在数据生命周期的不同点检查某些数据是否符合模式（请参阅“<a href="ch2#%E6%96%87%E6%A1%A3%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%BC%8F%E7%81%B5%E6%B4%BB%E6%80%A7">文档模型中的模式灵活性</a>”），模式可以随时间变化（请参阅<a href="ch4">第四章</a>）。</p>
+</li>
+<li><p><strong>次级索引（secondary index）</strong></p>
+<p>与主要数据存储器一起维护的附加数据结构，使你可以高效地搜索与某种条件相匹配的记录。 请参阅“<a href="ch3#%E5%85%B6%E4%BB%96%E7%B4%A2%E5%BC%95%E7%BB%93%E6%9E%84">其他索引结构</a>”和“<a href="ch6#%E5%88%86%E5%8C%BA%E4%B8%8E%E6%AC%A1%E7%BA%A7%E7%B4%A2%E5%BC%95">分区与次级索引</a>”。</p>
+</li>
+<li><p><strong>可串行化（serializable）</strong></p>
+<p>保证多个并发事务同时执行时，它们的行为与按顺序逐个执行事务相同。 请参阅第七章的“<a href="ch7#%E5%8F%AF%E4%B8%B2%E8%A1%8C%E5%8C%96">可串行化</a>”。</p>
+</li>
+<li><p><strong>无共享（shared-nothing）</strong></p>
+<p>与共享内存或共享磁盘架构相比，独立节点（每个节点都有自己的CPU，内存和磁盘）通过传统网络连接。 见<a href="part-ii">第二部分</a>的介绍。</p>
+</li>
+<li><p><strong>偏斜（skew）</strong></p>
+<p>各分区负载不平衡，例如某些分区有大量请求或数据，而其他分区则少得多。也被称为热点。请参阅“<a href="ch6#%E8%B4%9F%E8%BD%BD%E5%81%8F%E6%96%9C%E4%B8%8E%E7%83%AD%E7%82%B9%E6%B6%88%E9%99%A4">负载偏斜与热点消除</a>”和“<a href="ch10#%E5%A4%84%E7%90%86%E5%81%8F%E6%96%9C">处理偏斜</a>”。</p>
+<p>时间线异常导致事件以不期望的顺序出现。 请参阅“<a href="ch7#%E5%BF%AB%E7%85%A7%E9%9A%94%E7%A6%BB%E5%92%8C%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB">快照隔离和可重复读</a>”中的关于读取偏差的讨论，“<a href="ch7#%E5%86%99%E5%85%A5%E5%81%8F%E5%B7%AE%E4%B8%8E%E5%B9%BB%E8%AF%BB">写入偏差与幻读</a>”中的写入偏差以及“<a href="ch8#%E6%9C%89%E5%BA%8F%E4%BA%8B%E4%BB%B6%E7%9A%84%E6%97%B6%E9%97%B4%E6%88%B3">有序事件的时间戳</a>”中的时钟偏斜。</p>
+</li>
+<li><p><strong>脑裂（split brain）</strong></p>
+<p>两个节点同时认为自己是领导者的情况，这种情况可能违反系统担保。 请参阅“<a href="ch5#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9%E5%AE%95%E6%9C%BA">处理节点宕机</a>”和“<a href="ch8#%E7%9C%9F%E7%9B%B8%E7%94%B1%E5%A4%9A%E6%95%B0%E6%89%80%E5%AE%9A%E4%B9%89">真相由多数所定义</a>”。</p>
+</li>
+<li><p><strong>存储过程（stored procedure）</strong></p>
+<p>一种对事务逻辑进行编码的方式，它可以完全在数据库服务器上执行，事务执行期间无需与客户端通信。 请参阅“<a href="ch7#%E7%9C%9F%E7%9A%84%E4%B8%B2%E8%A1%8C%E6%89%A7%E8%A1%8C">真的串行执行</a>”。</p>
+</li>
+<li><p><strong>流处理（stream process）</strong></p>
+<p>持续运行的计算。可以持续接收事件流作为输入，并得出一些输出。 见<a href="ch11">第十一章</a>。</p>
+</li>
+<li><p><strong>同步（synchronous）</strong></p>
+<p>异步的反义词。</p>
+</li>
+<li><p><strong>记录系统（system of record）</strong></p>
+<p>一个保存主要权威版本数据的系统，也被称为真相的来源。首先在这里写入数据变更，其他数据集可以从记录系统衍生。 请参阅<a href="part-iii">第三部分</a>的介绍。</p>
+</li>
+<li><p><strong>超时（timeout）</strong></p>
+<p>检测故障的最简单方法之一，即在一段时间内观察是否缺乏响应。 但是，不可能知道超时是由于远程节点的问题还是网络中的问题造成的。 请参阅“<a href="ch8#%E8%B6%85%E6%97%B6%E4%B8%8E%E6%97%A0%E7%A9%B7%E7%9A%84%E5%BB%B6%E8%BF%9F">超时与无穷的延迟</a>”。</p>
+</li>
+<li><p><strong>全序（total order）</strong></p>
+<p>一种比较事物的方法（例如时间戳），可以让你总是说出两件事中哪一件更大，哪件更小。 总的来说，有些东西是无法比拟的（不能说哪个更大或更小）的顺序称为偏序。 请参阅“<a href="ch9#%E5%9B%A0%E6%9E%9C%E9%A1%BA%E5%BA%8F%E4%B8%8D%E6%98%AF%E5%85%A8%E5%BA%8F%E7%9A%84">因果顺序不是全序的</a>”。</p>
+</li>
+<li><p><strong>事务（transaction）</strong></p>
+<p>为了简化错误处理和并发问题，将几个读写操作分组到一个逻辑单元中。 见<a href="ch7">第七章</a>。</p>
+</li>
+<li><p><strong>两阶段提交（2PC, two-phase commit）</strong></p>
+<p>一种确保多个数据库节点全部提交或全部中止事务的算法。 请参阅“<a href="ch9#%E5%8E%9F%E5%AD%90%E6%8F%90%E4%BA%A4%E4%B8%8E%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">原子提交与两阶段提交</a>”。</p>
+</li>
+<li><p><strong>两阶段锁定（2PL, two-phase locking）</strong></p>
+<p>一种用于实现可串行化隔离的算法，该算法通过事务获取对其读取或写入的所有数据的锁，直到事务结束。 请参阅“<a href="ch7#%E4%B8%A4%E9%98%B6%E6%AE%B5%E9%94%81%E5%AE%9A">两阶段锁定</a>”。</p>
+</li>
+<li><p><strong>无边界（unbounded）</strong></p>
+<p>没有任何已知的上限或大小。 反义词是边界（bounded）。</p>
+</li>
+</ul>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Prev</div><a href="/wiki/ddia/ch12.html">第十二章：数据系统的未来</a></div><div class="item" id="next"><div class="note">Next</div><a href="/wiki/ddia/colophon.html">后记</a></div></section></div>
+
+  
+
+  <div class='related-wrap md-text reveal' id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>来过，就留下您的脚印吧～</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" data-repo="gaoyanliang/beaudar" data-repo-id="MDEwOlJlcG9zaXRvcnkzOTMzNzI1Nzg=" data-category="Announcements" data-category-id="DIC_kwDOF3Jjos4CTZES" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+    </section>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.18.5';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadJS() {
+    const els = document.querySelectorAll("#comments #giscus");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+    loadJS();
+  });
+</script>
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

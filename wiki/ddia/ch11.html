@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Designing Data-Intensive Applications: 第十一章：流处理 - yanliang</title>
+
+  
+    <meta name="description" content="有效的复杂系统总是从简单的系统演化而来。 反之亦然：从零设计的复杂系统没一个能有效工作的。 —— 约翰・加尔，Systemantics（1975）   在 第十章 中，我们讨论了批处理技术，它读取一组文件作为输入，并生成一组新的文件作为输出。输出是 衍生数据（derived data） 的一种形式；也就是说，如果需要，可以通过再次运行批处理过程来重新创建数据集。我们看到了如何使用这个简单而强">
+<meta property="og:type" content="website">
+<meta property="og:title" content="第十一章：流处理">
+<meta property="og:url" content="https://yanliang.cool/wiki/ddia/ch11.html">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="有效的复杂系统总是从简单的系统演化而来。 反之亦然：从零设计的复杂系统没一个能有效工作的。 —— 约翰・加尔，Systemantics（1975）   在 第十章 中，我们讨论了批处理技术，它读取一组文件作为输入，并生成一组新的文件作为输出。输出是 衍生数据（derived data） 的一种形式；也就是说，如果需要，可以通过再次运行批处理过程来重新创建数据集。我们看到了如何使用这个简单而强">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/ch11.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-3.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-6.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-7.png">
+<meta property="article:published_time" content="2023-06-09T10:21:37.306Z">
+<meta property="article:modified_time" content="2023-06-09T10:21:37.306Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="blog, Java, IT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/ch11.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+  
+
+
+
+
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/ddia/"><div class="main" ff="title">Designing Data-Intensive Applications</div><div class="sub cap">数据密集型应用系统设计</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/ddia/" placeholder="Search in /wiki/ddia/"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">DDID</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/#start"><span class="toc-text">数据密集型应用系统设计</span></a></div></div><div class="widget-header cap dis-select"><span class="name">序言</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/preface.html"><span class="toc-text">序言</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第一部分：数据系统基础</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-i.html"><span class="toc-text">第一部分：数据系统基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch1.html"><span class="toc-text">第一章：可靠性、可伸缩性和可维护性</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch2.html"><span class="toc-text">第二章：数据模型与查询语言</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch3.html"><span class="toc-text">第三章：存储与检索</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch4.html"><span class="toc-text">第四章：编码与演化</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第二部分：分布式数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-ii.html"><span class="toc-text">第二部分：分布式数据</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch5.html"><span class="toc-text">第五章：复制</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch6.html"><span class="toc-text">第六章：分区</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch7.html"><span class="toc-text">第七章：事务</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch8.html"><span class="toc-text">第八章：分布式系统的麻烦</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch9.html"><span class="toc-text">第九章：一致性与共识</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第三部分：衍生数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-iii.html"><span class="toc-text">第三部分：衍生数据</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch10.html"><span class="toc-text">第十章：批处理</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/ddia/ch11.html"><span class="toc-text">第十一章：流处理</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%A0%E9%80%92%E4%BA%8B%E4%BB%B6%E6%B5%81"><span class="toc-text">传递事件流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E7%B3%BB%E7%BB%9F"><span class="toc-text">消息传递系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E4%BB%8E%E7%94%9F%E4%BA%A7%E8%80%85%E4%BC%A0%E9%80%92%E7%BB%99%E6%B6%88%E8%B4%B9%E8%80%85"><span class="toc-text">直接从生产者传递给消费者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BB%A3%E7%90%86"><span class="toc-text">消息代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BB%A3%E7%90%86%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-text">消息代理与数据库的对比</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA%E6%B6%88%E8%B4%B9%E8%80%85"><span class="toc-text">多个消费者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4%E4%B8%8E%E9%87%8D%E6%96%B0%E4%BC%A0%E9%80%92"><span class="toc-text">确认与重新传递</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E6%97%A5%E5%BF%97"><span class="toc-text">分区日志</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%97%A5%E5%BF%97%E8%BF%9B%E8%A1%8C%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8"><span class="toc-text">使用日志进行消息存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E4%B8%8E%E4%BC%A0%E7%BB%9F%E7%9A%84%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E7%9B%B8%E6%AF%94"><span class="toc-text">日志与传统的消息传递相比</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E8%B4%B9%E8%80%85%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="toc-text">消费者偏移量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4%E4%BD%BF%E7%94%A8"><span class="toc-text">磁盘空间使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93%E6%B6%88%E8%B4%B9%E8%80%85%E8%B7%9F%E4%B8%8D%E4%B8%8A%E7%94%9F%E4%BA%A7%E8%80%85%E6%97%B6"><span class="toc-text">当消费者跟不上生产者时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E6%92%AD%E6%97%A7%E6%B6%88%E6%81%AF"><span class="toc-text">重播旧消息</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E6%B5%81"><span class="toc-text">数据库与流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%9D%E6%8C%81%E7%B3%BB%E7%BB%9F%E5%90%8C%E6%AD%A5"><span class="toc-text">保持系统同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E6%9B%B4%E6%95%B0%E6%8D%AE%E6%8D%95%E8%8E%B7"><span class="toc-text">变更数据捕获</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%98%E6%9B%B4%E6%95%B0%E6%8D%AE%E6%8D%95%E8%8E%B7%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">变更数据捕获的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%BF%AB%E7%85%A7"><span class="toc-text">初始快照</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9"><span class="toc-text">日志压缩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%98%E6%9B%B4%E6%B5%81%E7%9A%84API%E6%94%AF%E6%8C%81"><span class="toc-text">变更流的API支持</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E6%BA%AF%E6%BA%90"><span class="toc-text">事件溯源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E%E4%BA%8B%E4%BB%B6%E6%97%A5%E5%BF%97%E4%B8%AD%E6%B4%BE%E7%94%9F%E5%87%BA%E5%BD%93%E5%89%8D%E7%8A%B6%E6%80%81"><span class="toc-text">从事件日志中派生出当前状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E5%92%8C%E4%BA%8B%E4%BB%B6"><span class="toc-text">命令和事件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E3%80%81%E6%B5%81%E5%92%8C%E4%B8%8D%E5%8F%98%E6%80%A7"><span class="toc-text">状态、流和不变性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E5%8F%AF%E5%8F%98%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-text">不可变事件的优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E%E5%90%8C%E4%B8%80%E4%BA%8B%E4%BB%B6%E6%97%A5%E5%BF%97%E4%B8%AD%E6%B4%BE%E7%94%9F%E5%A4%9A%E4%B8%AA%E8%A7%86%E5%9B%BE"><span class="toc-text">从同一事件日志中派生多个视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6"><span class="toc-text">并发控制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E5%8F%98%E6%80%A7%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="toc-text">不变性的局限性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E5%A4%84%E7%90%86"><span class="toc-text">流处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%A4%84%E7%90%86%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-text">流处理的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%90%88%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86"><span class="toc-text">复合事件处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E5%88%86%E6%9E%90"><span class="toc-text">流分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%B4%E6%8A%A4%E7%89%A9%E5%8C%96%E8%A7%86%E5%9B%BE"><span class="toc-text">维护物化视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E6%B5%81%E4%B8%8A%E6%90%9C%E7%B4%A2"><span class="toc-text">在流上搜索</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E5%92%8CRPC"><span class="toc-text">消息传递和RPC</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E6%8E%A8%E7%90%86"><span class="toc-text">时间推理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E6%97%B6%E9%97%B4%E4%B8%8E%E5%A4%84%E7%90%86%E6%97%B6%E9%97%B4"><span class="toc-text">事件时间与处理时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9F%A5%E9%81%93%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%87%86%E5%A4%87%E5%A5%BD%E4%BA%86"><span class="toc-text">知道什么时候准备好了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%A0%E7%94%A8%E7%9A%84%E6%98%AF%E8%B0%81%E7%9A%84%E6%97%B6%E9%92%9F%EF%BC%9F"><span class="toc-text">你用的是谁的时钟？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AA%97%E5%8F%A3%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-text">窗口的类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E8%BF%9E%E6%8E%A5"><span class="toc-text">流连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E6%B5%81%E8%BF%9E%E6%8E%A5%EF%BC%88%E7%AA%97%E5%8F%A3%E8%BF%9E%E6%8E%A5%EF%BC%89"><span class="toc-text">流流连接（窗口连接）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E8%A1%A8%E8%BF%9E%E6%8E%A5%EF%BC%88%E6%B5%81%E6%89%A9%E5%85%85%EF%BC%89"><span class="toc-text">流表连接（流扩充）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8%E8%A1%A8%E8%BF%9E%E6%8E%A5%EF%BC%88%E7%BB%B4%E6%8A%A4%E7%89%A9%E5%8C%96%E8%A7%86%E5%9B%BE%EF%BC%89"><span class="toc-text">表表连接（维护物化视图）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%97%B6%E9%97%B4%E4%BE%9D%E8%B5%96%E6%80%A7"><span class="toc-text">连接的时间依赖性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E9%94%99"><span class="toc-text">容错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%AE%E6%89%B9%E9%87%8F%E4%B8%8E%E5%AD%98%E6%A1%A3%E7%82%B9"><span class="toc-text">微批量与存档点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%8F%90%E4%BA%A4%E5%86%8D%E7%8E%B0"><span class="toc-text">原子提交再现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%82%E7%AD%89%E6%80%A7"><span class="toc-text">幂等性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%B1%E8%B4%A5%E5%90%8E%E9%87%8D%E5%BB%BA%E7%8A%B6%E6%80%81"><span class="toc-text">失败后重建状态</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93"><span class="toc-text">本章小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text">参考文献</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch12.html"><span class="toc-text">第十二章：数据系统的未来</span></a></div></div><div class="widget-header cap dis-select"><span class="name">术语表</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/glossary.html"><span class="toc-text">术语表</span></a></div></div><div class="widget-header cap dis-select"><span class="name">后记</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/colophon.html"><span class="toc-text">后记</span></a></div></div></widget>
+
+
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/design/"><span class="title">Design Pattern</span><span class="excerpt">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</span></a></div></widget></div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/ddia/">Designing Data-Intensive Applications</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T10:21:37.306Z">Jun 9, 2023</time></div></div>
+
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>第十一章：流处理</span></h1>
+  <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/ch11.png" fancybox="true"/></div></div>
+
+<blockquote>
+<p>有效的复杂系统总是从简单的系统演化而来。 反之亦然：从零设计的复杂系统没一个能有效工作的。</p>
+<p>—— 约翰・加尔，Systemantics（1975）</p>
+</blockquote>
+<hr>
+<p>在 <a href="ch10">第十章</a> 中，我们讨论了批处理技术，它读取一组文件作为输入，并生成一组新的文件作为输出。输出是 <strong>衍生数据（derived data）</strong> 的一种形式；也就是说，如果需要，可以通过再次运行批处理过程来重新创建数据集。我们看到了如何使用这个简单而强大的想法来建立搜索索引、推荐系统、做分析等等。</p>
+<p>然而，在 <a href="ch10">第十章</a> 中仍然有一个很大的假设：即输入是有界的，即已知和有限的大小，所以批处理知道它何时完成输入的读取。例如，MapReduce 核心的排序操作必须读取其全部输入，然后才能开始生成输出：可能发生这种情况：最后一条输入记录具有最小的键，因此需要第一个被输出，所以提早开始输出是不可行的。</p>
+<p>实际上，很多数据是 <strong>无界限</strong> 的，因为它随着时间的推移而逐渐到达：你的用户在昨天和今天产生了数据，明天他们将继续产生更多的数据。除非你停业，否则这个过程永远都不会结束，所以数据集从来就不会以任何有意义的方式 “完成”【1】。因此，批处理程序必须将数据人为地分成固定时间段的数据块，例如，在每天结束时处理一天的数据，或者在每小时结束时处理一小时的数据。</p>
+<p>日常批处理中的问题是，输入的变更只会在一天之后的输出中反映出来，这对于许多急躁的用户来说太慢了。为了减少延迟，我们可以更频繁地运行处理 ——  比如说，在每秒钟的末尾 —— 或者甚至更连续一些，完全抛开固定的时间切片，当事件发生时就立即进行处理，这就是 <strong>流处理（stream processing）</strong> 背后的想法。</p>
+<p>一般来说，“流” 是指随着时间的推移逐渐可用的数据。这个概念出现在很多地方：Unix 的 stdin 和 stdout、编程语言（惰性列表）【2】、文件系统 API（如 Java 的 <code>FileInputStream</code>）、TCP 连接、通过互联网传送音频和视频等等。</p>
+<p>在本章中，我们将把 <strong>事件流（event stream）</strong> 视为一种数据管理机制：无界限，增量处理，与上一章中的批量数据相对应。我们将首先讨论怎样表示、存储、通过网络传输流。在 “<a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E6%B5%81">数据库与流</a>” 中，我们将研究流和数据库之间的关系。最后在 “<a href="#%E6%B5%81%E5%A4%84%E7%90%86">流处理</a>” 中，我们将研究连续处理这些流的方法和工具，以及它们用于应用构建的方式。</p>
+<h2 id="传递事件流"><a href="#传递事件流" class="headerlink" title="传递事件流"></a>传递事件流</h2><p>在批处理领域，作业的输入和输出是文件（也许在分布式文件系统上）。流处理领域中的等价物看上去是什么样子的？</p>
+<p>当输入是一个文件（一个字节序列），第一个处理步骤通常是将其解析为一系列记录。在流处理的上下文中，记录通常被叫做 <strong>事件（event）</strong> ，但它本质上是一样的：一个小的、自包含的、不可变的对象，包含某个时间点发生的某件事情的细节。一个事件通常包含一个来自日历时钟的时间戳，以指明事件发生的时间（请参阅 “<a href="ch8#%E5%8D%95%E8%B0%83%E9%92%9F%E4%B8%8E%E6%97%A5%E5%8E%86%E6%97%B6%E9%92%9F">单调钟与日历时钟</a>”）。</p>
+<p>例如，发生的事件可能是用户采取的行动，例如查看页面或进行购买。它也可能来源于机器，例如对温度传感器或 CPU 利用率的周期性测量。在 “<a href="ch10#%E4%BD%BF%E7%94%A8Unix%E5%B7%A5%E5%85%B7%E7%9A%84%E6%89%B9%E5%A4%84%E7%90%86">使用 Unix 工具的批处理</a>” 的示例中，Web 服务器日志的每一行都是一个事件。</p>
+<p>事件可能被编码为文本字符串或 JSON，或者某种二进制编码，如 <a href="ch4">第四章</a> 所述。这种编码允许你存储一个事件，例如将其追加到一个文件，将其插入关系表，或将其写入文档数据库。它还允许你通过网络将事件发送到另一个节点以进行处理。</p>
+<p>在批处理中，文件被写入一次，然后可能被多个作业读取。类似地，在流处理术语中，一个事件由 <strong>生产者（producer）</strong> （也称为 <strong>发布者（publisher）</strong> 或 <strong>发送者（sender）</strong> ）生成一次，然后可能由多个 <strong>消费者（consumer）</strong> （ <strong>订阅者（subscribers）</strong> 或 <strong>接收者（recipients）</strong> ）进行处理【3】。在文件系统中，文件名标识一组相关记录；在流式系统中，相关的事件通常被聚合为一个 <strong>主题（topic）</strong> 或 <strong>流（stream）</strong> 。</p>
+<p>原则上讲，文件或数据库就足以连接生产者和消费者：生产者将其生成的每个事件写入数据存储，且每个消费者定期轮询数据存储，检查自上次运行以来新出现的事件。这实际上正是批处理在每天结束时处理当天数据时所做的事情。</p>
+<p>但当我们想要进行低延迟的连续处理时，如果数据存储不是为这种用途专门设计的，那么轮询开销就会很大。轮询的越频繁，能返回新事件的请求比例就越低，而额外开销也就越高。相比之下，最好能在新事件出现时直接通知消费者。</p>
+<p>数据库在传统上对这种通知机制支持的并不好，关系型数据库通常有 <strong>触发器（trigger）</strong> ，它们可以对变化（如，插入表中的一行）作出反应，但是它们的功能非常有限，并且在数据库设计中有些后顾之忧【4,5】。相应的是，已经开发了专门的工具来提供事件通知。</p>
+<h3 id="消息传递系统"><a href="#消息传递系统" class="headerlink" title="消息传递系统"></a>消息传递系统</h3><p>向消费者通知新事件的常用方式是使用 <strong>消息传递系统（messaging system）</strong>：生产者发送包含事件的消息，然后将消息推送给消费者。我们之前在 “<a href="ch4#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81">消息传递中的数据流</a>” 中谈到了这些系统，但现在我们将详细介绍这些系统。</p>
+<p>像生产者和消费者之间的 Unix 管道或 TCP 连接这样的直接信道，是实现消息传递系统的简单方法。但是，大多数消息传递系统都在这一基本模型上进行了扩展。特别的是，Unix 管道和 TCP 将恰好一个发送者与恰好一个接收者连接，而一个消息传递系统允许多个生产者节点将消息发送到同一个主题，并允许多个消费者节点接收主题中的消息。</p>
+<p>在这个 <strong>发布 &#x2F; 订阅</strong> 模式中，不同的系统采取各种各样的方法，并没有针对所有目的的通用答案。为了区分这些系统，问一下这两个问题会特别有帮助：</p>
+<ol>
+<li><p><strong>如果生产者发送消息的速度比消费者能够处理的速度快会发生什么？</strong> 一般来说，有三种选择：系统可以丢掉消息，将消息放入缓冲队列，或使用 <strong>背压</strong>（backpressure，也称为 <strong>流量控制</strong>，即 flow control：阻塞生产者，以免其发送更多的消息）。例如 Unix 管道和 TCP 就使用了背压：它们有一个固定大小的小缓冲区，如果填满，发送者会被阻塞，直到接收者从缓冲区中取出数据（请参阅 “<a href="ch8#%E7%BD%91%E7%BB%9C%E6%8B%A5%E5%A1%9E%E5%92%8C%E6%8E%92%E9%98%9F">网络拥塞和排队</a>”）。</p>
+<p>如果消息被缓存在队列中，那么理解队列增长会发生什么是很重要的。当队列装不进内存时系统会崩溃吗？还是将消息写入磁盘？如果是这样，磁盘访问又会如何影响消息传递系统的性能【6】？</p>
+</li>
+<li><p><strong>如果节点崩溃或暂时脱机，会发生什么情况？ —— 是否会有消息丢失？</strong> 与数据库一样，持久性可能需要写入磁盘和 &#x2F; 或复制的某种组合（请参阅 “<a href="ch7#%E5%A4%8D%E5%88%B6%E4%B8%8E%E6%8C%81%E4%B9%85%E6%80%A7">复制与持久性</a>”），这是有代价的。如果你能接受有时消息会丢失，则可能在同一硬件上获得更高的吞吐量和更低的延迟。</p>
+</li>
+</ol>
+<p>是否可以接受消息丢失取决于应用。例如，对于周期传输的传感器读数和指标，偶尔丢失的数据点可能并不重要，因为更新的值会在短时间内发出。但要注意，如果大量的消息被丢弃，可能无法立刻意识到指标已经不正确了【7】。如果你正在对事件计数，那么它们能够可靠送达是更重要的，因为每个丢失的消息都意味着使计数器的错误扩大。</p>
+<p>我们在 <a href="ch10">第十章</a> 中探讨的批处理系统的一个很好的特性是，它们提供了强大的可靠性保证：失败的任务会自动重试，失败任务的部分输出会自动丢弃。这意味着输出与没有发生故障一样，这有助于简化编程模型。在本章的后面，我们将研究如何在流处理的上下文中提供类似的保证。</p>
+<h4 id="直接从生产者传递给消费者"><a href="#直接从生产者传递给消费者" class="headerlink" title="直接从生产者传递给消费者"></a>直接从生产者传递给消费者</h4><p>许多消息传递系统使用生产者和消费者之间的直接网络通信，而不通过中间节点：</p>
+<ul>
+<li>UDP 组播广泛应用于金融行业，例如股票市场，其中低时延非常重要【8】。虽然 UDP 本身是不可靠的，但应用层的协议可以恢复丢失的数据包（生产者必须记住它发送的数据包，以便能按需重新发送数据包）。</li>
+<li>无代理的消息库，如 ZeroMQ 【9】和 nanomsg 采取类似的方法，通过 TCP 或 IP 多播实现发布 &#x2F; 订阅消息传递。</li>
+<li>StatsD 【10】和 Brubeck 【7】使用不可靠的 UDP 消息传递来收集网络中所有机器的指标并对其进行监控。 （在 StatsD 协议中，只有接收到所有消息，才认为计数器指标是正确的；使用 UDP 将使得指标处在一种最佳近似状态【11】。另请参阅 “<a href="ch8#TCP%E4%B8%8EUDP">TCP 与 UDP</a>”</li>
+<li>如果消费者在网络上公开了服务，生产者可以直接发送 HTTP 或 RPC 请求（请参阅 “<a href="ch4#%E6%9C%8D%E5%8A%A1%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%9AREST%E4%B8%8ERPC">服务中的数据流：REST 与 RPC</a>”）将消息推送给使用者。这就是 webhooks 背后的想法【12】，一种服务的回调 URL 被注册到另一个服务中，并且每当事件发生时都会向该 URL 发出请求。</li>
+</ul>
+<p>尽管这些直接消息传递系统在设计它们的环境中运行良好，但是它们通常要求应用代码意识到消息丢失的可能性。它们的容错程度极为有限：即使协议检测到并重传在网络中丢失的数据包，它们通常也只是假设生产者和消费者始终在线。</p>
+<p>如果消费者处于脱机状态，则可能会丢失其不可达时发送的消息。一些协议允许生产者重试失败的消息传递，但当生产者崩溃时，它可能会丢失消息缓冲区及其本应发送的消息，这种方法可能就没用了。</p>
+<h4 id="消息代理"><a href="#消息代理" class="headerlink" title="消息代理"></a>消息代理</h4><p>一种广泛使用的替代方法是通过 <strong>消息代理</strong>（message broker，也称为 <strong>消息队列</strong>，即 message queue）发送消息，消息代理实质上是一种针对处理消息流而优化的数据库。它作为服务器运行，生产者和消费者作为客户端连接到服务器。生产者将消息写入代理，消费者通过从代理那里读取来接收消息。</p>
+<p>通过将数据集中在代理上，这些系统可以更容易地容忍来来去去的客户端（连接，断开连接和崩溃），而持久性问题则转移到代理的身上。一些消息代理只将消息保存在内存中，而另一些消息代理（取决于配置）将其写入磁盘，以便在代理崩溃的情况下不会丢失。针对缓慢的消费者，它们通常会允许无上限的排队（而不是丢弃消息或背压），尽管这种选择也可能取决于配置。</p>
+<p>排队的结果是，消费者通常是 <strong>异步（asynchronous）</strong> 的：当生产者发送消息时，通常只会等待代理确认消息已经被缓存，而不等待消息被消费者处理。向消费者递送消息将发生在未来某个未定的时间点 —— 通常在几分之一秒之内，但有时当消息堆积时会显著延迟。</p>
+<h4 id="消息代理与数据库的对比"><a href="#消息代理与数据库的对比" class="headerlink" title="消息代理与数据库的对比"></a>消息代理与数据库的对比</h4><p>有些消息代理甚至可以使用 XA 或 JTA 参与两阶段提交协议（请参阅 “<a href="ch9#%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1">实践中的分布式事务</a>”）。这个功能与数据库在本质上非常相似，尽管消息代理和数据库之间仍存在实践上很重要的差异：</p>
+<ul>
+<li>数据库通常保留数据直至显式删除，而大多数消息代理在消息成功递送给消费者时会自动删除消息。这样的消息代理不适合长期的数据存储。</li>
+<li>由于它们很快就能删除消息，大多数消息代理都认为它们的工作集相当小 —— 即队列很短。如果代理需要缓冲很多消息，比如因为消费者速度较慢（如果内存装不下消息，可能会溢出到磁盘），每个消息需要更长的处理时间，整体吞吐量可能会恶化【6】。</li>
+<li>数据库通常支持次级索引和各种搜索数据的方式，而消息代理通常支持按照某种模式匹配主题，订阅其子集。虽然机制并不一样，但对于客户端选择想要了解的数据的一部分，都是基本的方式。</li>
+<li>查询数据库时，结果通常基于某个时间点的数据快照；如果另一个客户端随后向数据库写入一些改变了查询结果的内容，则第一个客户端不会发现其先前结果现已过期（除非它重复查询或轮询变更）。相比之下，消息代理不支持任意查询，但是当数据发生变化时（即新消息可用时），它们会通知客户端。</li>
+</ul>
+<p>这是关于消息代理的传统观点，它被封装在诸如 JMS 【14】和 AMQP 【15】的标准中，并且被诸如 RabbitMQ、ActiveMQ、HornetQ、Qpid、TIBCO 企业消息服务、IBM MQ、Azure Service Bus 和 Google Cloud Pub&#x2F;Sub 所实现 【16】。</p>
+<h4 id="多个消费者"><a href="#多个消费者" class="headerlink" title="多个消费者"></a>多个消费者</h4><p>当多个消费者从同一主题中读取消息时，有两种主要的消息传递模式，如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-1.png">图 11-1</a> 所示：</p>
+<ul>
+<li><p>负载均衡（load balancing）</p>
+<p>每条消息都被传递给消费者 <strong>之一</strong>，所以处理该主题下消息的工作能被多个消费者共享。代理可以为消费者任意分配消息。当处理消息的代价高昂，希望能并行处理消息时，此模式非常有用（在 AMQP 中，可以通过让多个客户端从同一个队列中消费来实现负载均衡，而在 JMS 中则称之为 <strong>共享订阅</strong>，即 shared subscription）。</p>
+</li>
+<li><p>扇出（fan-out）</p>
+<p>每条消息都被传递给 <strong>所有</strong> 消费者。扇出允许几个独立的消费者各自 “收听” 相同的消息广播，而不会相互影响 ——  这个流处理中的概念对应批处理中多个不同批处理作业读取同一份输入文件 （JMS 中的主题订阅与 AMQP 中的交叉绑定提供了这一功能）。</p>
+</li>
+</ul>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-1.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-1 （a）负载平衡：在消费者间共享消费主题；（b）扇出：将每条消息传递给多个消费者。</strong></p>
+<p>两种模式可以组合使用：例如，两个独立的消费者组可以每组各订阅同一个主题，每一组都共同收到所有消息，但在每一组内部，每条消息仅由单个节点处理。</p>
+<h4 id="确认与重新传递"><a href="#确认与重新传递" class="headerlink" title="确认与重新传递"></a>确认与重新传递</h4><p>消费者随时可能会崩溃，所以有一种可能的情况是：代理向消费者递送消息，但消费者没有处理，或者在消费者崩溃之前只进行了部分处理。为了确保消息不会丢失，消息代理使用 <strong>确认（acknowledgments）</strong>：客户端必须显式告知代理消息处理完毕的时间，以便代理能将消息从队列中移除。</p>
+<p>如果与客户端的连接关闭，或者代理超出一段时间未收到确认，代理则认为消息没有被处理，因此它将消息再递送给另一个消费者。 （请注意可能发生这样的情况，消息 <strong>实际上是</strong> 处理完毕的，但 <strong>确认</strong> 在网络中丢失了。需要一种原子提交协议才能处理这种情况，正如在 “<a href="ch9#%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1">实践中的分布式事务</a>” 中所讨论的那样）</p>
+<p>当与负载均衡相结合时，这种重传行为对消息的顺序有种有趣的影响。在 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-2.png">图 11-2</a> 中，消费者通常按照生产者发送的顺序处理消息。然而消费者 2 在处理消息 m3 时崩溃，与此同时消费者 1 正在处理消息 m4。未确认的消息 m3 随后被重新发送给消费者 1，结果消费者 1 按照 m4，m3，m5 的顺序处理消息。因此 m3 和 m4 的交付顺序与生产者 1 的发送顺序不同。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-2.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-2 在处理 m3 时消费者 2 崩溃，因此稍后重传至消费者 1</strong></p>
+<p>即使消息代理试图保留消息的顺序（如 JMS 和 AMQP 标准所要求的），负载均衡与重传的组合也不可避免地导致消息被重新排序。为避免此问题，你可以让每个消费者使用单独的队列（即不使用负载均衡功能）。如果消息是完全独立的，则消息顺序重排并不是一个问题。但正如我们将在本章后续部分所述，如果消息之间存在因果依赖关系，这就是一个很重要的问题。</p>
+<h3 id="分区日志"><a href="#分区日志" class="headerlink" title="分区日志"></a>分区日志</h3><p>通过网络发送数据包或向网络服务发送请求通常是短暂的操作，不会留下永久的痕迹。尽管可以永久记录（通过抓包与日志），但我们通常不这么做。即使是将消息持久地写入磁盘的消息代理，在送达给消费者之后也会很快删除消息，因为它们建立在短暂消息传递的思维方式上。</p>
+<p>数据库和文件系统采用截然相反的方法论：至少在某人显式删除前，通常写入数据库或文件的所有内容都要被永久记录下来。</p>
+<p>这种思维方式上的差异对创建衍生数据的方式有巨大影响。如 <a href="ch10">第十章</a> 所述，批处理过程的一个关键特性是，你可以反复运行它们，试验处理步骤，不用担心损坏输入（因为输入是只读的）。而 AMQP&#x2F;JMS 风格的消息传递并非如此：收到消息是具有破坏性的，因为确认可能导致消息从代理中被删除，因此你不能期望再次运行同一个消费者能得到相同的结果。</p>
+<p>如果你将新的消费者添加到消息传递系统，通常只能接收到消费者注册之后开始发送的消息。先前的任何消息都随风而逝，一去不复返。作为对比，你可以随时为文件和数据库添加新的客户端，且能读取任意久远的数据（只要应用没有显式覆盖或删除这些数据）。</p>
+<p>为什么我们不能把它俩杂交一下，既有数据库的持久存储方式，又有消息传递的低延迟通知？这就是 <strong>基于日志的消息代理（log-based message brokers）</strong> 背后的想法。</p>
+<h4 id="使用日志进行消息存储"><a href="#使用日志进行消息存储" class="headerlink" title="使用日志进行消息存储"></a>使用日志进行消息存储</h4><p>日志只是磁盘上简单的仅追加记录序列。我们先前在 <a href="ch3">第三章</a> 中日志结构存储引擎和预写式日志的上下文中讨论了日志，在 <a href="ch5">第五章</a> 复制的上下文里也讨论了它。</p>
+<p>同样的结构可以用于实现消息代理：生产者通过将消息追加到日志末尾来发送消息，而消费者通过依次读取日志来接收消息。如果消费者读到日志末尾，则会等待新消息追加的通知。 Unix 工具 <code>tail -f</code> 能监视文件被追加写入的数据，基本上就是这样工作的。</p>
+<p>为了伸缩超出单个磁盘所能提供的更高吞吐量，可以对日志进行 <strong>分区</strong>（按 <a href="ch6">第六章</a> 的定义）。不同的分区可以托管在不同的机器上，使得每个分区都有一份能独立于其他分区进行读写的日志。一个主题可以定义为一组携带相同类型消息的分区。这种方法如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-3.png">图 11-3</a> 所示。</p>
+<p>在每个分区内，代理为每个消息分配一个单调递增的序列号或 <strong>偏移量</strong>（offset，在 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-3.png">图 11-3</a> 中，框中的数字是消息偏移量）。这种序列号是有意义的，因为分区是仅追加写入的，所以分区内的消息是完全有序的。没有跨不同分区的顺序保证。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-3.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-3 生产者通过将消息追加写入主题分区文件来发送消息，消费者依次读取这些文件</strong></p>
+<p>Apache Kafka 【17,18】、Amazon Kinesis Streams 【19】和 Twitter 的 DistributedLog 【20,21】都是基于日志的消息代理。 Google Cloud Pub&#x2F;Sub 在架构上类似，但对外暴露的是 JMS 风格的 API，而不是日志抽象【16】。尽管这些消息代理将所有消息写入磁盘，但通过跨多台机器分区，每秒能够实现数百万条消息的吞吐量，并通过复制消息来实现容错性【22,23】。</p>
+<h4 id="日志与传统的消息传递相比"><a href="#日志与传统的消息传递相比" class="headerlink" title="日志与传统的消息传递相比"></a>日志与传统的消息传递相比</h4><p>基于日志的方法天然支持扇出式消息传递，因为多个消费者可以独立读取日志，而不会相互影响 —— 读取消息不会将其从日志中删除。为了在一组消费者之间实现负载平衡，代理可以将整个分区分配给消费者组中的节点，而不是将单条消息分配给消费者客户端。</p>
+<p>然后每个客户端将消费被指派分区中的 <strong>所有</strong> 消息。通常情况下，当一个用户被指派了一个日志分区时，它会以简单的单线程方式顺序地读取分区中的消息。这种粗粒度的负载均衡方法有一些缺点：</p>
+<ul>
+<li>共享消费主题工作的节点数，最多为该主题中的日志分区数，因为同一个分区内的所有消息被递送到同一个节点 <a href="%E8%A6%81%E8%AE%BE%E8%AE%A1%E4%B8%80%E7%A7%8D%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%96%B9%E6%A1%88%E4%B9%9F%E6%98%AF%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%EF%BC%8C%E5%9C%A8%E8%BF%99%E7%A7%8D%E6%96%B9%E6%A1%88%E4%B8%AD%EF%BC%8C%E4%B8%A4%E4%B8%AA%E6%B6%88%E8%B4%B9%E8%80%85%E9%80%9A%E8%BF%87%E8%AF%BB%E5%8F%96%E5%85%A8%E9%83%A8%E6%B6%88%E6%81%AF%E6%9D%A5%E5%85%B1%E4%BA%AB%E5%88%86%E5%8C%BA%E5%A4%84%E7%90%86%E7%9A%84%E5%B7%A5%E4%BD%9C%EF%BC%8C%E4%BD%86%E6%98%AF%E5%85%B6%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%8F%AA%E8%80%83%E8%99%91%E5%85%B7%E6%9C%89%E5%81%B6%E6%95%B0%E5%81%8F%E7%A7%BB%E9%87%8F%E7%9A%84%E6%B6%88%E6%81%AF%EF%BC%8C%E8%80%8C%E5%8F%A6%E4%B8%80%E4%B8%AA%E6%B6%88%E8%B4%B9%E8%80%85%E5%8F%AA%E5%A4%84%E7%90%86%E5%A5%87%E6%95%B0%E7%BC%96%E5%8F%B7%E7%9A%84%E5%81%8F%E7%A7%BB%E9%87%8F%E3%80%82%E6%88%96%E8%80%85%E4%BD%A0%E5%8F%AF%E4%BB%A5%E5%B0%86%E6%B6%88%E6%81%AF%E6%91%8A%E5%88%B0%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%AD%E6%9D%A5%E5%A4%84%E7%90%86%EF%BC%8C%E4%BD%86%E8%BF%99%E7%A7%8D%E6%96%B9%E6%B3%95%E4%BC%9A%E4%BD%BF%E6%B6%88%E8%B4%B9%E8%80%85%E5%81%8F%E7%A7%BB%E9%87%8F%E7%AE%A1%E7%90%86%E5%8F%98%E5%BE%97%E5%A4%8D%E6%9D%82%E3%80%82%E4%B8%80%E8%88%AC%E6%9D%A5%E8%AF%B4%EF%BC%8C%E5%8D%95%E7%BA%BF%E7%A8%8B%E5%A4%84%E7%90%86%E5%8D%95%E5%88%86%E5%8C%BA%E6%98%AF%E5%90%88%E9%80%82%E7%9A%84%EF%BC%8C%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E5%A2%9E%E5%8A%A0%E6%9B%B4%E5%A4%9A%E5%88%86%E5%8C%BA%E6%9D%A5%E6%8F%90%E9%AB%98%E5%B9%B6%E8%A1%8C%E5%BA%A6%E3%80%82">^i</a>。</li>
+<li>如果某条消息处理缓慢，则它会阻塞该分区中后续消息的处理（一种行首阻塞的形式；请参阅 “<a href="ch1#%E6%8F%8F%E8%BF%B0%E6%80%A7%E8%83%BD">描述性能</a>”）。</li>
+</ul>
+<p>因此在消息处理代价高昂，希望逐条并行处理，以及消息的顺序并没有那么重要的情况下，JMS&#x2F;AMQP 风格的消息代理是可取的。另一方面，在消息吞吐量很高，处理迅速，顺序很重要的情况下，基于日志的方法表现得非常好。</p>
+<h4 id="消费者偏移量"><a href="#消费者偏移量" class="headerlink" title="消费者偏移量"></a>消费者偏移量</h4><p>顺序消费一个分区使得判断消息是否已经被处理变得相当容易：所有偏移量小于消费者的当前偏移量的消息已经被处理，而具有更大偏移量的消息还没有被看到。因此，代理不需要跟踪确认每条消息，只需要定期记录消费者的偏移即可。这种方法减少了额外簿记开销，而且在批处理和流处理中采用这种方法有助于提高基于日志的系统的吞吐量。</p>
+<p>实际上，这种偏移量与单领导者数据库复制中常见的日志序列号非常相似，我们在 “<a href="ch5#%E8%AE%BE%E7%BD%AE%E6%96%B0%E4%BB%8E%E5%BA%93">设置新从库</a>” 中讨论了这种情况。在数据库复制中，日志序列号允许跟随者断开连接后，重新连接到领导者，并在不跳过任何写入的情况下恢复复制。这里原理完全相同：消息代理表现得像一个主库，而消费者就像一个从库。</p>
+<p>如果消费者节点失效，则失效消费者的分区将指派给其他节点，并从最后记录的偏移量开始消费消息。如果消费者已经处理了后续的消息，但还没有记录它们的偏移量，那么重启后这些消息将被处理两次。我们将在本章后面讨论这个问题的处理方法。</p>
+<h4 id="磁盘空间使用"><a href="#磁盘空间使用" class="headerlink" title="磁盘空间使用"></a>磁盘空间使用</h4><p>如果只追加写入日志，则磁盘空间终究会耗尽。为了回收磁盘空间，日志实际上被分割成段，并不时地将旧段删除或移动到归档存储。 （我们将在后面讨论一种更为复杂的磁盘空间释放方式）</p>
+<p>这就意味着如果一个慢消费者跟不上消息产生的速率而落后得太多，它的消费偏移量指向了删除的段，那么它就会错过一些消息。实际上，日志实现了一个有限大小的缓冲区，当缓冲区填满时会丢弃旧消息，它也被称为 <strong>循环缓冲区（circular buffer）</strong> 或 <strong>环形缓冲区（ring buffer）</strong>。不过由于缓冲区在磁盘上，因此缓冲区可能相当的大。</p>
+<p>让我们做个简单计算。在撰写本文时，典型的大型硬盘容量为 6TB，顺序写入吞吐量为 150MB&#x2F;s。如果以最快的速度写消息，则需要大约 11 个小时才能填满磁盘。因而磁盘可以缓冲 11 个小时的消息，之后它将开始覆盖旧的消息。即使使用多个磁盘和机器，这个比率也是一样的。实践中的部署很少能用满磁盘的写入带宽，所以通常可以保存一个几天甚至几周的日志缓冲区。</p>
+<p>不管保留多长时间的消息，日志的吞吐量或多或少保持不变，因为无论如何，每个消息都会被写入磁盘【18】。这种行为与默认将消息保存在内存中，仅当队列太长时才写入磁盘的消息传递系统形成鲜明对比。当队列很短时，这些系统非常快；而当这些系统开始写入磁盘时，就要慢的多，所以吞吐量取决于保留的历史数量。</p>
+<h4 id="当消费者跟不上生产者时"><a href="#当消费者跟不上生产者时" class="headerlink" title="当消费者跟不上生产者时"></a>当消费者跟不上生产者时</h4><p>在 “<a href="#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E7%B3%BB%E7%BB%9F">消息传递系统</a>” 中，如果消费者无法跟上生产者发送信息的速度时，我们讨论了三种选择：丢弃信息，进行缓冲或施加背压。在这种分类法里，基于日志的方法是缓冲的一种形式，具有很大但大小固定的缓冲区（受可用磁盘空间的限制）。</p>
+<p>如果消费者远远落后，而所要求的信息比保留在磁盘上的信息还要旧，那么它将不能读取这些信息，所以代理实际上丢弃了比缓冲区容量更大的旧信息。你可以监控消费者落后日志头部的距离，如果落后太多就发出报警。由于缓冲区很大，因而有足够的时间让运维人员来修复慢消费者，并在消息开始丢失之前让其赶上。</p>
+<p>即使消费者真的落后太多开始丢失消息，也只有那个消费者受到影响；它不会中断其他消费者的服务。这是一个巨大的运维优势：你可以实验性地消费生产日志，以进行开发，测试或调试，而不必担心会中断生产服务。当消费者关闭或崩溃时，会停止消耗资源，唯一剩下的只有消费者偏移量。</p>
+<p>这种行为也与传统的消息代理形成了鲜明对比，在那种情况下，你需要小心地删除那些消费者已经关闭的队列 —— 否则那些队列就会累积不必要的消息，从其他仍活跃的消费者那里占走内存。</p>
+<h4 id="重播旧消息"><a href="#重播旧消息" class="headerlink" title="重播旧消息"></a>重播旧消息</h4><p>我们之前提到，使用 AMQP 和 JMS 风格的消息代理，处理和确认消息是一个破坏性的操作，因为它会导致消息在代理上被删除。另一方面，在基于日志的消息代理中，使用消息更像是从文件中读取数据：这是只读操作，不会更改日志。</p>
+<p>除了消费者的任何输出之外，处理的唯一副作用是消费者偏移量的前进。但偏移量是在消费者的控制之下的，所以如果需要的话可以很容易地操纵：例如你可以用昨天的偏移量跑一个消费者副本，并将输出写到不同的位置，以便重新处理最近一天的消息。你可以使用各种不同的处理代码重复任意次。</p>
+<p>这一方面使得基于日志的消息传递更像上一章的批处理，其中衍生数据通过可重复的转换过程与输入数据显式分离。它允许进行更多的实验，更容易从错误和漏洞中恢复，使其成为在组织内集成数据流的良好工具【24】。</p>
+<h2 id="数据库与流"><a href="#数据库与流" class="headerlink" title="数据库与流"></a>数据库与流</h2><p>我们已经在消息代理和数据库之间进行了一些比较。尽管传统上它们被视为单独的工具类别，但是我们看到基于日志的消息代理已经成功地从数据库中获取灵感并将其应用于消息传递。我们也可以反过来：从消息传递和流中获取灵感，并将它们应用于数据库。</p>
+<p>我们之前曾经说过，事件是某个时刻发生的事情的记录。发生的事情可能是用户操作（例如键入搜索查询）或读取传感器，但也可能是 <strong>写入数据库</strong>。某些东西被写入数据库的事实是可以被捕获、存储和处理的事件。这一观察结果表明，数据库和数据流之间的联系不仅仅是磁盘日志的物理存储 —— 而是更深层的联系。</p>
+<p>事实上，复制日志（请参阅 “<a href="ch5#%E5%A4%8D%E5%88%B6%E6%97%A5%E5%BF%97%E7%9A%84%E5%AE%9E%E7%8E%B0">复制日志的实现</a>”）是一个由数据库写入事件组成的流，由主库在处理事务时生成。从库将写入流应用到它们自己的数据库副本，从而最终得到相同数据的精确副本。复制日志中的事件描述发生的数据更改。</p>
+<p>我们还在 “<a href="ch9#%E5%85%A8%E5%BA%8F%E5%B9%BF%E6%92%AD">全序广播</a>” 中遇到了状态机复制原理，其中指出：如果每个事件代表对数据库的写入，并且每个副本按相同的顺序处理相同的事件，则副本将达到相同的最终状态 （假设事件处理是一个确定性的操作）。这是事件流的又一种场景！</p>
+<p>在本节中，我们将首先看看异构数据系统中出现的一个问题，然后探讨如何通过将事件流的想法带入数据库来解决这个问题。</p>
+<h3 id="保持系统同步"><a href="#保持系统同步" class="headerlink" title="保持系统同步"></a>保持系统同步</h3><p>正如我们在本书中所看到的，没有一个系统能够满足所有的数据存储、查询和处理需求。在实践中，大多数重要应用都需要组合使用几种不同的技术来满足所有的需求：例如，使用 OLTP 数据库来为用户请求提供服务，使用缓存来加速常见请求，使用全文索引来处理搜索查询，使用数据仓库用于分析。每一种技术都有自己的数据副本，并根据自己的目的进行存储方式的优化。</p>
+<p>由于相同或相关的数据出现在了不同的地方，因此相互间需要保持同步：如果某个项目在数据库中被更新，它也应当在缓存、搜索索引和数据仓库中被更新。对于数据仓库，这种同步通常由 ETL 进程执行（请参阅 “<a href="ch3#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93">数据仓库</a>”），通常是先取得数据库的完整副本，然后执行转换，并批量加载到数据仓库中 —— 换句话说，批处理。我们在 “<a href="ch10#%E6%89%B9%E5%A4%84%E7%90%86%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E8%BE%93%E5%87%BA">批处理工作流的输出</a>” 中同样看到了如何使用批处理创建搜索索引、推荐系统和其他衍生数据系统。</p>
+<p>如果周期性的完整数据库转储过于缓慢，有时会使用的替代方法是 <strong>双写（dual write）</strong>，其中应用代码在数据变更时明确写入每个系统：例如，首先写入数据库，然后更新搜索索引，然后使缓存项失效（甚至同时执行这些写入）。</p>
+<p>但是，双写有一些严重的问题，其中一个是竞争条件，如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-4.png">图 11-4</a> 所示。在这个例子中，两个客户端同时想要更新一个项目 X：客户端 1 想要将值设置为 A，客户端 2 想要将其设置为 B。两个客户端首先将新值写入数据库，然后将其写入到搜索索引。因为运气不好，这些请求的时序是交错的：数据库首先看到来自客户端 1 的写入将值设置为 A，然后来自客户端 2 的写入将值设置为 B，因此数据库中的最终值为 B。搜索索引首先看到来自客户端 2 的写入，然后是客户端 1 的写入，所以搜索索引中的最终值是 A。即使没发生错误，这两个系统现在也永久地不一致了。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-4.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-4 在数据库中 X 首先被设置为 A，然后被设置为 B，而在搜索索引处，写入以相反的顺序到达</strong></p>
+<p>除非有一些额外的并发检测机制，例如我们在 “<a href="ch5#%E6%A3%80%E6%B5%8B%E5%B9%B6%E5%8F%91%E5%86%99%E5%85%A5">检测并发写入</a>” 中讨论的版本向量，否则你甚至不会意识到发生了并发写入 —— 一个值将简单地以无提示方式覆盖另一个值。</p>
+<p>双重写入的另一个问题是，其中一个写入可能会失败，而另一个成功。这是一个容错问题，而不是一个并发问题，但也会造成两个系统互相不一致的结果。确保它们要么都成功要么都失败，是原子提交问题的一个例子，解决这个问题的代价是昂贵的（请参阅 “<a href="ch9#%E5%8E%9F%E5%AD%90%E6%8F%90%E4%BA%A4%E4%B8%8E%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">原子提交与两阶段提交</a>”）。</p>
+<p>如果你只有一个单领导者复制的数据库，那么这个领导者决定了写入顺序，而状态机复制方法可以在数据库副本上工作。然而，在 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-4.png">图 11-4</a> 中，没有单个主库：数据库可能有一个领导者，搜索索引也可能有一个领导者，但是两者都不追随对方，所以可能会发生冲突（请参阅 “<a href="ch5#%E5%A4%9A%E4%B8%BB%E5%A4%8D%E5%88%B6">多主复制</a>“）。</p>
+<p>如果实际上只有一个领导者 —— 例如，数据库 —— 而且我们能让搜索索引成为数据库的追随者，情况要好得多。但这在实践中可能吗？</p>
+<h3 id="变更数据捕获"><a href="#变更数据捕获" class="headerlink" title="变更数据捕获"></a>变更数据捕获</h3><p>大多数数据库的复制日志的问题在于，它们一直被当做数据库的内部实现细节，而不是公开的 API。客户端应该通过其数据模型和查询语言来查询数据库，而不是解析复制日志并尝试从中提取数据。</p>
+<p>数十年来，许多数据库根本没有记录在档的获取变更日志的方式。由于这个原因，捕获数据库中所有的变更，然后将其复制到其他存储技术（搜索索引、缓存或数据仓库）中是相当困难的。</p>
+<p>最近，人们对 <strong>变更数据捕获（change data capture, CDC）</strong> 越来越感兴趣，这是一种观察写入数据库的所有数据变更，并将其提取并转换为可以复制到其他系统中的形式的过程。 CDC 是非常有意思的，尤其是当变更能在被写入后立刻用于流时。</p>
+<p>例如，你可以捕获数据库中的变更，并不断将相同的变更应用至搜索索引。如果变更日志以相同的顺序应用，则可以预期搜索索引中的数据与数据库中的数据是匹配的。搜索索引和任何其他衍生数据系统只是变更流的消费者，如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-5.png">图 11-5</a> 所示。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-5.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-5 将数据按顺序写入一个数据库，然后按照相同的顺序将这些更改应用到其他系统</strong></p>
+<h4 id="变更数据捕获的实现"><a href="#变更数据捕获的实现" class="headerlink" title="变更数据捕获的实现"></a>变更数据捕获的实现</h4><p>我们可以将日志消费者叫做 <strong>衍生数据系统</strong>，正如在 <a href="part-iii">第三部分</a> 的介绍中所讨论的：存储在搜索索引和数据仓库中的数据，只是 <strong>记录系统</strong> 数据的额外视图。变更数据捕获是一种机制，可确保对记录系统所做的所有更改都反映在衍生数据系统中，以便衍生系统具有数据的准确副本。</p>
+<p>从本质上说，变更数据捕获使得一个数据库成为领导者（被捕获变化的数据库），并将其他组件变为追随者。基于日志的消息代理非常适合从源数据库传输变更事件，因为它保留了消息的顺序（避免了 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-2.png">图 11-2</a> 的重新排序问题）。</p>
+<p>数据库触发器可用来实现变更数据捕获（请参阅 “<a href="ch5#%E5%9F%BA%E4%BA%8E%E8%A7%A6%E5%8F%91%E5%99%A8%E7%9A%84%E5%A4%8D%E5%88%B6">基于触发器的复制</a>”），通过注册观察所有变更的触发器，并将相应的变更项写入变更日志表中。但是它们往往是脆弱的，而且有显著的性能开销。解析复制日志可能是一种更稳健的方法，但它也很有挑战，例如如何应对模式变更。</p>
+<p>LinkedIn 的 Databus【25】，Facebook 的 Wormhole【26】和 Yahoo! 的 Sherpa【27】大规模地应用这个思路。 Bottled Water 使用解码 WAL 的 API 实现了 PostgreSQL 的 CDC【28】，Maxwell 和 Debezium 通过解析 binlog 对 MySQL 做了类似的事情【29,30,31】，Mongoriver 读取 MongoDB oplog【32,33】，而 GoldenGate 为 Oracle 提供类似的功能【34,35】。</p>
+<p>类似于消息代理，变更数据捕获通常是异步的：记录数据库系统在提交变更之前不会等待消费者应用变更。这种设计具有的运维优势是，添加缓慢的消费者不会过度影响记录系统。不过，所有复制延迟可能有的问题在这里都可能出现（请参阅 “<a href="ch5#%E5%A4%8D%E5%88%B6%E5%BB%B6%E8%BF%9F%E9%97%AE%E9%A2%98">复制延迟问题</a>”）。</p>
+<h4 id="初始快照"><a href="#初始快照" class="headerlink" title="初始快照"></a>初始快照</h4><p>如果你拥有 <strong>所有</strong> 对数据库进行变更的日志，则可以通过重播该日志，来重建数据库的完整状态。但是在许多情况下，永远保留所有更改会耗费太多磁盘空间，且重播过于费时，因此日志需要被截断。</p>
+<p>例如，构建新的全文索引需要整个数据库的完整副本 —— 仅仅应用最近变更的日志是不够的，因为这样会丢失最近未曾更新的项目。因此，如果你没有完整的历史日志，则需要从一个一致的快照开始，如先前的 “<a href="ch5#%E8%AE%BE%E7%BD%AE%E6%96%B0%E4%BB%8E%E5%BA%93">设置新从库</a>” 中所述。</p>
+<p>数据库的快照必须与变更日志中的已知位置或偏移量相对应，以便在处理完快照后知道从哪里开始应用变更。一些 CDC 工具集成了这种快照功能，而其他工具则把它留给你手动执行。</p>
+<h4 id="日志压缩"><a href="#日志压缩" class="headerlink" title="日志压缩"></a>日志压缩</h4><p>如果你只能保留有限的历史日志，则每次要添加新的衍生数据系统时，都需要做一次快照。但 <strong>日志压缩（log compaction）</strong> 提供了一个很好的备选方案。</p>
+<p>我们之前在 “<a href="ch3#%E6%95%A3%E5%88%97%E7%B4%A2%E5%BC%95">散列索引</a>” 中关于日志结构存储引擎的上下文中讨论了日志压缩（请参阅 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig3-2.png">图 3-2</a> 的示例）。原理很简单：存储引擎定期在日志中查找具有相同键的记录，丢掉所有重复的内容，并只保留每个键的最新更新。这个压缩与合并过程在后台运行。</p>
+<p>在日志结构存储引擎中，具有特殊值 NULL（<strong>墓碑</strong>，即 tombstone）的更新表示该键被删除，并会在日志压缩过程中被移除。但只要键不被覆盖或删除，它就会永远留在日志中。这种压缩日志所需的磁盘空间仅取决于数据库的当前内容，而不取决于数据库中曾经发生的写入次数。如果相同的键经常被覆盖写入，则先前的值将最终将被垃圾回收，只有最新的值会保留下来。</p>
+<p>在基于日志的消息代理与变更数据捕获的上下文中也适用相同的想法。如果 CDC 系统被配置为，每个变更都包含一个主键，且每个键的更新都替换了该键以前的值，那么只需要保留对键的最新写入就足够了。</p>
+<p>现在，无论何时需要重建衍生数据系统（如搜索索引），你可以从压缩日志主题的零偏移量处启动新的消费者，然后依次扫描日志中的所有消息。日志能保证包含数据库中每个键的最新值（也可能是一些较旧的值）—— 换句话说，你可以使用它来获取数据库内容的完整副本，而无需从 CDC 源数据库取一个快照。</p>
+<p>Apache Kafka 支持这种日志压缩功能。正如我们将在本章后面看到的，它允许消息代理被当成持久性存储使用，而不仅仅是用于临时消息。</p>
+<h4 id="变更流的API支持"><a href="#变更流的API支持" class="headerlink" title="变更流的API支持"></a>变更流的API支持</h4><p>越来越多的数据库开始将变更流作为第一等的接口，而不像传统上要去做加装改造，或者费工夫逆向工程一个 CDC。例如，RethinkDB 允许查询订阅通知，当查询结果变更时获得通知【36】，Firebase 【37】和 CouchDB 【38】基于变更流进行同步，该变更流同样可用于应用。而 Meteor 使用 MongoDB oplog 订阅数据变更，并改变了用户接口【39】。</p>
+<p>VoltDB 允许事务以流的形式连续地从数据库中导出数据【40】。数据库将关系数据模型中的输出流表示为一个表，事务可以向其中插入元组，但不能查询。已提交事务按照提交顺序写入这个特殊表，而流则由该表中的元组日志构成。外部消费者可以异步消费该日志，并使用它来更新衍生数据系统。</p>
+<p>Kafka Connect【41】致力于将广泛的数据库系统的变更数据捕获工具与 Kafka 集成。一旦变更事件进入 Kafka 中，它就可以用于更新衍生数据系统，比如搜索索引，也可以用于本章稍后讨论的流处理系统。</p>
+<h3 id="事件溯源"><a href="#事件溯源" class="headerlink" title="事件溯源"></a>事件溯源</h3><p>我们在这里讨论的想法和 <strong>事件溯源（Event Sourcing）</strong> 之间有一些相似之处，这是一个在 <strong>领域驱动设计（domain-driven design, DDD）</strong> 社区中折腾出来的技术。我们将简要讨论事件溯源，因为它包含了一些关于流处理系统的有用想法。</p>
+<p>与变更数据捕获类似，事件溯源涉及到 <strong>将所有对应用状态的变更</strong> 存储为变更事件日志。最大的区别是事件溯源将这一想法应用到了一个不同的抽象层次上：</p>
+<ul>
+<li>在变更数据捕获中，应用以 <strong>可变方式（mutable way）</strong> 使用数据库，可以任意更新和删除记录。变更日志是从数据库的底层提取的（例如，通过解析复制日志），从而确保从数据库中提取的写入顺序与实际写入的顺序相匹配，从而避免 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-4.png">图 11-4</a> 中的竞态条件。写入数据库的应用不需要知道 CDC 的存在。</li>
+<li>在事件溯源中，应用逻辑显式构建在写入事件日志的不可变事件之上。在这种情况下，事件存储是仅追加写入的，更新与删除是不鼓励的或禁止的。事件被设计为旨在反映应用层面发生的事情，而不是底层的状态变更。</li>
+</ul>
+<p>事件溯源是一种强大的数据建模技术：从应用的角度来看，将用户的行为记录为不可变的事件更有意义，而不是在可变数据库中记录这些行为的影响。事件溯源使得应用随时间演化更为容易，通过更容易理解事情发生的原因来帮助调试的进行，并有利于防止应用 Bug（请参阅 “<a href="#%E4%B8%8D%E5%8F%AF%E5%8F%98%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BC%98%E7%82%B9">不可变事件的优点</a>”）。</p>
+<p>例如，存储 “学生取消选课” 事件以中性的方式清楚地表达了单个行为的意图，而其副作用 “从登记表中删除了一个条目，而一条取消原因的记录被添加到学生反馈表 “则嵌入了很多有关稍后对数据的使用方式的假设。如果引入一个新的应用功能，例如 “将位置留给等待列表中的下一个人” —— 事件溯源方法允许将新的副作用轻松地从现有事件中脱开。</p>
+<p>事件溯源类似于 <strong>编年史（chronicle）</strong> 数据模型【45】，事件日志与星型模式中的事实表之间也存在相似之处（请参阅 “<a href="ch3#%E6%98%9F%E5%9E%8B%E5%92%8C%E9%9B%AA%E8%8A%B1%E5%9E%8B%EF%BC%9A%E5%88%86%E6%9E%90%E7%9A%84%E6%A8%A1%E5%BC%8F">星型和雪花型：分析的模式</a>”） 。</p>
+<p>诸如 Event Store【46】这样的专业数据库已经被开发出来，供使用事件溯源的应用使用，但总的来说，这种方法独立于任何特定的工具。传统的数据库或基于日志的消息代理也可以用来构建这种风格的应用。</p>
+<h4 id="从事件日志中派生出当前状态"><a href="#从事件日志中派生出当前状态" class="headerlink" title="从事件日志中派生出当前状态"></a>从事件日志中派生出当前状态</h4><p>事件日志本身并不是很有用，因为用户通常期望看到的是系统的当前状态，而不是变更历史。例如，在购物网站上，用户期望能看到他们购物车里的当前内容，而不是他们购物车所有变更的一个仅追加列表。</p>
+<p>因此，使用事件溯源的应用需要拉取事件日志（表示 <strong>写入</strong> 系统的数据），并将其转换为适合向用户显示的应用状态（从系统 <strong>读取</strong> 数据的方式【47】）。这种转换可以使用任意逻辑，但它应当是确定性的，以便能再次运行，并从事件日志中衍生出相同的应用状态。</p>
+<p>与变更数据捕获一样，重播事件日志允许让你重新构建系统的当前状态。不过，日志压缩需要采用不同的方式处理：</p>
+<ul>
+<li>用于记录更新的 CDC 事件通常包含记录的 <strong>完整新版本</strong>，因此主键的当前值完全由该主键的最近事件确定，而日志压缩可以丢弃相同主键的先前事件。</li>
+<li>另一方面，事件溯源在更高层次进行建模：事件通常表示用户操作的意图，而不是因为操作而发生的状态更新机制。在这种情况下，后面的事件通常不会覆盖先前的事件，所以你需要完整的历史事件来重新构建最终状态。这里进行同样的日志压缩是不可能的。</li>
+</ul>
+<p>使用事件溯源的应用通常有一些机制，用于存储从事件日志中导出的当前状态快照，因此它们不需要重复处理完整的日志。然而这只是一种性能优化，用来加速读取，提高从崩溃中恢复的速度；真正的目的是系统能够永久存储所有原始事件，并在需要时重新处理完整的事件日志。我们将在 “<a href="#%E4%B8%8D%E5%8F%98%E6%80%A7%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7">不变性的局限性</a>” 中讨论这个假设。</p>
+<h4 id="命令和事件"><a href="#命令和事件" class="headerlink" title="命令和事件"></a>命令和事件</h4><p>事件溯源的哲学是仔细区分 <strong>事件（event）</strong> 和 <strong>命令（command）</strong>【48】。当来自用户的请求刚到达时，它一开始是一个命令：在这个时间点上它仍然可能失败，比如，因为违反了一些完整性条件。应用必须首先验证它是否可以执行该命令。如果验证成功并且命令被接受，则它变为一个持久化且不可变的事件。</p>
+<p>例如，如果用户试图注册特定用户名，或预定飞机或剧院的座位，则应用需要检查用户名或座位是否已被占用。（先前在 “<a href="ch9#%E5%AE%B9%E9%94%99%E5%85%B1%E8%AF%86">容错共识</a>” 中讨论过这个例子）当检查成功时，应用可以生成一个事件，指示特定的用户名是由特定的用户 ID 注册的，或者座位已经预留给特定的顾客。</p>
+<p>在事件生成的时刻，它就成为了 <strong>事实（fact）</strong>。即使客户稍后决定更改或取消预订，他们之前曾预定了某个特定座位的事实仍然成立，而更改或取消是之后添加的单独的事件。</p>
+<p>事件流的消费者不允许拒绝事件：当消费者看到事件时，它已经成为日志中不可变的一部分，并且可能已经被其他消费者看到了。因此任何对命令的验证，都需要在它成为事件之前同步完成。例如，通过使用一个可以原子性地自动验证命令并发布事件的可串行事务。</p>
+<p>或者，预订座位的用户请求可以拆分为两个事件：第一个是暂时预约，第二个是验证预约后的独立的确认事件（如 “<a href="ch9#%E4%BD%BF%E7%94%A8%E5%85%A8%E5%BA%8F%E5%B9%BF%E6%92%AD%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E4%B8%80%E8%87%B4%E7%9A%84%E5%AD%98%E5%82%A8">使用全序广播实现线性一致的存储</a>” 中所述） 。这种分割方式允许验证发生在一个异步的过程中。</p>
+<h3 id="状态、流和不变性"><a href="#状态、流和不变性" class="headerlink" title="状态、流和不变性"></a>状态、流和不变性</h3><p>我们在 <a href="ch10">第十章</a> 中看到，批处理因其输入文件不变性而受益良多，你可以在现有输入文件上运行实验性处理作业，而不用担心损坏它们。这种不变性原则也是使得事件溯源与变更数据捕获如此强大的原因。</p>
+<p>我们通常将数据库视为应用程序当前状态的存储 —— 这种表示针对读取进行了优化，而且通常对于服务查询而言是最为方便的表示。状态的本质是，它会变化，所以数据库才会支持数据的增删改。这又该如何匹配不变性呢？</p>
+<p>只要你的状态发生了变化，那么这个状态就是这段时间中事件修改的结果。例如，当前可用的座位列表是你已处理的预订所产生的结果，当前帐户余额是帐户中的借与贷的结果，而 Web 服务器的响应时间图，是所有已发生 Web 请求的独立响应时间的聚合结果。</p>
+<p>无论状态如何变化，总是有一系列事件导致了这些变化。即使事情已经执行与回滚，这些事件出现是始终成立的。关键的想法是：可变的状态与不可变事件的仅追加日志相互之间并不矛盾：它们是一体两面，互为阴阳的。所有变化的日志 —— <strong>变化日志（changelog）</strong>，表示了随时间演变的状态。</p>
+<p>如果你倾向于数学表示，那么你可能会说，应用状态是事件流对时间求积分得到的结果，而变更流是状态对时间求微分的结果，如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-6.png">图 11-6</a> 所示【49,50,51】。这个比喻有一些局限性（例如，状态的二阶导似乎没有意义），但这是考虑数据的一个实用出发点。<br>$$<br>state(now) &#x3D; \int_{t&#x3D;0}^{now}{stream(t) \ dt} \<br>stream(t) &#x3D; \frac{d\ state(t)}{dt}<br>$$</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-6.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-6 应用当前状态与事件流之间的关系</strong></p>
+<p>如果你持久存储了变更日志，那么重现状态就非常简单。如果你认为事件日志是你的记录系统，而所有的衍生状态都从它派生而来，那么系统中的数据流动就容易理解的多。正如帕特・赫兰（Pat Helland）所说的【52】：</p>
+<blockquote>
+<p>事务日志记录了数据库的所有变更。高速追加是更改日志的唯一方法。从这个角度来看，数据库的内容其实是日志中记录最新值的缓存。日志才是真相，数据库是日志子集的缓存，这一缓存子集恰好来自日志中每条记录与索引值的最新值。</p>
+</blockquote>
+<p>日志压缩（如 “<a href="#%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9">日志压缩</a>” 中所述）是连接日志与数据库状态之间的桥梁：它只保留每条记录的最新版本，并丢弃被覆盖的版本。</p>
+<h4 id="不可变事件的优点"><a href="#不可变事件的优点" class="headerlink" title="不可变事件的优点"></a>不可变事件的优点</h4><p>数据库中的不变性是一个古老的概念。例如，会计在几个世纪以来一直在财务记账中应用不变性。一笔交易发生时，它被记录在一个仅追加写入的分类帐中，实质上是描述货币、商品或服务转手的事件日志。账目，比如利润、亏损、资产负债表，是从分类账中的交易求和衍生而来【53】。</p>
+<p>如果发生错误，会计师不会删除或更改分类帐中的错误交易 —— 而是添加另一笔交易以补偿错误，例如退还一笔不正确的费用。不正确的交易将永远保留在分类帐中，对于审计而言可能非常重要。如果从不正确的分类账衍生出的错误数字已经公布，那么下一个会计周期的数字就会包括一个更正。这个过程在会计事务中是很常见的【54】。</p>
+<p>尽管这种可审计性只在金融系统中尤其重要，但对于不受这种严格监管的许多其他系统，也是很有帮助的。如 “<a href="ch10#%E6%89%B9%E5%A4%84%E7%90%86%E8%BE%93%E5%87%BA%E7%9A%84%E5%93%B2%E5%AD%A6">批处理输出的哲学</a>” 中所讨论的，如果你意外地部署了将错误数据写入数据库的错误代码，当代码会破坏性地覆写数据时，恢复要困难得多。使用不可变事件的仅追加日志，诊断问题与故障恢复就要容易的多。</p>
+<p>不可变的事件也包含了比当前状态更多的信息。例如在购物网站上，顾客可以将物品添加到他们的购物车，然后再将其移除。虽然从履行订单的角度，第二个事件取消了第一个事件，但对分析目的而言，知道客户考虑过某个特定项而之后又反悔，可能是很有用的。也许他们会选择在未来购买，或者他们已经找到了替代品。这个信息被记录在事件日志中，但对于移出购物车就删除记录的数据库而言，这个信息在移出购物车时可能就丢失了【42】。</p>
+<h4 id="从同一事件日志中派生多个视图"><a href="#从同一事件日志中派生多个视图" class="headerlink" title="从同一事件日志中派生多个视图"></a>从同一事件日志中派生多个视图</h4><p>此外，通过从不变的事件日志中分离出可变的状态，你可以针对不同的读取方式，从相同的事件日志中衍生出几种不同的表现形式。效果就像一个流的多个消费者一样（<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-5.png">图 11-5</a>）：例如，分析型数据库 Druid 使用这种方式直接从 Kafka 摄取数据【55】，Pistachio 是一个分布式的键值存储，使用 Kafka 作为提交日志【56】，Kafka Connect 能将来自 Kafka 的数据导出到各种不同的数据库与索引【41】。这对于许多其他存储和索引系统（如搜索服务器）来说是很有意义的，当系统要从分布式日志中获取输入时亦然（请参阅 “<a href="#%E4%BF%9D%E6%8C%81%E7%B3%BB%E7%BB%9F%E5%90%8C%E6%AD%A5">保持系统同步</a>”）。</p>
+<p>添加从事件日志到数据库的显式转换，能够使应用更容易地随时间演进：如果你想要引入一个新功能，以新的方式表示现有数据，则可以使用事件日志来构建一个单独的、针对新功能的读取优化视图，无需修改现有系统而与之共存。并行运行新旧系统通常比在现有系统中执行复杂的模式迁移更容易。一旦不再需要旧的系统，你可以简单地关闭它并回收其资源【47,57】。</p>
+<p>如果你不需要担心如何查询与访问数据，那么存储数据通常是非常简单的。模式设计、索引和存储引擎的许多复杂性，都是希望支持某些特定查询和访问模式的结果（请参阅 <a href="ch3">第三章</a>）。出于这个原因，通过将数据写入的形式与读取形式相分离，并允许几个不同的读取视图，你能获得很大的灵活性。这个想法有时被称为 <strong>命令查询责任分离（command query responsibility segregation, CQRS）</strong>【42,58,59】。</p>
+<p>数据库和模式设计的传统方法是基于这样一种谬论，数据必须以与查询相同的形式写入。如果可以将数据从针对写入优化的事件日志转换为针对读取优化的应用状态，那么有关规范化和非规范化的争论就变得无关紧要了（请参阅 “<a href="ch2#%E5%A4%9A%E5%AF%B9%E4%B8%80%E5%92%8C%E5%A4%9A%E5%AF%B9%E5%A4%9A%E7%9A%84%E5%85%B3%E7%B3%BB">多对一和多对多的关系</a>”）：在针对读取优化的视图中对数据进行非规范化是完全合理的，因为翻译过程提供了使其与事件日志保持一致的机制。</p>
+<p>在 “<a href="ch1#%E6%8F%8F%E8%BF%B0%E8%B4%9F%E8%BD%BD">描述负载</a>” 中，我们讨论了推特主页时间线，它是特定用户关注的人群所发推特的缓存（类似邮箱）。这是 <strong>针对读取优化的状态</strong> 的又一个例子：主页时间线是高度非规范化的，因为你的推文与你所有粉丝的时间线都构成了重复。然而，扇出服务保持了这种重复状态与新推特以及新关注关系的同步，从而保证了重复的可管理性。</p>
+<h4 id="并发控制"><a href="#并发控制" class="headerlink" title="并发控制"></a>并发控制</h4><p>事件溯源和变更数据捕获的最大缺点是，事件日志的消费者通常是异步的，所以可能会出现这样的情况：用户会写入日志，然后从日志衍生视图中读取，结果发现他的写入还没有反映在读取视图中。我们之前在 “<a href="ch5#%E8%AF%BB%E5%B7%B1%E4%B9%8B%E5%86%99">读己之写</a>” 中讨论了这个问题以及可能的解决方案。</p>
+<p>一种解决方案是将事件追加到日志时同步执行读取视图的更新。而将这些写入操作合并为一个原子单元需要 <strong>事务</strong>，所以要么将事件日志和读取视图保存在同一个存储系统中，要么就需要跨不同系统进行分布式事务。或者，你也可以使用在 “<a href="ch9#%E4%BD%BF%E7%94%A8%E5%85%A8%E5%BA%8F%E5%B9%BF%E6%92%AD%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E4%B8%80%E8%87%B4%E7%9A%84%E5%AD%98%E5%82%A8">使用全序广播实现线性一致的存储</a>” 中讨论的方法。</p>
+<p>另一方面，从事件日志导出当前状态也简化了并发控制的某些部分。许多对于多对象事务的需求（请参阅 “<a href="ch7#%E5%8D%95%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%A4%9A%E5%AF%B9%E8%B1%A1%E6%93%8D%E4%BD%9C">单对象和多对象操作</a>”）源于单个用户操作需要在多个不同的位置更改数据。通过事件溯源，你可以设计一个自包含的事件以表示一个用户操作。然后用户操作就只需要在一个地方进行单次写入操作 —— 即将事件附加到日志中 —— 这个还是很容易使原子化的。</p>
+<p>如果事件日志与应用状态以相同的方式分区（例如，处理分区 3 中的客户事件只需要更新分区 3 中的应用状态），那么直接使用单线程日志消费者就不需要写入并发控制了。它从设计上一次只处理一个事件（请参阅 “<a href="ch7#%E7%9C%9F%E7%9A%84%E4%B8%B2%E8%A1%8C%E6%89%A7%E8%A1%8C">真的串行执行</a>”）。日志通过在分区中定义事件的序列顺序，消除了并发性的不确定性【24】。如果一个事件触及多个状态分区，那么需要做更多的工作，我们将在 <a href="ch12">第十二章</a> 讨论。</p>
+<h4 id="不变性的局限性"><a href="#不变性的局限性" class="headerlink" title="不变性的局限性"></a>不变性的局限性</h4><p>许多不使用事件溯源模型的系统也还是依赖不可变性：各种数据库在内部使用不可变的数据结构或多版本数据来支持时间点快照（请参阅 “<a href="ch7#%E7%B4%A2%E5%BC%95%E5%92%8C%E5%BF%AB%E7%85%A7%E9%9A%94%E7%A6%BB">索引和快照隔离</a>” ）。 Git、Mercurial 和 Fossil 等版本控制系统也依靠不可变的数据来保存文件的版本历史记录。</p>
+<p>永远保持所有变更的不变历史，在多大程度上是可行的？答案取决于数据集的流失率。一些工作负载主要是添加数据，很少更新或删除；它们很容易保持不变。其他工作负载在相对较小的数据集上有较高的更新 &#x2F; 删除率；在这些情况下，不可变的历史可能增至难以接受的巨大，碎片化可能成为一个问题，压缩与垃圾收集的表现对于运维的稳健性变得至关重要【60,61】。</p>
+<p>除了性能方面的原因外，也可能有出于管理方面的原因需要删除数据的情况，尽管这些数据都是不可变的。例如，隐私条例可能要求在用户关闭帐户后删除他们的个人信息，数据保护立法可能要求删除错误的信息，或者可能需要阻止敏感信息的意外泄露。</p>
+<p>在这种情况下，仅仅在日志中添加另一个事件来指明先前的数据应该被视为删除是不够的 —— 你实际上是想改写历史，并假装数据从一开始就没有写入。例如，Datomic 管这个特性叫 <strong>切除（excision）</strong> 【62】，而 Fossil 版本控制系统有一个类似的概念叫 <strong>避免（shunning）</strong> 【63】。</p>
+<p>真正删除数据是非常非常困难的【64】，因为副本可能存在于很多地方：例如，存储引擎，文件系统和 SSD 通常会向一个新位置写入，而不是原地覆盖旧数据【52】，而备份通常是特意做成不可变的，防止意外删除或损坏。删除操作更多的是指 “使取回数据更困难”，而不是指 “使取回数据不可能”。无论如何，有时你必须得尝试，正如我们在 “<a href="ch12#%E7%AB%8B%E6%B3%95%E4%B8%8E%E8%87%AA%E5%BE%8B">立法与自律</a>” 中所看到的。</p>
+<h2 id="流处理"><a href="#流处理" class="headerlink" title="流处理"></a>流处理</h2><p>到目前为止，本章中我们已经讨论了流的来源（用户活动事件，传感器和写入数据库），我们讨论了流如何传输（直接通过消息传送，通过消息代理，通过事件日志）。</p>
+<p>剩下的就是讨论一下你可以用流做什么 —— 也就是说，你可以处理它。一般来说，有三种选项：</p>
+<ol>
+<li>你可以将事件中的数据写入数据库、缓存、搜索索引或类似的存储系统，然后能被其他客户端查询。如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-5.png">图 11-5</a> 所示，这是数据库与系统其他部分所发生的变更保持同步的好方法 —— 特别是当流消费者是写入数据库的唯一客户端时。如 “<a href="ch10#%E6%89%B9%E5%A4%84%E7%90%86%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E8%BE%93%E5%87%BA">批处理工作流的输出</a>” 中所讨论的，它是写入存储系统的流等价物。</li>
+<li>你能以某种方式将事件推送给用户，例如发送报警邮件或推送通知，或将事件流式传输到可实时显示的仪表板上。在这种情况下，人是流的最终消费者。</li>
+<li>你可以处理一个或多个输入流，并产生一个或多个输出流。流可能会经过由几个这样的处理阶段组成的流水线，最后再输出（选项 1 或 2）。</li>
+</ol>
+<p>在本章的剩余部分中，我们将讨论选项 3：处理流以产生其他衍生流。处理这样的流的代码片段，被称为 <strong>算子（operator）</strong> 或 <strong>作业（job）</strong>。它与我们在 <a href="ch10">第十章</a> 中讨论过的 Unix 进程和 MapReduce 作业密切相关，数据流的模式是相似的：一个流处理器以只读的方式使用输入流，并将其输出以仅追加的方式写入一个不同的位置。</p>
+<p>流处理中的分区和并行化模式也非常类似于 <a href="ch10">第十章</a> 中介绍的 MapReduce 和数据流引擎，因此我们不再重复这些主题。基本的 Map 操作（如转换和过滤记录）也是一样的。</p>
+<p>与批量作业相比的一个关键区别是，流不会结束。这种差异会带来很多隐含的结果。正如本章开始部分所讨论的，排序对无界数据集没有意义，因此无法使用 <strong>排序合并连接</strong>（请参阅 “<a href="ch10#Reduce%E4%BE%A7%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%88%86%E7%BB%84">Reduce 侧连接与分组</a>”）。容错机制也必须改变：对于已经运行了几分钟的批处理作业，可以简单地从头开始重启失败任务，但是对于已经运行数年的流作业，重启后从头开始跑可能并不是一个可行的选项。</p>
+<h3 id="流处理的应用"><a href="#流处理的应用" class="headerlink" title="流处理的应用"></a>流处理的应用</h3><p>长期以来，流处理一直用于监控目的，如果某个事件发生，组织希望能得到警报。例如：</p>
+<ul>
+<li>欺诈检测系统需要确定信用卡的使用模式是否有意外地变化，如果信用卡可能已被盗刷，则锁卡。</li>
+<li>交易系统需要检查金融市场的价格变化，并根据指定的规则进行交易。</li>
+<li>制造系统需要监控工厂中机器的状态，如果出现故障，可以快速定位问题。</li>
+<li>军事和情报系统需要跟踪潜在侵略者的活动，并在出现袭击征兆时发出警报。</li>
+</ul>
+<p>这些类型的应用需要非常精密复杂的模式匹配与相关检测。然而随着时代的进步，流处理的其他用途也开始出现。在本节中，我们将简要比较一下这些应用。</p>
+<h4 id="复合事件处理"><a href="#复合事件处理" class="headerlink" title="复合事件处理"></a>复合事件处理</h4><p><strong>复合事件处理（complex event processing, CEP）</strong> 是 20 世纪 90 年代为分析事件流而开发出的一种方法，尤其适用于需要搜索某些事件模式的应用【65,66】。与正则表达式允许你在字符串中搜索特定字符模式的方式类似，CEP 允许你指定规则以在流中搜索某些事件模式。</p>
+<p>CEP 系统通常使用高层次的声明式查询语言，比如 SQL，或者图形用户界面，来描述应该检测到的事件模式。这些查询被提交给处理引擎，该引擎消费输入流，并在内部维护一个执行所需匹配的状态机。当发现匹配时，引擎发出一个 <strong>复合事件</strong>（即 complex event，CEP 因此得名），并附有检测到的事件模式详情【67】。</p>
+<p>在这些系统中，查询和数据之间的关系与普通数据库相比是颠倒的。通常情况下，数据库会持久存储数据，并将查询视为临时的：当查询进入时，数据库搜索与查询匹配的数据，然后在查询完成时丢掉查询。 CEP 引擎反转了角色：查询是长期存储的，来自输入流的事件不断流过它们，搜索匹配事件模式的查询【68】。</p>
+<p>CEP 的实现包括 Esper【69】、IBM InfoSphere Streams【70】、Apama、TIBCO StreamBase 和 SQLstream。像 Samza 这样的分布式流处理组件，支持使用 SQL 在流上进行声明式查询【71】。</p>
+<h4 id="流分析"><a href="#流分析" class="headerlink" title="流分析"></a>流分析</h4><p>使用流处理的另一个领域是对流进行分析。 CEP 与流分析之间的边界是模糊的，但一般来说，分析往往对找出特定事件序列并不关心，而更关注大量事件上的聚合与统计指标 —— 例如：</p>
+<ul>
+<li>测量某种类型事件的速率（每个时间间隔内发生的频率）</li>
+<li>滚动计算一段时间窗口内某个值的平均值</li>
+<li>将当前的统计值与先前的时间区间的值对比（例如，检测趋势，当指标与上周同比异常偏高或偏低时报警）</li>
+</ul>
+<p>这些统计值通常是在固定时间区间内进行计算的，例如，你可能想知道在过去 5 分钟内服务每秒查询次数的均值，以及此时间段内响应时间的第 99 百分位点。在几分钟内取平均，能抹平秒和秒之间的无关波动，且仍然能向你展示流量模式的时间图景。聚合的时间间隔称为 <strong>窗口（window）</strong>，我们将在 “<a href="#%E6%97%B6%E9%97%B4%E6%8E%A8%E7%90%86">时间推理</a>” 中更详细地讨论窗口。</p>
+<p>流分析系统有时会使用概率算法，例如 Bloom filter（我们在 “<a href="ch3#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">性能优化</a>” 中遇到过）来管理成员资格，HyperLogLog【72】用于基数估计以及各种百分比估计算法（请参阅 “<a href="ch1#%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E7%99%BE%E5%88%86%E4%BD%8D%E7%82%B9">实践中的百分位点</a>“）。概率算法产出近似的结果，但比起精确算法的优点是内存使用要少得多。使用近似算法有时让人们觉得流处理系统总是有损的和不精确的，但这是错误看法：流处理并没有任何内在的近似性，而概率算法只是一种优化【73】。</p>
+<p>许多开源分布式流处理框架的设计都是针对分析设计的：例如 Apache Storm、Spark Streaming、Flink、Concord、Samza 和 Kafka Streams 【74】。托管服务包括 Google Cloud Dataflow 和 Azure Stream Analytics。</p>
+<h4 id="维护物化视图"><a href="#维护物化视图" class="headerlink" title="维护物化视图"></a>维护物化视图</h4><p>我们在 “<a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E6%B5%81">数据库与流</a>” 中看到，数据库的变更流可以用于维护衍生数据系统（如缓存、搜索索引和数据仓库），并使其与源数据库保持最新。我们可以将这些示例视作维护 <strong>物化视图（materialized view）</strong> 的一种具体场景（请参阅 “<a href="ch3#%E8%81%9A%E5%90%88%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%AB%8B%E6%96%B9%E4%BD%93%E5%92%8C%E7%89%A9%E5%8C%96%E8%A7%86%E5%9B%BE">聚合：数据立方体和物化视图</a>”）：在某个数据集上衍生出一个替代视图以便高效查询，并在底层数据变更时更新视图【50】。</p>
+<p>同样，在事件溯源中，应用程序的状态是通过应用事件日志来维护的；这里的应用程序状态也是一种物化视图。与流分析场景不同的是，仅考虑某个时间窗口内的事件通常是不够的：构建物化视图可能需要任意时间段内的 <strong>所有</strong> 事件，除了那些可能由日志压缩丢弃的过时事件（请参阅 “<a href="#%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9">日志压缩</a>“）。实际上，你需要一个可以一直延伸到时间开端的窗口。</p>
+<p>原则上讲，任何流处理组件都可以用于维护物化视图，尽管 “永远运行” 与一些面向分析的框架假设的 “主要在有限时间段窗口上运行” 背道而驰， Samza 和 Kafka Streams 支持这种用法，建立在 Kafka 对日志压缩的支持上【75】。</p>
+<h4 id="在流上搜索"><a href="#在流上搜索" class="headerlink" title="在流上搜索"></a>在流上搜索</h4><p>除了允许搜索由多个事件构成模式的 CEP 外，有时也存在基于复杂标准（例如全文搜索查询）来搜索单个事件的需求。</p>
+<p>例如，媒体监测服务可以订阅新闻文章 Feed 与来自媒体的播客，搜索任何关于公司、产品或感兴趣的话题的新闻。这是通过预先构建一个搜索查询来完成的，然后不断地将新闻项的流与该查询进行匹配。在一些网站上也有类似的功能：例如，当市场上出现符合其搜索条件的新房产时，房地产网站的用户可以要求网站通知他们。Elasticsearch 的这种过滤器功能，是实现这种流搜索的一种选择【76】。</p>
+<p>传统的搜索引擎首先索引文件，然后在索引上跑查询。相比之下，搜索一个数据流则反了过来：查询被存储下来，文档从查询中流过，就像在 CEP 中一样。最简单的情况就是，你可以为每个文档测试每个查询。但是如果你有大量查询，这可能会变慢。为了优化这个过程，可以像对文档一样，为查询建立索引。因而收窄可能匹配的查询集合【77】。</p>
+<h4 id="消息传递和RPC"><a href="#消息传递和RPC" class="headerlink" title="消息传递和RPC"></a>消息传递和RPC</h4><p>在 “<a href="ch4#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81">消息传递中的数据流</a>” 中我们讨论过，消息传递系统可以作为 RPC 的替代方案，即作为一种服务间通信的机制，比如在 Actor 模型中所使用的那样。尽管这些系统也是基于消息和事件，但我们通常不会将其视作流处理组件：</p>
+<ul>
+<li>Actor 框架主要是管理模块通信的并发和分布式执行的一种机制，而流处理主要是一种数据管理技术。</li>
+<li>Actor 之间的交流往往是短暂的、一对一的；而事件日志则是持久的、多订阅者的。</li>
+<li>Actor 可以以任意方式进行通信（包括循环的请求 &#x2F; 响应模式），但流处理通常配置在无环流水线中，其中每个流都是一个特定作业的输出，由良好定义的输入流中派生而来。</li>
+</ul>
+<p>也就是说，RPC 类系统与流处理之间有一些交叉领域。例如，Apache Storm 有一个称为 <strong>分布式 RPC</strong> 的功能，它允许将用户查询分散到一系列也处理事件流的节点上；然后这些查询与来自输入流的事件交织，而结果可以被汇总并发回给用户【78】（另请参阅 “<a href="ch12#%E5%A4%9A%E5%88%86%E5%8C%BA%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86">多分区数据处理</a>”）。</p>
+<p>也可以使用 Actor 框架来处理流。但是，很多这样的框架在崩溃时不能保证消息的传递，除非你实现了额外的重试逻辑，否则这种处理不是容错的。</p>
+<h3 id="时间推理"><a href="#时间推理" class="headerlink" title="时间推理"></a>时间推理</h3><p>流处理通常需要与时间打交道，尤其是用于分析目的时候，会频繁使用时间窗口，例如 “过去五分钟的平均值”。“过去五分钟” 的含义看上去似乎是清晰而无歧义的，但不幸的是，这个概念非常棘手。</p>
+<p>在批处理中过程中，大量的历史事件被快速地处理。如果需要按时间来分析，批处理器需要检查每个事件中嵌入的时间戳。读取运行批处理机器的系统时钟没有任何意义，因为处理运行的时间与事件实际发生的时间无关。</p>
+<p>批处理可以在几分钟内读取一年的历史事件；在大多数情况下，感兴趣的时间线是历史中的一年，而不是处理中的几分钟。而且使用事件中的时间戳，使得处理是 <strong>确定性</strong> 的：在相同的输入上再次运行相同的处理过程会得到相同的结果（请参阅 “<a href="ch10#%E5%AE%B9%E9%94%99">容错</a>”）。</p>
+<p>另一方面，许多流处理框架使用处理机器上的本地系统时钟（<strong>处理时间</strong>，即 processing time）来确定 <strong>窗口（windowing）</strong>【79】。这种方法的优点是简单，如果事件创建与事件处理之间的延迟可以忽略不计，那也是合理的。然而，如果存在任何显著的处理延迟 —— 即，事件处理显著地晚于事件实际发生的时间，这种处理方式就失效了。</p>
+<h4 id="事件时间与处理时间"><a href="#事件时间与处理时间" class="headerlink" title="事件时间与处理时间"></a>事件时间与处理时间</h4><p>很多原因都可能导致处理延迟：排队，网络故障（请参阅 “<a href="ch8#%E4%B8%8D%E5%8F%AF%E9%9D%A0%E7%9A%84%E7%BD%91%E7%BB%9C">不可靠的网络</a>”），性能问题导致消息代理 &#x2F; 消息处理器出现争用，流消费者重启，从故障中恢复时重新处理过去的事件（请参阅 “<a href="#%E9%87%8D%E6%92%AD%E6%97%A7%E6%B6%88%E6%81%AF">重播旧消息</a>”），或者在修复代码 BUG 之后。</p>
+<p>而且，消息延迟还可能导致无法预测消息顺序。例如，假设用户首先发出一个 Web 请求（由 Web 服务器 A 处理），然后发出第二个请求（由服务器 B 处理）。 A 和 B 发出描述它们所处理请求的事件，但是 B 的事件在 A 的事件发生之前到达消息代理。现在，流处理器将首先看到 B 事件，然后看到 A 事件，即使它们实际上是以相反的顺序发生的。</p>
+<p>有一个类比也许能帮助理解，“星球大战” 电影：第四集于 1977 年发行，第五集于 1980 年，第六集于 1983 年，紧随其后的是 1999 年的第一集，2002 年的第二集，和 2005 年的第三集，以及 2015 年的第七集【80】[^ii]。如果你按照按照它们上映的顺序观看电影，你处理电影的顺序与它们叙事的顺序就是不一致的。 （集数编号就像事件时间戳，而你观看电影的日期就是处理时间）作为人类，我们能够应对这种不连续性，但是流处理算法需要专门编写，以适应这种时序与顺序的问题。</p>
+<p>[^ii]: 感谢 Flink 社区的 Kostas Kloudas 提出这个比喻。</p>
+<p>将事件时间和处理时间搞混会导致错误的数据。例如，假设你有一个流处理器用于测量请求速率（计算每秒请求数）。如果你重新部署流处理器，它可能会停止一分钟，并在恢复之后处理积压的事件。如果你按处理时间来衡量速率，那么在处理积压日志时，请求速率看上去就像有一个异常的突发尖峰，而实际上请求速率是稳定的（<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-7.png">图 11-7</a>）。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-7.png" fancybox="true"/></div></div>
+
+<p><strong>图 11-7 按处理时间分窗，会因为处理速率的变动引入人为因素</strong></p>
+<h4 id="知道什么时候准备好了"><a href="#知道什么时候准备好了" class="headerlink" title="知道什么时候准备好了"></a>知道什么时候准备好了</h4><p>用事件时间来定义窗口的一个棘手的问题是，你永远也无法确定是不是已经收到了特定窗口的所有事件，还是说还有一些事件正在来的路上。</p>
+<p>例如，假设你将事件分组为一分钟的窗口，以便统计每分钟的请求数。你已经计数了一些带有本小时内第 37 分钟时间戳的事件，时间流逝，现在进入的主要都是本小时内第 38 和第 39 分钟的事件。什么时候才能宣布你已经完成了第 37 分钟的窗口计数，并输出其计数器值？</p>
+<p>在一段时间没有看到任何新的事件之后，你可以超时并宣布一个窗口已经就绪，但仍然可能发生这种情况：某些事件被缓冲在另一台机器上，由于网络中断而延迟。你需要能够处理这种在窗口宣告完成之后到达的 <strong>滞留（straggler）</strong> 事件。大体上，你有两种选择【1】：</p>
+<ol>
+<li>忽略这些滞留事件，因为在正常情况下它们可能只是事件中的一小部分。你可以将丢弃事件的数量作为一个监控指标，并在出现大量丢消息的情况时报警。</li>
+<li>发布一个 <strong>更正（correction）</strong>，一个包括滞留事件的更新窗口值。你可能还需要收回以前的输出。</li>
+</ol>
+<p>在某些情况下，可以使用特殊的消息来指示 “从现在开始，不会有比 t 更早时间戳的消息了”，消费者可以使用它来触发窗口【81】。但是，如果不同机器上的多个生产者都在生成事件，每个生产者都有自己的最小时间戳阈值，则消费者需要分别跟踪每个生产者。在这种情况下，添加和删除生产者都是比较棘手的。</p>
+<h4 id="你用的是谁的时钟？"><a href="#你用的是谁的时钟？" class="headerlink" title="你用的是谁的时钟？"></a>你用的是谁的时钟？</h4><p>当事件可能在系统内多个地方进行缓冲时，为事件分配时间戳更加困难了。例如，考虑一个移动应用向服务器上报关于用量的事件。该应用可能会在设备处于脱机状态时被使用，在这种情况下，它将在设备本地缓冲事件，并在下一次互联网连接可用时向服务器上报这些事件（可能是几小时甚至几天）。对于这个流的任意消费者而言，它们就如延迟极大的滞留事件一样。</p>
+<p>在这种情况下，事件上的事件戳实际上应当是用户交互发生的时间，取决于移动设备的本地时钟。然而用户控制的设备上的时钟通常是不可信的，因为它可能会被无意或故意设置成错误的时间（请参阅 “<a href="ch8#%E6%97%B6%E9%92%9F%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%87%86%E7%A1%AE%E6%80%A7">时钟同步与准确性</a>”）。服务器收到事件的时间（取决于服务器的时钟）可能是更准确的，因为服务器在你的控制之下，但在描述用户交互方面意义不大。</p>
+<p>要校正不正确的设备时钟，一种方法是记录三个时间戳【82】：</p>
+<ul>
+<li>事件发生的时间，取决于设备时钟</li>
+<li>事件发送往服务器的时间，取决于设备时钟</li>
+<li>事件被服务器接收的时间，取决于服务器时钟</li>
+</ul>
+<p>通过从第三个时间戳中减去第二个时间戳，可以估算设备时钟和服务器时钟之间的偏移（假设网络延迟与所需的时间戳精度相比可忽略不计）。然后可以将该偏移应用于事件时间戳，从而估计事件实际发生的真实时间（假设设备时钟偏移在事件发生时与送往服务器之间没有变化）。</p>
+<p>这并不是流处理独有的问题，批处理有着完全一样的时 间推理问题。只是在流处理的上下文中，我们更容易意识到时间的流逝。</p>
+<h4 id="窗口的类型"><a href="#窗口的类型" class="headerlink" title="窗口的类型"></a>窗口的类型</h4><p>当你知道如何确定一个事件的时间戳后，下一步就是如何定义时间段的窗口。然后窗口就可以用于聚合，例如事件计数，或计算窗口内值的平均值。有几种窗口很常用【79,83】：</p>
+<ul>
+<li><p>滚动窗口（Tumbling Window）</p>
+<p>滚动窗口有着固定的长度，每个事件都仅能属于一个窗口。例如，假设你有一个 1 分钟的滚动窗口，则所有时间戳在 <code>10:03:00</code> 和 <code>10:03:59</code> 之间的事件会被分组到一个窗口中，<code>10:04:00</code> 和 <code>10:04:59</code> 之间的事件被分组到下一个窗口，依此类推。通过将每个事件时间戳四舍五入至最近的分钟来确定它所属的窗口，可以实现 1 分钟的滚动窗口。</p>
+</li>
+<li><p>跳动窗口（Hopping Window）</p>
+<p>跳动窗口也有着固定的长度，但允许窗口重叠以提供一些平滑。例如，一个带有 1 分钟跳跃步长的 5 分钟窗口将包含 <code>10:03:00</code> 至 <code>10:07:59</code> 之间的事件，而下一个窗口将覆盖 <code>10:04:00</code> 至 <code>10:08:59</code> 之间的事件，等等。通过首先计算 1 分钟的滚动窗口（tunmbling window），然后在几个相邻窗口上进行聚合，可以实现这种跳动窗口。</p>
+</li>
+<li><p>滑动窗口（Sliding Window）</p>
+<p>滑动窗口包含了彼此间距在特定时长内的所有事件。例如，一个 5 分钟的滑动窗口应当覆盖 <code>10:03:39</code> 和 <code>10:08:12</code> 的事件，因为它们相距不超过 5 分钟（注意滚动窗口与步长 5 分钟的跳动窗口可能不会把这两个事件分组到同一个窗口中，因为它们使用固定的边界）。通过维护一个按时间排序的事件缓冲区，并不断从窗口中移除过期的旧事件，可以实现滑动窗口。</p>
+</li>
+<li><p>会话窗口（Session window）</p>
+<p>与其他窗口类型不同，会话窗口没有固定的持续时间，而定义为：将同一用户出现时间相近的所有事件分组在一起，而当用户一段时间没有活动时（例如，如果 30 分钟内没有事件）窗口结束。会话切分是网站分析的常见需求（请参阅 “<a href="ch10#%E5%88%86%E7%BB%84">分组</a>”）。</p>
+</li>
+</ul>
+<h3 id="流连接"><a href="#流连接" class="headerlink" title="流连接"></a>流连接</h3><p>在 <a href="ch10">第十章</a> 中，我们讨论了批处理作业如何通过键来连接数据集，以及这种连接是如何成为数据管道的重要组成部分的。由于流处理将数据管道泛化为对无限数据集进行增量处理，因此对流进行连接的需求也是完全相同的。</p>
+<p>然而，新事件随时可能出现在一个流中，这使得流连接要比批处理连接更具挑战性。为了更好地理解情况，让我们先来区分三种不同类型的连接：<strong>流 - 流</strong> 连接，<strong>流 - 表</strong> 连接，与 <strong>表 - 表</strong> 连接【84】。我们将在下面的章节中通过例子来说明。</p>
+<h4 id="流流连接（窗口连接）"><a href="#流流连接（窗口连接）" class="headerlink" title="流流连接（窗口连接）"></a>流流连接（窗口连接）</h4><p>假设你的网站上有搜索功能，而你想要找出搜索 URL 的近期趋势。每当有人键入搜索查询时，都会记录下一个包含查询与其返回结果的事件。每当有人点击其中一个搜索结果时，就会记录另一个记录点击事件。为了计算搜索结果中每个 URL 的点击率，你需要将搜索动作与点击动作的事件连在一起，这些事件通过相同的会话 ID 进行连接。广告系统中需要类似的分析【85】。</p>
+<p>如果用户丢弃了搜索结果，点击可能永远不会发生，即使它出现了，搜索与点击之间的时间可能是高度可变的：在很多情况下，它可能是几秒钟，但也可能长达几天或几周（如果用户执行搜索，忘掉了这个浏览器页面，过了一段时间后重新回到这个浏览器页面上，并点击了一个结果）。由于可变的网络延迟，点击事件甚至可能先于搜索事件到达。你可以选择合适的连接窗口 —— 例如，如果点击与搜索之间的时间间隔在一小时内，你可能会选择连接两者。</p>
+<p>请注意，在点击事件中嵌入搜索详情与事件连接并不一样：这样做的话，只有当用户点击了一个搜索结果时你才能知道，而那些没有点击的搜索就无能为力了。为了衡量搜索质量，你需要准确的点击率，为此搜索事件和点击事件两者都是必要的。</p>
+<p>为了实现这种类型的连接，流处理器需要维护 <strong>状态</strong>：例如，按会话 ID 索引最近一小时内发生的所有事件。无论何时发生搜索事件或点击事件，都会被添加到合适的索引中，而流处理器也会检查另一个索引是否有具有相同会话 ID 的事件到达。如果有匹配事件就会发出一个表示搜索结果被点击的事件；如果搜索事件直到过期都没看见有匹配的点击事件，就会发出一个表示搜索结果未被点击的事件。</p>
+<h4 id="流表连接（流扩充）"><a href="#流表连接（流扩充）" class="headerlink" title="流表连接（流扩充）"></a>流表连接（流扩充）</h4><p>在 “<a href="ch10#%E7%A4%BA%E4%BE%8B%EF%BC%9A%E7%94%A8%E6%88%B7%E6%B4%BB%E5%8A%A8%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90">示例：用户活动事件分析</a>”（<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig10-2.png">图 10-2</a> ）中，我们看到了连接两个数据集的批处理作业示例：一组用户活动事件和一个用户档案数据库。将用户活动事件视为流，并在流处理器中连续执行相同的连接是很自然的想法：输入是包含用户 ID 的活动事件流，而输出还是活动事件流，但其中用户 ID 已经被扩展为用户的档案信息。这个过程有时被称为使用数据库的信息来 <strong>扩充（enriching）</strong> 活动事件。</p>
+<p>要执行此连接，流处理器需要一次处理一个活动事件，在数据库中查找事件的用户 ID，并将档案信息添加到活动事件中。数据库查询可以通过查询远程数据库来实现。但正如在 “<a href="ch10#%E7%A4%BA%E4%BE%8B%EF%BC%9A%E7%94%A8%E6%88%B7%E6%B4%BB%E5%8A%A8%E4%BA%8B%E4%BB%B6%E5%88%86%E6%9E%90">示例：用户活动事件分析</a>” 一节中讨论的，此类远程查询可能会很慢，并且有可能导致数据库过载【75】。</p>
+<p>另一种方法是将数据库副本加载到流处理器中，以便在本地进行查询而无需网络往返。这种技术与我们在 “<a href="ch10#Map%E4%BE%A7%E8%BF%9E%E6%8E%A5">Map 侧连接</a>” 中讨论的散列连接非常相似：如果数据库的本地副本足够小，则可以是内存中的散列表，比较大的话也可以是本地磁盘上的索引。</p>
+<p>与批处理作业的区别在于，批处理作业使用数据库的时间点快照作为输入，而流处理器是长时间运行的，且数据库的内容可能随时间而改变，所以流处理器数据库的本地副本需要保持更新。这个问题可以通过变更数据捕获来解决：流处理器可以订阅用户档案数据库的更新日志，如同活动事件流一样。当增添或修改档案时，流处理器会更新其本地副本。因此，我们有了两个流之间的连接：活动事件和档案更新。</p>
+<p>流表连接实际上非常类似于流流连接；最大的区别在于对于表的变更日志流，连接使用了一个可以回溯到 “时间起点” 的窗口（概念上是无限的窗口），新版本的记录会覆盖更早的版本。对于输入的流，连接可能压根儿就没有维护任何窗口。</p>
+<h4 id="表表连接（维护物化视图）"><a href="#表表连接（维护物化视图）" class="headerlink" title="表表连接（维护物化视图）"></a>表表连接（维护物化视图）</h4><p>我们在 “<a href="ch1#%E6%8F%8F%E8%BF%B0%E8%B4%9F%E8%BD%BD">描述负载</a>” 中讨论的推特时间线例子时说过，当用户想要查看他们的主页时间线时，迭代用户所关注人群的推文并合并它们是一个开销巨大的操作。</p>
+<p>相反，我们需要一个时间线缓存：一种每个用户的 “收件箱”，在发送推文的时候写入这些信息，因而读取时间线时只需要简单地查询即可。物化与维护这个缓存需要处理以下事件：</p>
+<ul>
+<li>当用户 u 发送新的推文时，它将被添加到每个关注用户 u 的时间线上。</li>
+<li>用户删除推文时，推文将从所有用户的时间表中删除。</li>
+<li>当用户 $u_1$ 开始关注用户 $u_2$ 时，$u_2$ 最近的推文将被添加到 $u_1$ 的时间线上。</li>
+<li>当用户 $u_1$ 取消关注用户 $u_2$ 时，$u_2$ 的推文将从 $u_1$ 的时间线中移除。</li>
+</ul>
+<p>要在流处理器中实现这种缓存维护，你需要推文事件流（发送与删除）和关注关系事件流（关注与取消关注）。流处理需要维护一个数据库，包含每个用户的粉丝集合。以便知道当一条新推文到达时，需要更新哪些时间线【86】。</p>
+<p>观察这个流处理过程的另一种视角是：它维护了一个连接了两个表（推文与关注）的物化视图，如下所示：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> follows.follower_id <span class="keyword">AS</span> timeline_id,</span><br><span class="line">    <span class="built_in">array_agg</span>(tweets.<span class="operator">*</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> tweets.timestamp <span class="keyword">DESC</span>)</span><br><span class="line"><span class="keyword">FROM</span> tweets</span><br><span class="line"><span class="keyword">JOIN</span> follows <span class="keyword">ON</span> follows.followee_id <span class="operator">=</span> tweets.sender_id</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> follows.follower_id</span><br></pre></td></tr></table></figure>
+
+<p>流连接直接对应于这个查询中的表连接。时间线实际上是这个查询结果的缓存，每当底层的表发生变化时都会更新 [^iii]。</p>
+<p>[^iii]: 如果你将流视作表的衍生物，如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/fig11-6.png">图 11-6</a> 所示，而把一个连接看作是两个表的乘法u·v，那么会发生一些有趣的事情：物化连接的变化流遵循乘积法则：(u·v)’&#x3D; u’v + uv’。 换句话说，任何推文的变化量都与当前的关注联系在一起，任何关注的变化量都与当前的推文相连接【49,50】。</p>
+<h4 id="连接的时间依赖性"><a href="#连接的时间依赖性" class="headerlink" title="连接的时间依赖性"></a>连接的时间依赖性</h4><p>这里描述的三种连接（流流，流表，表表）有很多共通之处：它们都需要流处理器维护连接一侧的一些状态（搜索与点击事件，用户档案，关注列表），然后当连接另一侧的消息到达时查询该状态。</p>
+<p>用于维护状态的事件顺序是很重要的（先关注然后取消关注，或者其他类似操作）。在分区日志中，单个分区内的事件顺序是保留下来的。但典型情况下是没有跨流或跨分区的顺序保证的。</p>
+<p>这就产生了一个问题：如果不同流中的事件发生在近似的时间范围内，则应该按照什么样的顺序进行处理？在流表连接的例子中，如果用户更新了它们的档案，哪些活动事件与旧档案连接（在档案更新前处理），哪些又与新档案连接（在档案更新之后处理）？换句话说：你需要对一些状态做连接，如果状态会随着时间推移而变化，那应当使用什么时间点来连接呢【45】？</p>
+<p>这种时序依赖可能出现在很多地方。例如销售东西需要对发票应用适当的税率，这取决于所处的国家 &#x2F; 州，产品类型，销售日期（因为税率时不时会变化）。当连接销售额与税率表时，你可能期望的是使用销售时的税率参与连接。如果你正在重新处理历史数据，销售时的税率可能和现在的税率有所不同。</p>
+<p>如果跨越流的事件顺序是未定的，则连接会变为不确定性的【87】，这意味着你在同样输入上重跑相同的作业未必会得到相同的结果：当你重跑任务时，输入流上的事件可能会以不同的方式交织。</p>
+<p>在数据仓库中，这个问题被称为 <strong>缓慢变化的维度（slowly changing dimension, SCD）</strong>，通常通过对特定版本的记录使用唯一的标识符来解决：例如，每当税率改变时都会获得一个新的标识符，而发票在销售时会带有税率的标识符【88,89】。这种变化使连接变为确定性的，但也会导致日志压缩无法进行：表中所有的记录版本都需要保留。</p>
+<h3 id="容错"><a href="#容错" class="headerlink" title="容错"></a>容错</h3><p>在本章的最后一节中，让我们看一看流处理是如何容错的。我们在 <a href="ch10">第十章</a> 中看到，批处理框架可以很容易地容错：如果 MapReduce 作业中的任务失败，可以简单地在另一台机器上再次启动，并且丢弃失败任务的输出。这种透明的重试是可能的，因为输入文件是不可变的，每个任务都将其输出写入到 HDFS 上的独立文件中，而输出仅当任务成功完成后可见。</p>
+<p>特别是，批处理容错方法可确保批处理作业的输出与没有出错的情况相同，即使实际上某些任务失败了。看起来好像每条输入记录都被处理了恰好一次 —— 没有记录被跳过，而且没有记录被处理两次。尽管重启任务意味着实际上可能会多次处理记录，但输出中的可见效果看上去就像只处理过一次。这个原则被称为 <strong>恰好一次语义（exactly-once semantics）</strong>，尽管 <strong>等效一次（effectively-once）</strong> 可能会是一个更写实的术语【90】。</p>
+<p>在流处理中也出现了同样的容错问题，但是处理起来没有那么直观：等待某个任务完成之后再使其输出可见并不是一个可行选项，因为你永远无法处理完一个无限的流。</p>
+<h4 id="微批量与存档点"><a href="#微批量与存档点" class="headerlink" title="微批量与存档点"></a>微批量与存档点</h4><p>一个解决方案是将流分解成小块，并像微型批处理一样处理每个块。这种方法被称为 <strong>微批次（microbatching）</strong>，它被用于 Spark Streaming 【91】。批次的大小通常约为 1 秒，这是对性能妥协的结果：较小的批次会导致更大的调度与协调开销，而较大的批次意味着流处理器结果可见之前的延迟要更长。</p>
+<p>微批次也隐式提供了一个与批次大小相等的滚动窗口（按处理时间而不是事件时间戳分窗）。任何需要更大窗口的作业都需要显式地将状态从一个微批次转移到下一个微批次。</p>
+<p>Apache Flink 则使用不同的方法，它会定期生成状态的滚动存档点并将其写入持久存储【92,93】。如果流算子崩溃，它可以从最近的存档点重启，并丢弃从最近检查点到崩溃之间的所有输出。存档点会由消息流中的 <strong>壁障（barrier）</strong> 触发，类似于微批次之间的边界，但不会强制一个特定的窗口大小。</p>
+<p>在流处理框架的范围内，微批次与存档点方法提供了与批处理一样的 <strong>恰好一次语义</strong>。但是，只要输出离开流处理器（例如，写入数据库，向外部消息代理发送消息，或发送电子邮件），框架就无法抛弃失败批次的输出了。在这种情况下，重启失败任务会导致外部副作用发生两次，只有微批次或存档点不足以阻止这一问题。</p>
+<h4 id="原子提交再现"><a href="#原子提交再现" class="headerlink" title="原子提交再现"></a>原子提交再现</h4><p>为了在出现故障时表现出恰好处理一次的样子，我们需要确保事件处理的所有输出和副作用 <strong>当且仅当</strong> 处理成功时才会生效。这些影响包括发送给下游算子或外部消息传递系统（包括电子邮件或推送通知）的任何消息，任何数据库写入，对算子状态的任何变更，以及对输入消息的任何确认（包括在基于日志的消息代理中将消费者偏移量前移）。</p>
+<p>这些事情要么都原子地发生，要么都不发生，但是它们不应当失去同步。如果这种方法听起来很熟悉，那是因为我们在分布式事务和两阶段提交的上下文中讨论过它（请参阅 “<a href="ch9#%E6%81%B0%E5%A5%BD%E4%B8%80%E6%AC%A1%E7%9A%84%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86">恰好一次的消息处理</a>”）。</p>
+<p>在 <a href="ch9">第九章</a> 中，我们讨论了分布式事务传统实现中的问题（如 XA）。然而在限制更为严苛的环境中，也是有可能高效实现这种原子提交机制的。 Google Cloud Dataflow【81,92】和 VoltDB 【94】中使用了这种方法，Apache Kafka 有计划加入类似的功能【95,96】。与 XA 不同，这些实现不会尝试跨异构技术提供事务，而是通过在流处理框架中同时管理状态变更与消息传递来内化事务。事务协议的开销可以通过在单个事务中处理多个输入消息来分摊。</p>
+<h4 id="幂等性"><a href="#幂等性" class="headerlink" title="幂等性"></a>幂等性</h4><p>我们的目标是丢弃任何失败任务的部分输出，以便能安全地重试，而不会生效两次。分布式事务是实现这个目标的一种方式，而另一种方式是依赖 <strong>幂等性（idempotence）</strong>【97】。</p>
+<p>幂等操作是多次重复执行与单次执行效果相同的操作。例如，将键值存储中的某个键设置为某个特定值是幂等的（再次写入该值，只是用同样的值替代），而递增一个计数器不是幂等的（再次执行递增意味着该值递增两次）。</p>
+<p>即使一个操作不是天生幂等的，往往可以通过一些额外的元数据做成幂等的。例如，在使用来自 Kafka 的消息时，每条消息都有一个持久的、单调递增的偏移量。将值写入外部数据库时可以将这个偏移量带上，这样你就可以判断一条更新是不是已经执行过了，因而避免重复执行。</p>
+<p>Storm 的 Trident 基于类似的想法来处理状态【78】。依赖幂等性意味着隐含了一些假设：重启一个失败的任务必须以相同的顺序重播相同的消息（基于日志的消息代理能做这些事），处理必须是确定性的，没有其他节点能同时更新相同的值【98,99】。</p>
+<p>当从一个处理节点故障切换到另一个节点时，可能需要进行 <strong>防护</strong>（fencing，请参阅 “<a href="ch8#%E9%A2%86%E5%AF%BC%E8%80%85%E5%92%8C%E9%94%81">领导者和锁</a>”），以防止被假死节点干扰。尽管有这么多注意事项，幂等操作是一种实现 <strong>恰好一次语义</strong> 的有效方式，仅需很小的额外开销。</p>
+<h4 id="失败后重建状态"><a href="#失败后重建状态" class="headerlink" title="失败后重建状态"></a>失败后重建状态</h4><p>任何需要状态的流处理 —— 例如，任何窗口聚合（例如计数器，平均值和直方图）以及任何用于连接的表和索引，都必须确保在失败之后能恢复其状态。</p>
+<p>一种选择是将状态保存在远程数据存储中，并进行复制，然而正如在 “<a href="#%E6%B5%81%E8%A1%A8%E8%BF%9E%E6%8E%A5%EF%BC%88%E6%B5%81%E6%89%A9%E5%85%85%EF%BC%89">流表连接（流扩充）</a>” 中所述，每个消息都要查询远程数据库可能会很慢。另一种方法是在流处理器本地保存状态，并定期复制。然后当流处理器从故障中恢复时，新任务可以读取状态副本，恢复处理而不丢失数据。</p>
+<p>例如，Flink 定期捕获算子状态的快照，并将它们写入 HDFS 等持久存储中【92,93】。 Samza 和 Kafka Streams 通过将状态变更发送到具有日志压缩功能的专用 Kafka 主题来复制状态变更，这与变更数据捕获类似【84,100】。 VoltDB 通过在多个节点上对每个输入消息进行冗余处理来复制状态（请参阅 “<a href="ch7#%E7%9C%9F%E7%9A%84%E4%B8%B2%E8%A1%8C%E6%89%A7%E8%A1%8C">真的串行执行</a>”）。</p>
+<p>在某些情况下，甚至可能都不需要复制状态，因为它可以从输入流重建。例如，如果状态是从相当短的窗口中聚合而成，则简单地重播该窗口中的输入事件可能是足够快的。如果状态是通过变更数据捕获来维护的数据库的本地副本，那么也可以从日志压缩的变更流中重建数据库（请参阅 “<a href="#%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9">日志压缩</a>”）。</p>
+<p>然而，所有这些权衡取决于底层基础架构的性能特征：在某些系统中，网络延迟可能低于磁盘访问延迟，网络带宽也可能与磁盘带宽相当。没有针对所有情况的普适理想权衡，随着存储和网络技术的发展，本地状态与远程状态的优点也可能会互换。</p>
+<h2 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h2><p>在本章中，我们讨论了事件流，它们所服务的目的，以及如何处理它们。在某些方面，流处理非常类似于在 <a href="ch10">第十章</a> 中讨论的批处理，不过是在无限的（永无止境的）流而不是固定大小的输入上持续进行。从这个角度来看，消息代理和事件日志可以视作文件系统的流式等价物。</p>
+<p>我们花了一些时间比较两种消息代理：</p>
+<ul>
+<li><p>AMQP&#x2F;JMS 风格的消息代理</p>
+<p>代理将单条消息分配给消费者，消费者在成功处理单条消息后确认消息。消息被确认后从代理中删除。这种方法适合作为一种异步形式的 RPC（另请参阅 “<a href="ch4#%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81">消息传递中的数据流</a>”），例如在任务队列中，消息处理的确切顺序并不重要，而且消息在处理完之后，不需要回头重新读取旧消息。</p>
+</li>
+<li><p>基于日志的消息代理</p>
+<p>代理将一个分区中的所有消息分配给同一个消费者节点，并始终以相同的顺序传递消息。并行是通过分区实现的，消费者通过存档最近处理消息的偏移量来跟踪工作进度。消息代理将消息保留在磁盘上，因此如有必要的话，可以回跳并重新读取旧消息。</p>
+</li>
+</ul>
+<p>基于日志的方法与数据库中的复制日志（请参阅 <a href="ch5">第五章</a>）和日志结构存储引擎（请参阅 <a href="ch3">第三章</a>）有相似之处。我们看到，这种方法对于消费输入流，并产生衍生状态或衍生输出数据流的系统而言特别适用。</p>
+<p>就流的来源而言，我们讨论了几种可能性：用户活动事件，定期读数的传感器，和 Feed 数据（例如，金融中的市场数据）能够自然地表示为流。我们发现将数据库写入视作流也是很有用的：我们可以捕获变更日志 —— 即对数据库所做的所有变更的历史记录 —— 隐式地通过变更数据捕获，或显式地通过事件溯源。日志压缩允许流也能保有数据库内容的完整副本。</p>
+<p>将数据库表示为流为系统集成带来了很多强大机遇。通过消费变更日志并将其应用至衍生系统，你能使诸如搜索索引、缓存以及分析系统这类衍生数据系统不断保持更新。你甚至能从头开始，通过读取从创世至今的所有变更日志，为现有数据创建全新的视图。</p>
+<p>像流一样维护状态以及消息重播的基础设施，是在各种流处理框架中实现流连接和容错的基础。我们讨论了流处理的几种目的，包括搜索事件模式（复杂事件处理），计算分窗聚合（流分析），以及保证衍生数据系统处于最新状态（物化视图）。</p>
+<p>然后我们讨论了在流处理中对时间进行推理的困难，包括处理时间与事件时间戳之间的区别，以及当你认为窗口已经完事之后，如何处理到达的掉队事件的问题。</p>
+<p>我们区分了流处理中可能出现的三种连接类型：</p>
+<ul>
+<li><p>流流连接</p>
+<p>两个输入流都由活动事件组成，而连接算子在某个时间窗口内搜索相关的事件。例如，它可能会将同一个用户 30 分钟内进行的两个活动联系在一起。如果你想要找出一个流内的相关事件，连接的两侧输入可能实际上都是同一个流（<strong>自连接</strong>，即 self-join）。</p>
+</li>
+<li><p>流表连接</p>
+<p>一个输入流由活动事件组成，另一个输入流是数据库变更日志。变更日志保证了数据库的本地副本是最新的。对于每个活动事件，连接算子将查询数据库，并输出一个扩展的活动事件。</p>
+</li>
+<li><p>表表连接</p>
+<p>两个输入流都是数据库变更日志。在这种情况下，一侧的每一个变化都与另一侧的最新状态相连接。结果是两表连接所得物化视图的变更流。</p>
+</li>
+</ul>
+<p>最后，我们讨论了在流处理中实现容错和恰好一次语义的技术。与批处理一样，我们需要放弃任何失败任务的部分输出。然而由于流处理长时间运行并持续产生输出，所以不能简单地丢弃所有的输出。相反，可以使用更细粒度的恢复机制，基于微批次、存档点、事务或幂等写入。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>Tyler Akidau, Robert Bradshaw, Craig Chambers, et al.: “<a target="_blank" rel="noopener" href="http://www.vldb.org/pvldb/vol8/p1792-Akidau.pdf">The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing</a>,” <em>Proceedings of the VLDB Endowment</em>, volume 8, number 12, pages 1792–1803, August 2015. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.14778/2824032.2824076">doi:10.14778&#x2F;2824032.2824076</a></li>
+<li>Harold Abelson, Gerald Jay Sussman, and Julie Sussman: <a target="_blank" rel="noopener" href="https://mitpress.mit.edu/sicp/"><em>Structure and Interpretation of Computer Programs</em></a>, 2nd edition. MIT Press, 1996. ISBN: 978-0-262-51087-5, available online at <em>mitpress.mit.edu</em></li>
+<li>Patrick Th. Eugster, Pascal A. Felber, Rachid Guerraoui, and Anne-Marie Kermarrec: “<a target="_blank" rel="noopener" href="http://www.cs.ru.nl/~pieter/oss/manyfaces.pdf">The Many Faces of Publish&#x2F;Subscribe</a>,” <em>ACM Computing Surveys</em>, volume 35, number 2, pages 114–131, June 2003. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/857076.857078">doi:10.1145&#x2F;857076.857078</a></li>
+<li>Joseph M. Hellerstein and Michael Stonebraker: <a target="_blank" rel="noopener" href="http://redbook.cs.berkeley.edu/"><em>Readings in Database Systems</em></a>, 4th edition. MIT Press, 2005. ISBN: 978-0-262-69314-1, available online at <em>redbook.cs.berkeley.edu</em></li>
+<li>Don Carney, Uğur Çetintemel, Mitch Cherniack, et al.: “<a target="_blank" rel="noopener" href="http://www.vldb.org/conf/2002/S07P02.pdf">Monitoring Streams – A New Class of Data Management Applications</a>,” at <em>28th International Conference on Very Large Data Bases</em> (VLDB), August 2002.</li>
+<li>Matthew Sackman: “<a target="_blank" rel="noopener" href="http://www.lshift.net/blog/2016/05/05/pushing-back/">Pushing Back</a>,” <em>lshift.net</em>, May 5, 2016. Vicent Martí: “<a target="_blank" rel="noopener" href="http://githubengineering.com/brubeck/">Brubeck, a statsd-Compatible Metrics Aggregator</a>,” <em>githubengineering.com</em>, June 15, 2015. Seth Lowenberger:   “<a target="_blank" rel="noopener" href="http://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf">MoldUDP64   Protocol Specification V 1.00</a>,” <em>nasdaqtrader.com</em>, July 2009.</li>
+<li>Pieter Hintjens:  <a target="_blank" rel="noopener" href="http://zguide.zeromq.org/page:all"><em>ZeroMQ – The Guide</em></a>. O’Reilly Media, 2013.  ISBN: 978-1-449-33404-8</li>
+<li>Ian Malpass:  “<a target="_blank" rel="noopener" href="https://codeascraft.com/2011/02/15/measure-anything-measure-everything/">Measure   Anything, Measure Everything</a>,” <em>codeascraft.com</em>, February 15, 2011.</li>
+<li>Dieter Plaetinck:  “<a target="_blank" rel="noopener" href="https://blog.raintank.io/25-graphite-grafana-and-statsd-gotchas/">25 Graphite, Grafana   and statsd Gotchas</a>,” <em>blog.raintank.io</em>, March 3, 2016.</li>
+<li>Jeff Lindsay:  “<a target="_blank" rel="noopener" href="http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/">Web Hooks to   Revolutionize the Web</a>,” <em>progrium.com</em>, May 3, 2007.</li>
+<li>Jim N. Gray: “<a target="_blank" rel="noopener" href="http://research.microsoft.com/pubs/69641/tr-95-56.pdf">Queues Are Databases</a>,” Microsoft Research Technical Report MSR-TR-95-56, December 1995.</li>
+<li>Mark Hapner, Rich Burridge, Rahul Sharma, et al.: “<a target="_blank" rel="noopener" href="https://jcp.org/en/jsr/detail?id=343">JSR-343 Java Message Service (JMS) 2.0 Specification</a>,” <em>jms-spec.java.net</em>, March 2013.</li>
+<li>Sanjay Aiyagari, Matthew Arrott, Mark Atwell, et al.: “<a target="_blank" rel="noopener" href="http://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf">AMQP: Advanced Message Queuing Protocol Specification</a>,” Version 0-9-1, November 2008.</li>
+<li>“<a target="_blank" rel="noopener" href="https://cloud.google.com/pubsub/architecture">Google Cloud Pub&#x2F;Sub: A Google-Scale Messaging Service</a>,” <em>cloud.google.com</em>, 2016.</li>
+<li>“<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation.html">Apache Kafka 0.9 Documentation</a>,” <em>kafka.apache.org</em>, November 2015.</li>
+<li>Jay Kreps, Neha Narkhede, and Jun Rao: “<a target="_blank" rel="noopener" href="http://www.longyu23.com/doc/Kafka.pdf">Kafka: A Distributed Messaging System for Log Processing</a>,” at <em>6th International Workshop on Networking Meets Databases</em> (NetDB), June 2011.</li>
+<li>“<a target="_blank" rel="noopener" href="http://docs.aws.amazon.com/streams/latest/dev/introduction.html">Amazon Kinesis Streams Developer Guide</a>,” <em>docs.aws.amazon.com</em>, April 2016.</li>
+<li>Leigh Stewart and Sijie Guo: “<a target="_blank" rel="noopener" href="https://blog.twitter.com/2015/building-distributedlog-twitter-s-high-performance-replicated-log-service">Building DistributedLog: Twitter’s High-Performance Replicated Log Service</a>,” <em>blog.twitter.com</em>, September 16, 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="http://distributedlog.incubator.apache.org/docs/latest/">DistributedLog Documentation</a>,” Twitter, Inc., <em>distributedlog.io</em>, May 2016. Jay Kreps: “<a target="_blank" rel="noopener" href="https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines">Benchmarking Apache Kafka: 2 Million Writes Per Second (On Three Cheap Machines)</a>,” <em>engineering.linkedin.com</em>, April 27, 2014.</li>
+<li>Kartik Paramasivam: “<a target="_blank" rel="noopener" href="https://engineering.linkedin.com/apache-kafka/how-we_re-improving-and-advancing-kafka-linkedin">How We’re Improving and Advancing Kafka at LinkedIn</a>,” <em>engineering.linkedin.com</em>, September 2, 2015.</li>
+<li>Jay Kreps: “<a target="_blank" rel="noopener" href="http://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying">The Log: What Every Software Engineer Should Know About Real-Time Data’s Unifying Abstraction</a>,” <em>engineering.linkedin.com</em>, December 16, 2013.</li>
+<li>Shirshanka Das, Chavdar Botev, Kapil Surlaker, et al.: “<a target="_blank" rel="noopener" href="http://www.socc2012.org/s18-das.pdf">All Aboard the Databus!</a>,” at <em>3rd ACM Symposium on Cloud Computing</em> (SoCC), October 2012.</li>
+<li>Yogeshwer Sharma, Philippe Ajoux, Petchean Ang, et al.: “<a target="_blank" rel="noopener" href="https://www.usenix.org/system/files/conference/nsdi15/nsdi15-paper-sharma.pdf">Wormhole: Reliable Pub-Sub to Support Geo-Replicated Internet Services</a>,” at <em>12th USENIX Symposium on Networked Systems Design and Implementation</em> (NSDI), May 2015.</li>
+<li>P. P. S. Narayan: “<a target="_blank" rel="noopener" href="http://web.archive.org/web/20160801221400/https://developer.yahoo.com/blogs/ydn/sherpa-7992.html">Sherpa Update</a>,” <em>developer.yahoo.com</em>, June 8, .</li>
+<li>Martin Kleppmann: “<a target="_blank" rel="noopener" href="http://martin.kleppmann.com/2015/04/23/bottled-water-real-time-postgresql-kafka.html">Bottled Water: Real-Time Integration of PostgreSQL and Kafka</a>,” <em>martin.kleppmann.com</em>, April 23, 2015.</li>
+<li>Ben Osheroff: “<a target="_blank" rel="noopener" href="https://developer.zendesk.com/blog/introducing-maxwell-a-mysql-to-kafka-binlog-processor">Introducing Maxwell, a mysql-to-kafka Binlog Processor</a>,” <em>developer.zendesk.com</em>, August 20, 2015.</li>
+<li>Randall Hauch: “<a target="_blank" rel="noopener" href="http://debezium.io/blog/2016/06/10/Debezium-0/">Debezium 0.2.1 Released</a>,” <em>debezium.io</em>, June 10, 2016.</li>
+<li>Prem Santosh Udaya Shankar: “<a target="_blank" rel="noopener" href="https://engineeringblog.yelp.com/2016/08/streaming-mysql-tables-in-real-time-to-kafka.html">Streaming MySQL Tables in Real-Time to Kafka</a>,” <em>engineeringblog.yelp.com</em>, August 1, 2016.</li>
+<li>“<a target="_blank" rel="noopener" href="https://github.com/stripe/mongoriver">Mongoriver</a>,” Stripe, Inc., <em>github.com</em>, September 2014.</li>
+<li>Dan Harvey: “<a target="_blank" rel="noopener" href="http://www.slideshare.net/danharvey/change-data-capture-with-mongodb-and-kafka">Change Data Capture with Mongo + Kafka</a>,” at <em>Hadoop Users Group UK</em>, August 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="http://www.oracle.com/us/products/middleware/data-integration/oracle-goldengate-realtime-access-2031152.pdf">Oracle GoldenGate 12c: Real-Time Access to Real-Time Information</a>,” Oracle White Paper, March 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=6H9NibIiPQE">Oracle GoldenGate Fundamentals: How Oracle GoldenGate Works</a>,” Oracle Corporation, <em>youtube.com</em>, November 2012.</li>
+<li>Slava Akhmechet: “<a target="_blank" rel="noopener" href="http://rethinkdb.com/blog/realtime-web/">Advancing the Realtime Web</a>,” <em>rethinkdb.com</em>, January 27, 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="https://firebase.google.com/docs/database/">Firebase Realtime Database Documentation</a>,” Google, Inc., <em>firebase.google.com</em>, May 2016.</li>
+<li>“<a target="_blank" rel="noopener" href="http://docs.couchdb.org/en/latest/">Apache CouchDB 1.6 Documentation</a>,” <em>docs.couchdb.org</em>, 2014.</li>
+<li>Matt DeBergalis: “<a target="_blank" rel="noopener" href="http://info.meteor.com/blog/meteor-070-scalable-database-queries-using-mongodb-oplog-instead-of-poll-and-diff">Meteor 0.7.0: Scalable Database Queries Using MongoDB Oplog Instead of Poll-and-Diff</a>,” <em>info.meteor.com</em>, December 17, 2013.</li>
+<li>“<a target="_blank" rel="noopener" href="https://docs.voltdb.com/UsingVoltDB/ChapExport.php">Chapter 15. Importing and Exporting Live Data</a>,” VoltDB 6.4 User Manual, <em>docs.voltdb.com</em>, June 2016.</li>
+<li>Neha Narkhede: “<a target="_blank" rel="noopener" href="http://www.confluent.io/blog/announcing-kafka-connect-building-large-scale-low-latency-data-pipelines">Announcing Kafka Connect: Building Large-Scale Low-Latency Data Pipelines</a>,” <em>confluent.io</em>, February 18, 2016.</li>
+<li>Greg Young: “<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=JHGkaShoyNs">CQRS and Event Sourcing</a>,” at <em>Code on the Beach</em>, August 2014.</li>
+<li>Martin Fowler: “<a target="_blank" rel="noopener" href="http://martinfowler.com/eaaDev/EventSourcing.html">Event Sourcing</a>,” <em>martinfowler.com</em>, December 12, 2005.</li>
+<li>Vaughn Vernon: <a target="_blank" rel="noopener" href="https://vaughnvernon.co/?page_id=168"><em>Implementing Domain-Driven Design</em></a>. Addison-Wesley Professional, 2013. ISBN: 978-0-321-83457-7</li>
+<li>H. V. Jagadish, Inderpal Singh Mumick, and Abraham Silberschatz: “<a target="_blank" rel="noopener" href="http://www.mathcs.emory.edu/~cheung/papers/StreamDB/Histogram/1995-Jagadish-Histo.pdf">View Maintenance Issues for the Chronicle Data Model</a>,” at <em>14th ACM SIGACT-SIGMOD-SIGART Symposium on Principles of Database Systems</em> (PODS), May 1995. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/212433.220201">doi:10.1145&#x2F;212433.220201</a></li>
+<li>“<a target="_blank" rel="noopener" href="http://docs.geteventstore.com/">Event Store 3.5.0 Documentation</a>,” Event Store LLP, <em>docs.geteventstore.com</em>, February 2016.</li>
+<li>Martin Kleppmann: <a target="_blank" rel="noopener" href="http://www.oreilly.com/data/free/stream-processing.csp"><em>Making Sense of Stream Processing</em></a>. Report, O’Reilly Media, May 2016.</li>
+<li>Sander Mak: “<a target="_blank" rel="noopener" href="http://www.slideshare.net/SanderMak/eventsourced-architectures-with-akka">Event-Sourced Architectures with Akka</a>,” at <em>JavaOne</em>, September 2014.</li>
+<li>Julian Hyde: <a target="_blank" rel="noopener" href="https://twitter.com/julianhyde/status/743374145006641153">personal communication</a>, June 2016.</li>
+<li>Ashish Gupta and Inderpal Singh Mumick: <em>Materialized Views: Techniques, Implementations, and Applications</em>. MIT Press, 1999. ISBN: 978-0-262-57122-7</li>
+<li>Timothy Griffin and Leonid Libkin: “<a target="_blank" rel="noopener" href="http://homepages.inf.ed.ac.uk/libkin/papers/sigmod95.pdf">Incremental Maintenance of Views with Duplicates</a>,” at <em>ACM International Conference on Management of Data</em> (SIGMOD), May 1995. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/223784.223849">doi:10.1145&#x2F;223784.223849</a></li>
+<li>Pat Helland: “<a target="_blank" rel="noopener" href="http://www.cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf">Immutability Changes Everything</a>,” at <em>7th Biennial Conference on Innovative Data Systems Research</em> (CIDR), January 2015.</li>
+<li>Martin Kleppmann: “<a target="_blank" rel="noopener" href="http://martin.kleppmann.com/2011/03/07/accounting-for-computer-scientists.html">Accounting for Computer Scientists</a>,” <em>martin.kleppmann.com</em>, March 7, 2011.</li>
+<li>Pat Helland: “<a target="_blank" rel="noopener" href="https://blogs.msdn.microsoft.com/pathelland/2007/06/14/accountants-dont-use-erasers/">Accountants Don’t Use Erasers</a>,” <em>blogs.msdn.com</em>, June 14, 2007.</li>
+<li>Fangjin Yang: “<a target="_blank" rel="noopener" href="https://metamarkets.com/2015/dogfooding-with-druid-samza-and-kafka-metametrics-at-metamarkets/">Dogfooding with Druid, Samza, and Kafka: Metametrics at Metamarkets</a>,” <em>metamarkets.com</em>, June 3, 2015.</li>
+<li>Gavin Li, Jianqiu Lv, and Hang Qi: “<a target="_blank" rel="noopener" href="http://yahoohadoop.tumblr.com/post/116365275781/pistachio-co-locate-the-data-and-compute-for">Pistachio: Co-Locate the Data and Compute for Fastest Cloud Compute</a>,” <em>yahoohadoop.tumblr.com</em>, April 13, 2015.</li>
+<li>Kartik Paramasivam: “<a target="_blank" rel="noopener" href="https://engineering.linkedin.com/blog/2016/06/stream-processing-hard-problems-part-1-killing-lambda">Stream Processing Hard Problems – Part 1: Killing Lambda</a>,” <em>engineering.linkedin.com</em>, June 27, 2016.</li>
+<li>Martin Fowler: “<a target="_blank" rel="noopener" href="http://martinfowler.com/bliki/CQRS.html">CQRS</a>,” <em>martinfowler.com</em>, July 14, 2011.</li>
+<li>Greg Young: “<a target="_blank" rel="noopener" href="https://cqrs.files.wordpress.com/2010/11/cqrs_documents.pdf">CQRS Documents</a>,” <em>cqrs.files.wordpress.com</em>, November 2010.</li>
+<li>Baron Schwartz: “<a target="_blank" rel="noopener" href="http://www.xaprb.com/blog/2013/12/28/immutability-mvcc-and-garbage-collection/">Immutability, MVCC, and Garbage Collection</a>,” <em>xaprb.com</em>, December 28, 2013.</li>
+<li>Daniel Eloff, Slava Akhmechet, Jay Kreps, et al.: <a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=9145197">“Re: Turning the Database Inside-out with Apache Samza</a>,” <em>Hacker News discussion, news.ycombinator.com</em>, March 4, 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="http://docs.datomic.com/excision.html">Datomic Development Resources: Excision</a>,” Cognitect, Inc., <em>docs.datomic.com</em>.</li>
+<li>“<a target="_blank" rel="noopener" href="http://fossil-scm.org/index.html/doc/trunk/www/shunning.wiki">Fossil Documentation: Deleting Content from Fossil</a>,” <em>fossil-scm.org</em>, 2016.</li>
+<li>Jay Kreps: “<a target="_blank" rel="noopener" href="https://twitter.com/jaykreps/status/582580836425330688">The irony of distributed systems is that data loss is really easy but deleting data is surprisingly hard,</a>” <em>twitter.com</em>, March 30, 2015.</li>
+<li>David C. Luckham: “<a target="_blank" rel="noopener" href="http://www.complexevents.com/2006/08/01/what%E2%80%99s-the-difference-between-esp-and-cep/">What’s the Difference Between ESP and CEP?</a>,” <em>complexevents.com</em>, August 1, 2006.</li>
+<li>Srinath Perera: “<a target="_blank" rel="noopener" href="https://www.quora.com/How-is-stream-processing-and-complex-event-processing-CEP-different">How Is Stream Processing and Complex Event Processing (CEP) Different?</a>,” <em>quora.com</em>, December 3, 2015.</li>
+<li>Arvind Arasu, Shivnath Babu, and Jennifer Widom: “<a target="_blank" rel="noopener" href="http://research.microsoft.com/pubs/77607/cql.pdf">The CQL Continuous Query Language: Semantic Foundations and Query Execution</a>,” <em>The VLDB Journal</em>, volume 15, number 2, pages 121–142, June 2006. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1007/s00778-004-0147-z">doi:10.1007&#x2F;s00778-004-0147-z</a></li>
+<li>Julian Hyde: “<a target="_blank" rel="noopener" href="http://queue.acm.org/detail.cfm?id=1667562">Data in Flight: How Streaming SQL Technology Can Help Solve the Web 2.0 Data Crunch</a>,” <em>ACM Queue</em>, volume 7, number 11, December 2009. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/1661785.1667562">doi:10.1145&#x2F;1661785.1667562</a></li>
+<li>“<a target="_blank" rel="noopener" href="http://www.espertech.com/esper/release-5.4.0/esper-reference/html_single/index.html">Esper Reference, Version 5.4.0</a>,” EsperTech, Inc., <em>espertech.com</em>, April 2016.</li>
+<li>Zubair Nabi, Eric Bouillet, Andrew Bainbridge, and Chris Thomas: “<a target="_blank" rel="noopener" href="https://developer.ibm.com/streamsdev/wp-content/uploads/sites/15/2014/04/Streams-and-Storm-April-2014-Final.pdf">Of Streams and Storms</a>,” IBM technical report, <em>developer.ibm.com</em>, April 2014.</li>
+<li>Milinda Pathirage, Julian Hyde, Yi Pan, and Beth Plale: “<a target="_blank" rel="noopener" href="https://github.com/milinda/samzasql-hpbdc2016/blob/master/samzasql-hpbdc2016.pdf">SamzaSQL: Scalable Fast Data Management with Streaming SQL</a>,” at <em>IEEE International Workshop on High-Performance Big Data Computing</em> (HPBDC), May 2016. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1109/IPDPSW.2016.141">doi:10.1109&#x2F;IPDPSW.2016.141</a></li>
+<li>Philippe Flajolet, Éric Fusy, Olivier Gandouet, and Frédéric Meunier: “<a target="_blank" rel="noopener" href="http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf">HyperLo&amp;#x2060;g&amp;#x200b;Log: The Analysis of a Near-Optimal Cardinality Estimation Algorithm</a>,” at <em>Conference on Analysis of Algorithms</em> (AofA), June 2007.</li>
+<li>Jay Kreps: “<a target="_blank" rel="noopener" href="https://www.oreilly.com/ideas/questioning-the-lambda-architecture">Questioning the Lambda Architecture</a>,” <em>oreilly.com</em>, July 2, 2014.</li>
+<li>Ian Hellström: “<a target="_blank" rel="noopener" href="https://databaseline.wordpress.com/2016/03/12/an-overview-of-apache-streaming-technologies/">An Overview of Apache Streaming Technologies</a>,” <em>databaseline.wordpress.com</em>, March 12, 2016.</li>
+<li>Jay Kreps: “<a target="_blank" rel="noopener" href="https://www.oreilly.com/ideas/why-local-state-is-a-fundamental-primitive-in-stream-processing">Why Local State Is a Fundamental Primitive in Stream Processing</a>,” <em>oreilly.com</em>, July 31, 2014.</li>
+<li>Shay Banon: “<a target="_blank" rel="noopener" href="https://www.elastic.co/blog/percolator">Percolator</a>,” <em>elastic.co</em>, February 8, 2011.</li>
+<li>Alan Woodward and Martin Kleppmann: “<a target="_blank" rel="noopener" href="http://martin.kleppmann.com/2015/04/13/real-time-full-text-search-luwak-samza.html">Real-Time Full-Text Search with Luwak and Samza</a>,” <em>martin.kleppmann.com</em>, April 13, 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="https://storm.apache.org/releases/1.0.1/index.html">Apache Storm 1.0.1 Documentation</a>,” <em>storm.apache.org</em>, May 2016.</li>
+<li>Tyler Akidau: “<a target="_blank" rel="noopener" href="https://www.oreilly.com/ideas/the-world-beyond-batch-streaming-102">The World Beyond Batch: Streaming 102</a>,” <em>oreilly.com</em>, January 20, 2016.</li>
+<li>Stephan Ewen: “<a target="_blank" rel="noopener" href="http://www.confluent.io/kafka-summit-2016-systems-advanced-streaming-analytics-with-apache-flink-and-apache-kafka">Streaming Analytics with Apache Flink</a>,” at <em>Kafka Summit</em>, April 2016.</li>
+<li>Tyler Akidau, Alex Balikov, Kaya Bekiroğlu, et al.: “<a target="_blank" rel="noopener" href="http://research.google.com/pubs/pub41378.html">MillWheel: Fault-Tolerant Stream Processing at Internet Scale</a>,” at <em>39th International Conference on Very Large Data Bases</em> (VLDB), August 2013.</li>
+<li>Alex Dean: “<a target="_blank" rel="noopener" href="http://snowplowanalytics.com/blog/2015/09/15/improving-snowplows-understanding-of-time/">Improving Snowplow’s Understanding of Time</a>,” <em>snowplowanalytics.com</em>, September 15, 2015.</li>
+<li>“<a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/azure/dn835019.aspx">Windowing (Azure Stream Analytics)</a>,” Microsoft Azure Reference, <em>msdn.microsoft.com</em>, April 2016.</li>
+<li>“<a target="_blank" rel="noopener" href="http://samza.apache.org/learn/documentation/0.10/container/state-management.html">State Management</a>,” Apache Samza 0.10 Documentation, <em>samza.apache.org</em>, December 2015.</li>
+<li>Rajagopal Ananthanarayanan, Venkatesh Basker, Sumit Das, et al.: “<a target="_blank" rel="noopener" href="http://research.google.com/pubs/pub41318.html">Photon: Fault-Tolerant and Scalable Joining of Continuous Data Streams</a>,” at <em>ACM International Conference on Management of Data</em> (SIGMOD), June 2013. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/2463676.2465272">doi:10.1145&#x2F;2463676.2465272</a></li>
+<li>Martin Kleppmann: “<a target="_blank" rel="noopener" href="https://github.com/ept/newsfeed">Samza Newsfeed Demo</a>,” <em>github.com</em>, September 2014.</li>
+<li>Ben Kirwin: “<a target="_blank" rel="noopener" href="http://ben.kirw.in/2014/11/28/kafka-patterns/">Doing the Impossible: Exactly-Once Messaging Patterns in Kafka</a>,” <em>ben.kirw.in</em>, November 28, 2014.</li>
+<li>Pat Helland: “<a target="_blank" rel="noopener" href="http://cidrdb.org/cidr2005/papers/P12.pdf">Data on the Outside Versus Data on the Inside</a>,” at <em>2nd Biennial Conference on Innovative Data Systems Research</em> (CIDR), January 2005.</li>
+<li>Ralph Kimball and Margy Ross: <em>The Data Warehouse Toolkit: The Definitive Guide to Dimensional Modeling</em>, 3rd edition. John Wiley &amp; Sons, 2013. ISBN: 978-1-118-53080-1</li>
+<li>Viktor Klang: “<a target="_blank" rel="noopener" href="https://twitter.com/viktorklang/status/789036133434978304">I’m coining the phrase ‘effectively-once’ for message processing with at-least-once + idempotent operations</a>,” <em>twitter.com</em>, October 20, 2016.</li>
+<li>Matei Zaharia, Tathagata Das, Haoyuan Li, et al.: “<a target="_blank" rel="noopener" href="https://www.usenix.org/system/files/conference/hotcloud12/hotcloud12-final28.pdf">Discretized Streams: An Efficient and Fault-Tolerant Model for Stream Processing on Large Clusters</a>,” at <em>4th USENIX Conference in Hot Topics in Cloud Computing</em> (HotCloud), June 2012.</li>
+<li>Kostas Tzoumas, Stephan Ewen, and Robert Metzger: “<a target="_blank" rel="noopener" href="http://data-artisans.com/high-throughput-low-latency-and-exactly-once-stream-processing-with-apache-flink/">High-Throughput, Low-Latency, and Exactly-Once Stream Processing with Apache Flink</a>,” <em>data-artisans.com</em>, August 5, 2015.</li>
+<li>Paris Carbone, Gyula Fóra, Stephan Ewen, et al.: “<a target="_blank" rel="noopener" href="http://arxiv.org/abs/1506.08603">Lightweight Asynchronous Snapshots for Distributed Dataflows</a>,” arXiv:1506.08603 &amp;#91;cs.DC&amp;#93;, June 29, 2015.</li>
+<li>Ryan Betts and John Hugg: <a target="_blank" rel="noopener" href="http://www.oreilly.com/data/free/fast-data-smart-and-at-scale.csp"><em>Fast Data: Smart and at Scale</em></a>. Report, O’Reilly Media, October 2015.</li>
+<li>Flavio Junqueira: “<a target="_blank" rel="noopener" href="http://conferences.oreilly.com/strata/hadoop-big-data-eu/public/schedule/detail/49690">Making Sense of Exactly-Once Semantics</a>,” at <em>Strata+Hadoop World London</em>, June 2016.</li>
+<li>Jason Gustafson, Flavio Junqueira, Apurva Mehta, Sriram Subramanian, and Guozhang Wang: “<a target="_blank" rel="noopener" href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-98+-+Exactly+Once+Delivery+and+Transactional+Messaging">KIP-98 – Exactly Once Delivery and Transactional Messaging</a>,” <em>cwiki.apache.org</em>, November 2016.</li>
+<li>Pat Helland: “<a target="_blank" rel="noopener" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.401.1539&rep=rep1&type=pdf">Idempotence Is Not a Medical Condition</a>,” <em>Communications of the ACM</em>, volume 55, number 5, page 56, May 2012. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/2160718.2160734">doi:10.1145&#x2F;2160718.2160734</a></li>
+<li>Jay Kreps: “<a target="_blank" rel="noopener" href="http://mail-archives.apache.org/mod_mbox/samza-dev/201409.mbox/%3CCAOeJiJg%2Bc7Ei%3DgzCuOz30DD3G5Hm9yFY%3DUJ6SafdNUFbvRgorg%40mail.gmail.com%3E">Re: Trying to Achieve Deterministic Behavior on Recovery&#x2F;Rewind</a>,” email to <em>samza-dev</em> mailing list, September 9, 2014.</li>
+<li>E. N. (Mootaz) Elnozahy, Lorenzo Alvisi, Yi-Min Wang, and David B. Johnson: “<a target="_blank" rel="noopener" href="http://www.cs.utexas.edu/~lorenzo/papers/SurveyFinal.pdf">A Survey of Rollback-Recovery Protocols in Message-Passing Systems</a>,” <em>ACM Computing Surveys</em>, volume 34, number 3, pages 375–408, September 2002. <a target="_blank" rel="noopener" href="http://dx.doi.org/10.1145/568522.568525">doi:10.1145&#x2F;568522.568525</a></li>
+<li>Adam Warski: “<a target="_blank" rel="noopener" href="https://softwaremill.com/kafka-streams-how-does-it-fit-stream-landscape/">Kafka Streams – How Does It Fit the Stream Processing Landscape?</a>,” <em>softwaremill.com</em>, June 1, 2016.</li>
+</ol>
+<hr>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Prev</div><a href="/wiki/ddia/ch10.html">第十章：批处理</a></div><div class="item" id="next"><div class="note">Next</div><a href="/wiki/ddia/ch12.html">第十二章：数据系统的未来</a></div></section></div>
+
+  
+
+  <div class='related-wrap md-text reveal' id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>来过，就留下您的脚印吧～</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" data-repo="gaoyanliang/beaudar" data-repo-id="MDEwOlJlcG9zaXRvcnkzOTMzNzI1Nzg=" data-category="Announcements" data-category-id="DIC_kwDOF3Jjos4CTZES" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+    </section>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.18.5';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadJS() {
+    const els = document.querySelectorAll("#comments #giscus");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+    loadJS();
+  });
+</script>
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
