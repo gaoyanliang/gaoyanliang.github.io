@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Designing Data-Intensive Applications: 第二部分：分布式数据 - yanliang</title>
+
+  
+    <meta name="description" content="一个成功的技术，现实的优先级必须高于公关，你可以糊弄别人，但糊弄不了自然规律。 —— 罗杰斯委员会报告（1986）   在本书的 第一部分 中，我们讨论了数据系统的各个方面，但仅限于数据存储在单台机器上的情况。现在我们到了 第二部分，进入更高的层次，并提出一个问题：如果 多台机器 参与数据的存储和检索，会发生什么？ 你可能会出于各种各样的原因，希望将数据库分布到多台机器上：  可伸缩性 如果你的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="第二部分：分布式数据">
+<meta property="og:url" content="https://yanliang.cool/wiki/ddia/part-ii.html">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="一个成功的技术，现实的优先级必须高于公关，你可以糊弄别人，但糊弄不了自然规律。 —— 罗杰斯委员会报告（1986）   在本书的 第一部分 中，我们讨论了数据系统的各个方面，但仅限于数据存储在单台机器上的情况。现在我们到了 第二部分，进入更高的层次，并提出一个问题：如果 多台机器 参与数据的存储和检索，会发生什么？ 你可能会出于各种各样的原因，希望将数据库分布到多台机器上：  可伸缩性 如果你的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/figii-1.png">
+<meta property="article:published_time" content="2023-06-09T08:15:24.257Z">
+<meta property="article:modified_time" content="2023-06-09T08:15:24.257Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="blog, Java, IT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/figii-1.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+  
+
+
+
+
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/ddia/"><div class="main" ff="title">Designing Data-Intensive Applications</div><div class="sub cap">数据密集型应用系统设计</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/ddia/" placeholder="Search in /wiki/ddia/"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">DDID</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/#start"><span class="toc-text">数据密集型应用系统设计</span></a></div></div><div class="widget-header cap dis-select"><span class="name">序言</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/preface.html"><span class="toc-text">序言</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第一部分：数据系统基础</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-i.html"><span class="toc-text">第一部分：数据系统基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch1.html"><span class="toc-text">第一章：可靠性、可伸缩性和可维护性</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch2.html"><span class="toc-text">第二章：数据模型与查询语言</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch3.html"><span class="toc-text">第三章：存储与检索</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch4.html"><span class="toc-text">第四章：编码与演化</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第二部分：分布式数据</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/ddia/part-ii.html"><span class="toc-text">第二部分：分布式数据</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%B8%E7%BC%A9%E8%87%B3%E6%9B%B4%E9%AB%98%E7%9A%84%E8%BD%BD%E8%8D%B7"><span class="toc-text">伸缩至更高的载荷</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%85%B1%E4%BA%AB%E6%9E%B6%E6%9E%84"><span class="toc-text">无共享架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6-vs-%E5%88%86%E5%8C%BA"><span class="toc-text">复制 vs 分区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95"><span class="toc-text">索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text">参考文献</span></a></li></ol></div></div><div class="widget-header cap dis-select"><span class="name">第三部分：衍生数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-iii.html"><span class="toc-text">第三部分：衍生数据</span></a></div></div></widget>
+
+
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/design/"><span class="title">Design Pattern</span><span class="excerpt">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</span></a></div></widget></div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/ddia/">Designing Data-Intensive Applications</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T08:15:24.257Z">Jun 9, 2023</time></div></div>
+
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>第二部分：分布式数据</span></h1>
+  <blockquote>
+<p>一个成功的技术，现实的优先级必须高于公关，你可以糊弄别人，但糊弄不了自然规律。</p>
+<p>—— 罗杰斯委员会报告（1986）</p>
+</blockquote>
+<hr>
+<p>在本书的 <a href="part-i">第一部分</a> 中，我们讨论了数据系统的各个方面，但仅限于数据存储在单台机器上的情况。现在我们到了 <a href="part-ii">第二部分</a>，进入更高的层次，并提出一个问题：如果 <strong>多台机器</strong> 参与数据的存储和检索，会发生什么？</p>
+<p>你可能会出于各种各样的原因，希望将数据库分布到多台机器上：</p>
+<ul>
+<li><p>可伸缩性</p>
+<p>如果你的数据量、读取负载、写入负载超出单台机器的处理能力，可以将负载分散到多台计算机上。</p>
+</li>
+<li><p>容错 &#x2F; 高可用性</p>
+<p>如果你的应用需要在单台机器（或多台机器，网络或整个数据中心）出现故障的情况下仍然能继续工作，则可使用多台机器，以提供冗余。一台故障时，另一台可以接管。</p>
+</li>
+<li><p>延迟</p>
+<p>如果在世界各地都有用户，你也许会考虑在全球范围部署多个服务器，从而每个用户可以从地理上最近的数据中心获取服务，避免了等待网络数据包穿越半个世界。</p>
+</li>
+</ul>
+<h2 id="伸缩至更高的载荷"><a href="#伸缩至更高的载荷" class="headerlink" title="伸缩至更高的载荷"></a>伸缩至更高的载荷</h2><p>如果你需要的只是伸缩至更高的 <strong>载荷（load）</strong>，最简单的方法就是购买更强大的机器（有时称为 <strong>垂直伸缩</strong>，即 vertical scaling，或 <strong>向上伸缩</strong>，即 scale up）。许多处理器，内存和磁盘可以在同一个操作系统下相互连接，快速的相互连接允许任意处理器访问内存或磁盘的任意部分。在这种 <strong>共享内存架构（shared-memory architecture）</strong> 中，所有的组件都可以看作一台单独的机器 [^i]。</p>
+<p>[^i]: 在大型机中，尽管任意处理器都可以访问内存的任意部分，但总有一些内存区域与一些处理器更接近（称为 <strong>非均匀内存访问（nonuniform memory access, NUMA）</strong>【1】）。 为了有效利用这种架构特性，需要对处理进行细分，以便每个处理器主要访问临近的内存，这意味着即使表面上看起来只有一台机器在运行，<strong>分区（partitioning）</strong> 仍然是必要的。</p>
+<p>共享内存方法的问题在于，成本增长速度快于线性增长：一台有着双倍处理器数量，双倍内存大小，双倍磁盘容量的机器，通常成本会远远超过原来的两倍。而且可能因为存在瓶颈，并不足以处理双倍的载荷。</p>
+<p>共享内存架构可以提供有限的容错能力，高端机器可以使用热插拔的组件（不关机更换磁盘，内存模块，甚至处理器）—— 但它必然囿于单个地理位置的桎梏。</p>
+<p>另一种方法是 <strong>共享磁盘架构（shared-disk architecture）</strong>，它使用多台具有独立处理器和内存的机器，但将数据存储在机器之间共享的磁盘阵列上，这些磁盘通过快速网络连接 [^ii]。这种架构用于某些数据仓库，但竞争和锁定的开销限制了共享磁盘方法的可伸缩性【2】。</p>
+<p>[^ii]: 网络附属存储（Network Attached Storage, NAS），或 <strong>存储区网络（Storage Area Network, SAN）</strong></p>
+<h3 id="无共享架构"><a href="#无共享架构" class="headerlink" title="无共享架构"></a>无共享架构</h3><p>相比之下，<strong>无共享架构</strong>【3】（shared-nothing architecture，有时被称为 <strong>水平伸缩</strong>，即 horizontal scaling，或 <strong>向外伸缩</strong>，即 scaling out）已经相当普及。在这种架构中，运行数据库软件的每台机器 &#x2F; 虚拟机都称为 <strong>节点（node）</strong>。每个节点只使用各自的处理器，内存和磁盘。节点之间的任何协调，都是在软件层面使用传统网络实现的。</p>
+<p>无共享系统不需要使用特殊的硬件，所以你可以用任意机器 —— 比如性价比最好的机器。你也许可以跨多个地理区域分布数据从而减少用户延迟，或者在损失一整个数据中心的情况下幸免于难。随着云端虚拟机部署的出现，即使是小公司，现在无需 Google 级别的运维，也可以实现异地分布式架构。</p>
+<p>在这一部分里，我们将重点放在无共享架构上。它不见得是所有场景的最佳选择，但它是最需要你谨慎从事的架构。如果你的数据分布在多个节点上，你需要意识到这样一个分布式系统中约束和权衡 —— 数据库并不能魔术般地把这些东西隐藏起来。</p>
+<p>虽然分布式无共享架构有许多优点，但它通常也会给应用带来额外的复杂度，有时也会限制你可用数据模型的表达力。在某些情况下，一个简单的单线程程序可以比一个拥有超过 100 个 CPU 核的集群表现得更好【4】。另一方面，无共享系统可以非常强大。接下来的几章，将详细讨论分布式数据会带来的问题。</p>
+<h3 id="复制-vs-分区"><a href="#复制-vs-分区" class="headerlink" title="复制 vs 分区"></a>复制 vs 分区</h3><p>数据分布在多个节点上有两种常见的方式：</p>
+<ul>
+<li><p>复制（Replication）</p>
+<p>在几个不同的节点上保存数据的相同副本，可能放在不同的位置。 复制提供了冗余：如果一些节点不可用，剩余的节点仍然可以提供数据服务。 复制也有助于改善性能。 <a href="ch5">第五章</a> 将讨论复制。</p>
+</li>
+<li><p>分区 (Partitioning)</p>
+<p>将一个大型数据库拆分成较小的子集（称为 <strong>分区</strong>，即 partitions），从而不同的分区可以指派给不同的 <strong>节点</strong>（nodes，亦称 <strong>分片</strong>，即 sharding）。 <a href="ch6">第六章</a> 将讨论分区。</p>
+</li>
+</ul>
+<p>复制和分区是不同的机制，但它们经常同时使用。如 <a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/figii-1.png">图 II-1</a> 所示。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/figii-1.png" fancybox="true"/></div></div>
+
+<p><strong>图 II-1 一个数据库切分为两个分区，每个分区都有两个副本</strong></p>
+<p>理解了这些概念，就可以开始讨论在分布式系统中需要做出的困难抉择。<a href="ch7">第七章</a> 将讨论 <strong>事务（Transaction）</strong>，这对于了解数据系统中可能出现的各种问题，以及我们可以做些什么很有帮助。<a href="ch8">第八章</a> 和 <a href="ch9">第九章</a> 将讨论分布式系统的根本局限性。</p>
+<p>在本书的 <a href="part-iii">第三部分</a> 中，将讨论如何将多个（可能是分布式的）数据存储集成为一个更大的系统，以满足复杂的应用需求。 但首先，我们来聊聊分布式的数据。</p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ol start="5">
+<li><a href="ch5">复制</a></li>
+<li><a href="ch6">分区</a></li>
+<li><a href="ch7">事务</a></li>
+<li><a href="ch8">分布式系统的麻烦</a></li>
+<li><a href="ch9">一致性与共识</a></li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>Ulrich Drepper: “<a target="_blank" rel="noopener" href="https://people.freebsd.org/~lstewart/articles/cpumemory.pdf">What Every Programmer Should Know About Memory</a>,” akka‐dia.org, November 21, 2007.</li>
+<li>Ben Stopford: “<a target="_blank" rel="noopener" href="http://www.benstopford.com/2009/11/24/understanding-the-shared-nothing-architecture/">Shared Nothing vs. Shared Disk Architectures: An Independent View</a>,” benstopford.com, November 24, 2009.</li>
+<li>Michael Stonebraker: “<a target="_blank" rel="noopener" href="http://db.cs.berkeley.edu/papers/hpts85-nothing.pdf">The Case for Shared Nothing</a>,” IEEE Database EngineeringBulletin, volume 9, number 1, pages 4–9, March 1986.</li>
+<li>Frank McSherry, Michael Isard, and Derek G. Murray: “<a target="_blank" rel="noopener" href="http://www.frankmcsherry.org/assets/COST.pdf">Scalability! But at What COST?</a>,” at 15th USENIX Workshop on Hot Topics in Operating Systems (HotOS),May 2015.</li>
+</ol>
+<hr>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Prev</div><a href="/wiki/ddia/ch4.html">第四章：编码与演化</a></div><div class="item" id="next"><div class="note">Next</div><a href="/wiki/ddia/part-iii.html">第三部分：衍生数据</a></div></section></div>
+
+  
+
+  <div class='related-wrap md-text reveal' id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>来过，就留下您的脚印吧～</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" data-repo="gaoyanliang/beaudar" data-repo-id="MDEwOlJlcG9zaXRvcnkzOTMzNzI1Nzg=" data-category="Announcements" data-category-id="DIC_kwDOF3Jjos4CTZES" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+    </section>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.18.5';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadJS() {
+    const els = document.querySelectorAll("#comments #giscus");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+    loadJS();
+  });
+</script>
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

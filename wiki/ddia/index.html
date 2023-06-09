@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>系统设计</title>
+
+  
+    <meta name="description" content="设计数据密集型应用 - 中文翻译Tips作者： Martin Kleppmann原名：《Designing Data-Intensive Applications》译者：冯若航 （@Vonng）  译序 不懂数据库的全栈工程师不是好架构师 —— Vonng  现今，尤其是在互联网领域，大多数应用都属于数据密集型应用。本书从底层数据结构到顶层架构设计，将数据系统设计中的精髓娓娓道来。其中的宝贵经验无">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据密集型应用系统设计">
+<meta property="og:url" content="https://yanliang.cool/wiki/ddia/">
+<meta property="og:site_name" content="yanliang">
+<meta property="og:description" content="设计数据密集型应用 - 中文翻译Tips作者： Martin Kleppmann原名：《Designing Data-Intensive Applications》译者：冯若航 （@Vonng）  译序 不懂数据库的全栈工程师不是好架构师 —— Vonng  现今，尤其是在互联网领域，大多数应用都属于数据密集型应用。本书从底层数据结构到顶层架构设计，将数据系统设计中的精髓娓娓道来。其中的宝贵经验无">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-06-09T08:15:24.257Z">
+<meta property="article:modified_time" content="2023-06-09T08:15:24.257Z">
+<meta property="article:author" content="yanliang">
+<meta property="article:tag" content="blog, Java, IT">
+<meta name="twitter:card" content="summary">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/icon.svg">
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+<div class="l_cover wiki"><article class="cover-wrap md-text"><div class="preview"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/ddia/title.png" height="280px"></div><div class="cover-title"><span>数据密集型应用系统设计</span></div><div class="description">如果你开发的应用具有用于存储或处理数据的某种服务器 / 后端系统，而且使用网络（例如，Web 应用、移动应用或连接到互联网的传感器），那么本书就是为你准备的。  本书是为软件工程师，软件架构师，以及喜欢写代码的技术经理准备的。如果你需要对所从事系统的架构做出决策 —— 例如你需要选择解决某个特定问题的工具，并找出如何最好地使用这些工具，那么这本书对你尤有价值。但即使你无法选择你的工具，本书仍将帮助你更好地了解所使用工具的长处和短处。</div><div class="start-wrap"><a class="button start gradient" href="#start">Getting Started</a></div></article></div><hr>
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+  
+
+
+
+
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/ddia/"><div class="main" ff="title">Designing Data-Intensive Applications</div><div class="sub cap">数据密集型应用系统设计</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/ddia/" placeholder="Search in /wiki/ddia/"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">DDID</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/ddia/#start"><span class="toc-text">数据密集型应用系统设计</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%91%E5%BA%8F"><span class="toc-text">译序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-text">目录</span></a></li></ol></div></div><div class="widget-header cap dis-select"><span class="name">序言</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/preface.html"><span class="toc-text">序言</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第一部分：数据系统基础</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-i.html"><span class="toc-text">第一部分：数据系统基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch1.html"><span class="toc-text">第一章：可靠性、可伸缩性和可维护性</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch2.html"><span class="toc-text">第二章：数据模型与查询语言</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch3.html"><span class="toc-text">第三章：存储与检索</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch4.html"><span class="toc-text">第四章：编码与演化</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第二部分：分布式数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-ii.html"><span class="toc-text">第二部分：分布式数据</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第三部分：衍生数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-iii.html"><span class="toc-text">第三部分：衍生数据</span></a></div></div></widget>
+
+
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/design/"><span class="title">Design Pattern</span><span class="excerpt">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</span></a></div></widget></div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/ddia/">Designing Data-Intensive Applications</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T08:15:24.257Z">Jun 9, 2023</time></div></div>
+
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>数据密集型应用系统设计</span></h1>
+  <h1 id="设计数据密集型应用-中文翻译"><a href="#设计数据密集型应用-中文翻译" class="headerlink" title="设计数据密集型应用 - 中文翻译"></a>设计数据密集型应用 - 中文翻译</h1><div class="tag-plugin note" color="warning"><div class="title"><strong>Tips</strong></div><div class="body"><ul><li>作者： <a target="_blank" rel="noopener" href="https://martin.kleppmann.com/">Martin Kleppmann</a></li><li>原名：<a target="_blank" rel="noopener" href="http://shop.oreilly.com/product/0636920032175.do">《Designing Data-Intensive Applications》</a></li><li>译者：<a target="_blank" rel="noopener" href="https://vonng.com/">冯若航</a> （<a target="_blank" rel="noopener" href="https://vonng.com/en/">@Vonng</a>）</li></ul></div></div>
+
+<h2 id="译序"><a href="#译序" class="headerlink" title="译序"></a>译序</h2><blockquote>
+<p>不懂数据库的全栈工程师不是好架构师</p>
+<p>—— Vonng</p>
+</blockquote>
+<p>现今，尤其是在互联网领域，大多数应用都属于数据密集型应用。本书从底层数据结构到顶层架构设计，将数据系统设计中的精髓娓娓道来。其中的宝贵经验无论是对架构师、DBA、还是后端工程师、甚至产品经理都会有帮助。</p>
+<p>这是一本理论结合实践的书，书中很多问题，译者在实际场景中都曾遇到过，读来让人击节扼腕。如果能早点读到这本书，该少走多少弯路啊！</p>
+<p>这也是一本深入浅出的书，讲述概念的来龙去脉而不是卖弄定义，介绍事物发展演化历程而不是事实堆砌，将复杂的概念讲述的浅显易懂，但又直击本质不失深度。每章最后的引用质量非常好，是深入学习各个主题的绝佳索引。</p>
+<p>本书为数据系统的设计、实现、与评价提供了很好的概念框架。读完并理解本书内容后，读者可以轻松看破大多数的技术忽悠，与技术砖家撕起来虎虎生风🤣。</p>
+<p>这是 2017 年译者读过最好的一本技术类书籍，这么好的书没有中文翻译，实在是遗憾。某不才，愿为先进技术文化的传播贡献一份力量。既可以深入学习有趣的技术主题，又可以锻炼中英文语言文字功底，何乐而不为？</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>在我们的社会中，技术是一种强大的力量。数据、软件、通信可以用于坏的方面：不公平的阶级固化，损害公民权利，保护既得利益集团。但也可以用于好的方面：让底层人民发出自己的声音，让每个人都拥有机会，避免灾难。本书献给所有将技术用于善途的人们。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>计算是一种流行文化，流行文化鄙视历史。 流行文化关乎个体身份和参与感，但与合作无关。流行文化活在当下，也与过去和未来无关。 我认为大部分（为了钱）编写代码的人就是这样的， 他们不知道自己的文化来自哪里。</p>
+<p> —— 阿兰・凯接受 Dobb 博士的杂志采访时（2012 年）</p>
+</blockquote>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><p><a href="./preface">序言</a></p>
+</li>
+<li><p><a href="part-i">第一部分：数据系统基础</a></p>
+<ul>
+<li><a href="ch1">第一章：可靠性、可伸缩性和可维护性</a><ul>
+<li><a href="ch1#%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%80%9D%E8%80%83">关于数据系统的思考</a></li>
+<li><a href="ch1#%E5%8F%AF%E9%9D%A0%E6%80%A7">可靠性</a></li>
+<li><a href="ch1#%E5%8F%AF%E4%BC%B8%E7%BC%A9%E6%80%A7">可伸缩性</a></li>
+<li><a href="ch1#%E5%8F%AF%E7%BB%B4%E6%8A%A4%E6%80%A7">可维护性</a></li>
+<li><a href="ch1#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch2">第二章：数据模型与查询语言</a><ul>
+<li><a href="ch2#%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%96%87%E6%A1%A3%E6%A8%A1%E5%9E%8B">关系模型与文档模型</a></li>
+<li><a href="ch2#%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80">数据查询语言</a></li>
+<li><a href="ch2#%E5%9B%BE%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B">图数据模型</a></li>
+<li><a href="ch2#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch3">第三章：存储与检索</a><ul>
+<li><a href="ch3#%E9%A9%B1%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">驱动数据库的数据结构</a></li>
+<li><a href="ch3#%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E8%BF%98%E6%98%AF%E5%88%86%E6%9E%90%EF%BC%9F">事务处理还是分析？</a></li>
+<li><a href="ch3#%E5%88%97%E5%BC%8F%E5%AD%98%E5%82%A8">列式存储</a></li>
+<li><a href="ch3#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch4">第四章：编码与演化</a><ul>
+<li><a href="ch4#%E7%BC%96%E7%A0%81%E6%95%B0%E6%8D%AE%E7%9A%84%E6%A0%BC%E5%BC%8F">编码数据的格式</a></li>
+<li><a href="ch4#%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E7%B1%BB%E5%9E%8B">数据流的类型</a></li>
+<li><a href="ch4#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a href="part-ii">第二部分：分布式数据</a></p>
+<ul>
+<li><a href="ch5">第五章：复制</a><ul>
+<li><a href="ch5#%E9%A2%86%E5%AF%BC%E8%80%85%E4%B8%8E%E8%BF%BD%E9%9A%8F%E8%80%85">领导者与追随者</a></li>
+<li><a href="ch5#%E5%A4%8D%E5%88%B6%E5%BB%B6%E8%BF%9F%E9%97%AE%E9%A2%98">复制延迟问题</a></li>
+<li><a href="ch5#%E5%A4%9A%E4%B8%BB%E5%A4%8D%E5%88%B6">多主复制</a></li>
+<li><a href="ch5#%E6%97%A0%E4%B8%BB%E5%A4%8D%E5%88%B6">无主复制</a></li>
+<li><a href="ch5#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch6">第六章：分区</a><ul>
+<li><a href="ch6#%E5%88%86%E5%8C%BA%E4%B8%8E%E5%A4%8D%E5%88%B6">分区与复制</a></li>
+<li><a href="ch6#%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E5%8C%BA">键值数据的分区</a></li>
+<li><a href="ch6#%E5%88%86%E5%8C%BA%E4%B8%8E%E6%AC%A1%E7%BA%A7%E7%B4%A2%E5%BC%95">分区与次级索引</a></li>
+<li><a href="ch6#%E5%88%86%E5%8C%BA%E5%86%8D%E5%B9%B3%E8%A1%A1">分区再平衡</a></li>
+<li><a href="ch6#%E8%AF%B7%E6%B1%82%E8%B7%AF%E7%94%B1">请求路由</a></li>
+<li><a href="ch6#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch7">第七章：事务</a><ul>
+<li><a href="ch7#%E4%BA%8B%E5%8A%A1%E7%9A%84%E6%A3%98%E6%89%8B%E6%A6%82%E5%BF%B5">事务的棘手概念</a></li>
+<li><a href="ch7#%E5%BC%B1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">弱隔离级别</a></li>
+<li><a href="ch7#%E5%8F%AF%E4%B8%B2%E8%A1%8C%E5%8C%96">可串行化</a></li>
+<li><a href="ch7#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch8">第八章：分布式系统的麻烦</a><ul>
+<li><a href="ch8#%E6%95%85%E9%9A%9C%E4%B8%8E%E9%83%A8%E5%88%86%E5%A4%B1%E6%95%88">故障与部分失效</a></li>
+<li><a href="ch8#%E4%B8%8D%E5%8F%AF%E9%9D%A0%E7%9A%84%E7%BD%91%E7%BB%9C">不可靠的网络</a></li>
+<li><a href="ch8#%E4%B8%8D%E5%8F%AF%E9%9D%A0%E7%9A%84%E6%97%B6%E9%92%9F">不可靠的时钟</a></li>
+<li><a href="ch8#%E7%9F%A5%E8%AF%86%E3%80%81%E7%9C%9F%E7%9B%B8%E4%B8%8E%E8%B0%8E%E8%A8%80">知识、真相与谎言</a></li>
+<li><a href="ch8#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch9">第九章：一致性与共识</a><ul>
+<li><a href="ch9#%E4%B8%80%E8%87%B4%E6%80%A7%E4%BF%9D%E8%AF%81">一致性保证</a></li>
+<li><a href="ch9#%E7%BA%BF%E6%80%A7%E4%B8%80%E8%87%B4%E6%80%A7">线性一致性</a></li>
+<li><a href="ch9#%E9%A1%BA%E5%BA%8F%E4%BF%9D%E8%AF%81">顺序保证</a></li>
+<li><a href="ch9#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E4%B8%8E%E5%85%B1%E8%AF%86">分布式事务与共识</a></li>
+<li><a href="ch9#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a href="part-iii">第三部分：衍生数据</a></p>
+<ul>
+<li><a href="ch10">第十章：批处理</a><ul>
+<li><a href="ch10#%E4%BD%BF%E7%94%A8Unix%E5%B7%A5%E5%85%B7%E7%9A%84%E6%89%B9%E5%A4%84%E7%90%86">使用Unix工具的批处理</a></li>
+<li><a href="ch10#MapReduce%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F">MapReduce和分布式文件系统</a></li>
+<li><a href="ch10#MapReduce%E4%B9%8B%E5%90%8E">MapReduce之后</a></li>
+<li><a href="ch10#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch11">第十一章：流处理</a><ul>
+<li><a href="ch11#%E4%BC%A0%E9%80%92%E4%BA%8B%E4%BB%B6%E6%B5%81">传递事件流</a></li>
+<li><a href="ch11#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E6%B5%81">数据库与流</a></li>
+<li><a href="ch11#%E6%B5%81%E5%A4%84%E7%90%86">流处理</a></li>
+<li><a href="ch11#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+<li><a href="ch12">第十二章：数据系统的未来</a><ul>
+<li><a href="ch12#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%88%90">数据集成</a></li>
+<li><a href="ch12#%E5%88%86%E6%8B%86%E6%95%B0%E6%8D%AE%E5%BA%93">分拆数据库</a></li>
+<li><a href="ch12#%E5%B0%86%E4%BA%8B%E6%83%85%E5%81%9A%E6%AD%A3%E7%A1%AE">将事情做正确</a></li>
+<li><a href="ch12#%E5%81%9A%E6%AD%A3%E7%A1%AE%E7%9A%84%E4%BA%8B%E6%83%85">做正确的事情</a></li>
+<li><a href="ch12#%E6%9C%AC%E7%AB%A0%E5%B0%8F%E7%BB%93">本章小结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a href="glossary">术语表</a></p>
+</li>
+<li><p><a href="colophon">后记</a></p>
+</li>
+</ul>
+
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">Next</div><a href="/wiki/ddia/preface.html">序言</a></div></section></div>
+
+  
+
+  <div class='related-wrap md-text reveal' id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>来过，就留下您的脚印吧～</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" data-repo="gaoyanliang/beaudar" data-repo-id="MDEwOlJlcG9zaXRvcnkzOTMzNzI1Nzg=" data-category="Announcements" data-category-id="DIC_kwDOF3Jjos4CTZES" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+    </section>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">Blog</span><a href="/">Recent Update</a><a href="/blog/categories/">Categories</a><a href="/blog/tags/">Tags</a><a href="/blog/archives/">Archives</a></div><div class="sitemap-group"><span class="fs14">Wiki</span><a href="/wiki/tags/%E6%8A%80%E6%9C%AF%E5%8A%A0%E6%B2%B9%E7%AB%99/">技术加油站</a><a href="/wiki/">...</a></div><div class="sitemap-group"><span class="fs14">Social</span><a href="/friends/">Friends</a><a href="/about/#comments">Comments</a><a target="_blank" rel="noopener" href="https://open.spotify.com/">Spotify</a></div><div class="sitemap-group"><span class="fs14">More</span><a href="/about/">About</a><a href="/wiki/resume">Resume</a><a target="_blank" rel="noopener" href="https://github.com/gyl-coder">GitHub</a></div></div><div class="text"><p>本站由 <a href="/">@yanliang</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.18.5';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.18.5';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  
+  // -------- start 自定义首页文章轮播
+  if ('true' == 'true') {
+    stellar.plugins.customSwiperTopArticle = Object.assign({"enable":true,"css":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/css/swiper/swiper.min.css","js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper.min.js","init_js":"https://cdn.jsdelivr.net/gh/XuxuGood/simple-blog-cdn@main/js/swiper/swiper_init.js"});
+  }
+  // -------- end 自定义首页文章轮播
+
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadJS() {
+    const els = document.querySelectorAll("#comments #giscus");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+    loadJS();
+  });
+</script>
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

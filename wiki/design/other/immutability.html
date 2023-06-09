@@ -29,8 +29,8 @@
 <meta property="og:site_name" content="yanliang">
 <meta property="og:description" content="在并发模式下, 多个线程同时读写同一共享变量存在并发问题。 其中导致出现并发问题的必要条件之一就是 读写 ，如果没有写，只存在读，是不会存在并发问题的。 如果让一个共享变量只有读操作，没有写操作，如此则可以解决并发问题。该理论的具体实现就是 不变性（Immutability）模式 。所谓不变性，简单来讲，就是对象一旦被创建之后，状态就不再发生变化。换句话说，就是变量一旦被赋值，就不允许修改了（没有">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-05-08T10:17:28.620Z">
-<meta property="article:modified_time" content="2023-05-08T10:17:28.620Z">
+<meta property="article:published_time" content="2023-06-09T08:15:24.257Z">
+<meta property="article:modified_time" content="2023-06-09T08:15:24.257Z">
 <meta property="article:author" content="yanliang">
 <meta property="article:tag" content="blog, Java, IT">
 <meta name="twitter:card" content="summary">
@@ -79,7 +79,7 @@
 <widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">Design Pattern</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/#start"><span class="toc-text">设计模式</span></a></div></div><div class="widget-header cap dis-select"><span class="name">Create Pattern</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/create/factory.html"><span class="toc-text">工厂模式</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/create/single.html"><span class="toc-text">单例模式</span></a></div></div><div class="widget-header cap dis-select"><span class="name">Structural Pattern</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/structural/structural-pattern.html"><span class="toc-text">dsfasdfasdf</span></a></div></div><div class="widget-header cap dis-select"><span class="name">Other Pattern</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/design/other/immutability.html"><span class="toc-text">并发设计模式：Immutability 模式</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%85%B7%E5%A4%87%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%E7%9A%84%E7%B1%BB"><span class="toc-text">实现具备不可变性的类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E9%81%BF%E5%85%8D%E5%88%9B%E5%BB%BA%E9%87%8D%E5%A4%8D%E5%AF%B9%E8%B1%A1"><span class="toc-text">利用享元模式避免创建重复对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Immutability-%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">使用 Immutability 模式的注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/other/producer-consumer.html"><span class="toc-text">并发设计模式：生产者-消费者模式</span></a></div></div></widget>
 
 
-</div>
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/ddia/"><span class="title">数据密集型应用系统设计</span><span class="excerpt">如果你开发的应用具有用于存储或处理数据的某种服务器 / 后端系统，而且使用网络（例如，Web 应用、移动应用或连接到互联网的传感器），那么本书就是为你准备的。  本书是为软件工程师，软件架构师，以及喜欢写代码的技术经理准备的。如果你需要对所从事系统的架构做出决策 —— 例如你需要选择解决某个特定问题的工具，并找出如何最好地使用这些工具，那么这本书对你尤有价值。但即使你无法选择你的工具，本书仍将帮助你更好地了解所使用工具的长处和短处。</span></a></div></widget></div>
 
 
     </aside>
@@ -90,7 +90,7 @@
 
   
   
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/design/">Design Pattern</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-05-08T10:17:28.620Z">May 8, 2023</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/design/">Design Pattern</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T08:15:24.257Z">Jun 9, 2023</time></div></div>
 
   <article class='md-text content wiki'>
   <h1 class="article-title"><span>并发设计模式：Immutability 模式</span></h1>

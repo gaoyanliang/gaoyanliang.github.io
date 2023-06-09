@@ -19,15 +19,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>设计模式</title>
+  <title>Designing Data-Intensive Applications: 第三部分：衍生数据 - yanliang</title>
 
   
-    <meta name="description" content="❓ 设计模式是什么设计模式是软件设计中常见问题的典型解决方案。 每个模式就像一张蓝图， 你可以通过对其进行定制来解决代码中的特定设计问题。 设计模式与方法或库的使用方式不同， 你很难直接在自己的程序中套用某个设计模式。 模式并不是一段特定的代码， 而是解决特定问题的一般性概念。 你可以根据模式来实现符合自己程序实际所需的解决方案。 💖 设计模式优势设计模式是软件设计中对一些常见问题的解决思路。使">
+    <meta name="description" content="在本书的 第一部分 和 第二部分 中，我们自底向上地把所有关于分布式数据库的主要考量都过了一遍。从数据在磁盘上的布局，一直到出现故障时分布式系统一致性的局限。但所有的讨论都假定了应用中只用了一种数据库。 现实世界中的数据系统往往更为复杂。大型应用程序经常需要以多种方式访问和处理数据，没有一个数据库可以同时满足所有这些不同的需求。因此应用程序通常组合使用多种组件：数据存储、索引、缓存、分析系统等等，">
 <meta property="og:type" content="website">
-<meta property="og:title" content="设计模式">
-<meta property="og:url" content="https://yanliang.cool/wiki/design/">
+<meta property="og:title" content="第三部分：衍生数据">
+<meta property="og:url" content="https://yanliang.cool/wiki/ddia/part-iii.html">
 <meta property="og:site_name" content="yanliang">
-<meta property="og:description" content="❓ 设计模式是什么设计模式是软件设计中常见问题的典型解决方案。 每个模式就像一张蓝图， 你可以通过对其进行定制来解决代码中的特定设计问题。 设计模式与方法或库的使用方式不同， 你很难直接在自己的程序中套用某个设计模式。 模式并不是一段特定的代码， 而是解决特定问题的一般性概念。 你可以根据模式来实现符合自己程序实际所需的解决方案。 💖 设计模式优势设计模式是软件设计中对一些常见问题的解决思路。使">
+<meta property="og:description" content="在本书的 第一部分 和 第二部分 中，我们自底向上地把所有关于分布式数据库的主要考量都过了一遍。从数据在磁盘上的布局，一直到出现故障时分布式系统一致性的局限。但所有的讨论都假定了应用中只用了一种数据库。 现实世界中的数据系统往往更为复杂。大型应用程序经常需要以多种方式访问和处理数据，没有一个数据库可以同时满足所有这些不同的需求。因此应用程序通常组合使用多种组件：数据存储、索引、缓存、分析系统等等，">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-06-09T08:15:24.257Z">
 <meta property="article:modified_time" content="2023-06-09T08:15:24.257Z">
@@ -61,7 +61,7 @@
 <body>
   
 
-<div class="l_cover wiki"><article class="cover-wrap md-text"><div class="preview"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/gaoyanliang/cdn@main/blog/img/wiki/design/design.svg" height="180px"></div><div class="cover-title"><span>Design Pattern</span></div><div class="description">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</div><div class="start-wrap"><a class="button start gradient" href="#start">Getting Started</a></div></article></div><hr>
+
 
   <div class='l_body' id='start'>
     <aside class='l_left' layout='wiki'>
@@ -72,14 +72,14 @@
 
 
 
-<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/design/"><div class="main" ff="title">Design Pattern</div><div class="sub normal cap">设计模式</div><div class="sub hover cap" style="opacity:0"> Create by yanliang</div></a></div></widget>
-<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/design/" placeholder="Search in /wiki/design/"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>All Products</a><a class="title" href="/wiki/ddia/"><div class="main" ff="title">Designing Data-Intensive Applications</div><div class="sub cap">数据密集型应用系统设计</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/ddia/" placeholder="Search in /wiki/ddia/"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
 
 
-<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">Design Pattern</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/design/#start"><span class="toc-text">设计模式</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9D%93-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">❓ 设计模式是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%92%96-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%BC%98%E5%8A%BF"><span class="toc-text">💖 设计模式优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%83-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%86%E7%B1%BB"><span class="toc-text">📃 设计模式分类</span></a></li></ol></div></div><div class="widget-header cap dis-select"><span class="name">Create Pattern</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/create/factory.html"><span class="toc-text">工厂模式</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/create/single.html"><span class="toc-text">单例模式</span></a></div></div><div class="widget-header cap dis-select"><span class="name">Structural Pattern</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/structural/structural-pattern.html"><span class="toc-text">dsfasdfasdf</span></a></div></div><div class="widget-header cap dis-select"><span class="name">Other Pattern</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/other/immutability.html"><span class="toc-text">并发设计模式：Immutability 模式</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/design/other/producer-consumer.html"><span class="toc-text">并发设计模式：生产者-消费者模式</span></a></div></div></widget>
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">DDID</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/#start"><span class="toc-text">数据密集型应用系统设计</span></a></div></div><div class="widget-header cap dis-select"><span class="name">序言</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/preface.html"><span class="toc-text">序言</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第一部分：数据系统基础</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-i.html"><span class="toc-text">第一部分：数据系统基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch1.html"><span class="toc-text">第一章：可靠性、可伸缩性和可维护性</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch2.html"><span class="toc-text">第二章：数据模型与查询语言</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch3.html"><span class="toc-text">第三章：存储与检索</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/ch4.html"><span class="toc-text">第四章：编码与演化</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第二部分：分布式数据</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/ddia/part-ii.html"><span class="toc-text">第二部分：分布式数据</span></a></div></div><div class="widget-header cap dis-select"><span class="name">第三部分：衍生数据</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/ddia/part-iii.html"><span class="toc-text">第三部分：衍生数据</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E7%B3%BB%E7%BB%9F%E5%92%8C%E8%A1%8D%E7%94%9F%E6%95%B0%E6%8D%AE%E7%B3%BB%E7%BB%9F"><span class="toc-text">记录系统和衍生数据系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%A0%E8%8A%82%E6%A6%82%E8%BF%B0"><span class="toc-text">章节概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95"><span class="toc-text">索引</span></a></li></ol></div></div></widget>
 
 
-<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/ddia/"><span class="title">数据密集型应用系统设计</span><span class="excerpt">如果你开发的应用具有用于存储或处理数据的某种服务器 / 后端系统，而且使用网络（例如，Web 应用、移动应用或连接到互联网的传感器），那么本书就是为你准备的。  本书是为软件工程师，软件架构师，以及喜欢写代码的技术经理准备的。如果你需要对所从事系统的架构做出决策 —— 例如你需要选择解决某个特定问题的工具，并找出如何最好地使用这些工具，那么这本书对你尤有价值。但即使你无法选择你的工具，本书仍将帮助你更好地了解所使用工具的长处和短处。</span></a></div></widget></div>
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">More 技术加油站</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/design/"><span class="title">Design Pattern</span><span class="excerpt">Design pattern is a typical solution to common problems in software design. Each pattern is like a blueprint that you can customize to solve specific design problems in your code.</span></a></div></widget></div>
 
 
     </aside>
@@ -90,38 +90,54 @@
 
   
   
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/design/">Design Pattern</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T08:15:24.257Z">Jun 9, 2023</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">Wiki</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/ddia/">Designing Data-Intensive Applications</a></div><div id="post-meta">🔄 Updated on&nbsp;<time datetime="2023-06-09T08:15:24.257Z">Jun 9, 2023</time></div></div>
 
   <article class='md-text content wiki'>
-  <h1 class="article-title"><span>设计模式</span></h1>
-  <h2 id="❓-设计模式是什么"><a href="#❓-设计模式是什么" class="headerlink" title="❓ 设计模式是什么"></a>❓ 设计模式是什么</h2><p>设计模式是软件设计中常见问题的典型解决方案。 每个模式就像一张蓝图， 你可以通过对其进行定制来解决代码中的特定设计问题。</p>
-<p>设计模式与方法或库的使用方式不同， 你很难直接在自己的程序中套用某个设计模式。 模式并不是一段特定的代码， 而是解决特定问题的一般性概念。 你可以根据模式来实现符合自己程序实际所需的解决方案。</p>
-<h2 id="💖-设计模式优势"><a href="#💖-设计模式优势" class="headerlink" title="💖 设计模式优势"></a>💖 设计模式优势</h2><p>设计模式是软件设计中对一些常见问题的解决思路。使用设计模式可以写出可扩展、可读、可维护的高质量代码。</p>
-<p>设计模式是针对软件设计中常见问题的工具箱， 其中的工具就是各种经过实践验证的解决方案。 即使你从未遇到过这些问题， 了解模式仍然非常有用， 因为它能指导你如何使用面向对象的设计原则来解决各种问题。</p>
-<mark class="tag-plugin mark" color="dark">为什么要学习设计模式？</mark>
-
+  <h1 class="article-title"><span>第三部分：衍生数据</span></h1>
+  <p>在本书的 <a href="part-i.md">第一部分</a> 和 <a href="part-ii.md">第二部分</a> 中，我们自底向上地把所有关于分布式数据库的主要考量都过了一遍。从数据在磁盘上的布局，一直到出现故障时分布式系统一致性的局限。但所有的讨论都假定了应用中只用了一种数据库。</p>
+<p>现实世界中的数据系统往往更为复杂。大型应用程序经常需要以多种方式访问和处理数据，没有一个数据库可以同时满足所有这些不同的需求。因此应用程序通常组合使用多种组件：数据存储、索引、缓存、分析系统等等，并实现在这些组件中移动数据的机制。</p>
+<p>本书的最后一部分，会研究将多个不同数据系统（可能有着不同数据模型，并针对不同的访问模式进行优化）集成为一个协调一致的应用架构时，会遇到的问题。软件供应商经常会忽略这一方面的生态建设，并声称他们的产品能够满足你的所有需求。在现实世界中，集成不同的系统是实际应用中最重要的事情之一。</p>
+<h2 id="记录系统和衍生数据系统"><a href="#记录系统和衍生数据系统" class="headerlink" title="记录系统和衍生数据系统"></a>记录系统和衍生数据系统</h2><p>从高层次上看，存储和处理数据的系统可以分为两大类：</p>
 <ul>
-<li>比较功利的一个目的是：应对面试</li>
-<li>告别被人吐槽的烂代码</li>
-<li>提高复杂代码的设计和开发能力</li>
-<li>更容易看懂源码</li>
+<li><p>记录系统（System of record）</p>
+<p><strong>记录系统</strong>，也被称为 <strong>真相源（source of truth）</strong>，持有数据的权威版本。当新的数据进入时（例如，用户输入）首先会记录在这里。每个事实正正好好表示一次（表示通常是 <strong>正规化的</strong>，即 normalized）。如果其他系统和 <strong>记录系统</strong> 之间存在任何差异，那么记录系统中的值是正确的（根据定义）。</p>
+</li>
+<li><p>衍生数据系统（Derived data systems）</p>
+<p><strong>衍生系统</strong> 中的数据，通常是另一个系统中的现有数据以某种方式进行转换或处理的结果。如果丢失衍生数据，可以从原始来源重新创建。典型的例子是 <strong>缓存（cache）</strong>：如果数据在缓存中，就可以由缓存提供服务；如果缓存不包含所需数据，则降级由底层数据库提供。非规范化的值，索引和物化视图亦属此类。在推荐系统中，预测汇总数据通常衍生自用户日志。</p>
+</li>
 </ul>
-<h2 id="📃-设计模式分类"><a href="#📃-设计模式分类" class="headerlink" title="📃 设计模式分类"></a>📃 设计模式分类</h2><p>不同设计模式的复杂程度、 细节层次以及在整个系统中的应用范围等方面各不相同。 我喜欢将其类比于道路的建造： 如果你希望让十字路口更加安全， 那么可以安装一些交通信号灯， 或者修建包含行人地下通道在内的多层互通式立交桥。</p>
-<p>最基础的、 底层的模式通常被称为惯用技巧。 这类模式一般只能在一种编程语言中使用。</p>
-<p>最通用的、 高层的模式是构架模式。 开发者可以在任何编程语言中使用这类模式。 与其他模式不同， 它们可用于整个应用程序的架构设计。</p>
-<p>此外， 所有模式可以根据其意图或目的来分类。 本书覆盖了三种主要的模式类别：</p>
-<ul>
-<li><strong>创建型模式：</strong> 提供创建对象的机制， 增加已有代码的灵活性和可复用性。</li>
-<li><strong>结构型模式：</strong> 介绍如何将对象和类组装成较大的结构， 并同时保持结构的灵活和高效。</li>
-<li><strong>行为型模式：</strong> 负责对象间的高效沟通和职责委派。</li>
-</ul>
+<p>从技术上讲，衍生数据是 <strong>冗余的（redundant）</strong>，因为它重复了已有的信息。但是衍生数据对于获得良好的只读查询性能通常是至关重要的。它通常是非规范化的。可以从单个源头衍生出多个不同的数据集，使你能从不同的 “视角” 洞察数据。</p>
+<p>并不是所有的系统都在其架构中明确区分 <strong>记录系统</strong> 和 <strong>衍生数据系统</strong>，但是这是一种有用的区分方式，因为它明确了系统中的数据流：系统的哪一部分具有哪些输入和哪些输出，以及它们如何相互依赖。</p>
+<p>大多数数据库，存储引擎和查询语言，本质上既不是记录系统也不是衍生系统。数据库只是一个工具：如何使用它取决于你自己。<strong>记录系统和衍生数据系统之间的区别不在于工具，而在于应用程序中的使用方式。</strong></p>
+<p>通过梳理数据的衍生关系，可以清楚地理解一个令人困惑的系统架构。这将贯穿本书的这一部分。</p>
+<h2 id="章节概述"><a href="#章节概述" class="headerlink" title="章节概述"></a>章节概述</h2><p>我们将从 <a href="ch10.md">第十章</a> 开始，研究例如 MapReduce 这样 <strong>面向批处理（batch-oriented）</strong> 的数据流系统。对于建设大规模数据系统，我们将看到，它们提供了优秀的工具和思想。<a href="ch11.md">第十一章</a> 将把这些思想应用到 <strong>流式数据（data streams）</strong> 中，使我们能用更低的延迟完成同样的任务。<a href="ch12.md">第十二章</a> 将对本书进行总结，探讨如何使用这些工具来构建可靠，可伸缩和可维护的应用。</p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ol start="10">
+<li><a href="ch10.md">批处理</a></li>
+<li><a href="ch11.md">流处理</a></li>
+<li><a href="ch12.md">数据系统的未来</a></li>
+</ol>
+<hr>
+<table>
+<thead>
+<tr>
+<th>上一章</th>
+<th>目录</th>
+<th>下一章</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="ch9.md">第九章：一致性与共识</a></td>
+<td><a href="README.md">设计数据密集型应用</a></td>
+<td><a href="ch10.md">第十章：批处理</a></td>
+</tr>
+</tbody></table>
 
   
 
 
   </article>
   
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">Next</div><a href="/wiki/design/create/factory.html">工厂模式</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Prev</div><a href="/wiki/ddia/part-ii.html">第二部分：分布式数据</a></div><div class="item" id="next"></div></section></div>
 
   
 
