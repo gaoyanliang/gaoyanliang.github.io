@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch7.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch8.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch9.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/colophon.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/wiki/ddia/glossary.html</loc>
     
     <lastmod>2023-06-09</lastmod>
@@ -110,6 +146,33 @@
   </url>
   
   <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch11.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch12.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/wiki/ddia/ch2.html</loc>
+    
+    <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/wiki/ddia/ch3.html</loc>
     
     <lastmod>2023-06-09</lastmod>
@@ -138,42 +201,6 @@
   
   <url>
     <loc>https://yanliang.cool/wiki/ddia/ch6.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch7.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch8.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch9.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/colophon.html</loc>
     
     <lastmod>2023-06-09</lastmod>
     
@@ -218,33 +245,6 @@
   </url>
   
   <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch11.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch12.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/wiki/ddia/ch2.html</loc>
-    
-    <lastmod>2023-06-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://yanliang.cool/about/</loc>
     
     <lastmod>2023-06-09</lastmod>
@@ -266,6 +266,15 @@
     <loc>https://yanliang.cool/friends/</loc>
     
     <lastmod>2023-06-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/blog/go/ebitengine/</loc>
+    
+    <lastmod>2023-01-04</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -964,6 +973,13 @@
   </url>
   
   <url>
+    <loc>https://yanliang.cool/tags/ebitengine/</loc>
+    <lastmod>2023-06-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/tags/java/</loc>
     <lastmod>2023-06-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -1225,13 +1241,6 @@
   </url>
   
   <url>
-    <loc>https://yanliang.cool/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/</loc>
-    <lastmod>2023-06-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://yanliang.cool/categories/docker/</loc>
     <lastmod>2023-06-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -1239,14 +1248,7 @@
   </url>
   
   <url>
-    <loc>https://yanliang.cool/categories/%E5%B9%B6%E5%8F%91/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</loc>
-    <lastmod>2023-06-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://yanliang.cool/categories/%E9%AB%98%E5%8F%AF%E7%94%A8/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
+    <loc>https://yanliang.cool/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/</loc>
     <lastmod>2023-06-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1274,7 +1276,21 @@
   </url>
   
   <url>
+    <loc>https://yanliang.cool/categories/%E5%B9%B6%E5%8F%91/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</loc>
+    <lastmod>2023-06-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://yanliang.cool/categories/go/</loc>
+    <lastmod>2023-06-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yanliang.cool/categories/%E9%AB%98%E5%8F%AF%E7%94%A8/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
     <lastmod>2023-06-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
